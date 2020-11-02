@@ -1351,6 +1351,173 @@ class myLSTMCell(nn.Module):
         return c_next, h_next
 
 
+class myLSTMCell_group2(nn.Module):
+    '''
+    LR - Low Rank
+    LSTM LR Cell with Both Full Rank and Low Rank Formulations
+    Has multiple activation functions for the gates
+    hidden_size = # hidden units
+
+    gate_nonlinearity = nonlinearity for the gate can be chosen from
+    [tanh, sigmoid, relu, quantTanh, quantSigm]
+    update_nonlinearity = nonlinearity for final rnn update
+    can be chosen from [tanh, sigmoid, relu, quantTanh, quantSigm]
+
+    wRank = rank of all W matrices
+    (creates 5 matrices if not None else creates 4 matrices)
+    uRank = rank of all U matrices
+    (creates 5 matrices if not None else creates 4 matrices)
+
+    LSTM architecture and compression techniques are found in
+    LSTM paper
+
+    Basic architecture:
+
+    f_t = gate_nl(W1x_t + U1h_{t-1} + B_f)
+    i_t = gate_nl(W2x_t + U2h_{t-1} + B_i)
+    C_t^ = update_nl(W3x_t + U3h_{t-1} + B_c)
+    o_t = gate_nl(W4x_t + U4h_{t-1} + B_o)
+    C_t = f_t*C_{t-1} + i_t*C_t^
+    h_t = o_t*update_nl(C_t)
+
+    Wi and Ui can further parameterised into low rank version by
+    Wi = matmul(W, W_i) and Ui = matmul(U, U_i)
+    '''
+
+    def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, g=2, recurrent_init=None,
+                 hidden_init=None):
+        super(myLSTMCell_group2, self).__init__()
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.recurrent_init = recurrent_init
+        self.hidden_init = hidden_init
+        self.wRank = wRank
+        self.uRanks = uRanks
+        self.g = g
+
+        print("wRank is:{}".format(wRank))
+        print("uRank is:{}".format(uRanks))
+
+        if wRank is None:
+            self.W1 = nn.Parameter(
+                0.1 * torch.randn([input_size, hidden_size]))
+            self.W2 = nn.Parameter(
+                0.1 * torch.randn([input_size, hidden_size]))
+            self.W3 = nn.Parameter(
+                0.1 * torch.randn([input_size, hidden_size]))
+            self.W4 = nn.Parameter(
+                0.1 * torch.randn([input_size, hidden_size]))
+        else:
+            self.W = nn.Parameter(0.1 * torch.randn([input_size, wRank]))
+            self.W1 = nn.Parameter(0.1 * torch.randn([wRank, hidden_size]))
+            self.W2 = nn.Parameter(0.1 * torch.randn([wRank, hidden_size]))
+            self.W3 = nn.Parameter(0.1 * torch.randn([wRank, hidden_size]))
+            self.W4 = nn.Parameter(0.1 * torch.randn([wRank, hidden_size]))
+
+        if uRanks is None:
+            self.U1 = nn.Parameter(
+                0.1 * torch.randn([hidden_size, hidden_size]))
+            self.U2 = nn.Parameter(
+                0.1 * torch.randn([hidden_size, hidden_size]))
+            self.U3 = nn.Parameter(
+                0.1 * torch.randn([hidden_size, hidden_size]))
+            self.U4 = nn.Parameter(
+                0.1 * torch.randn([hidden_size, hidden_size]))
+        else:
+            self.U = nn.Parameter(0.1 * torch.randn([g, int(hidden_size / g), uRanks[0]]))
+            self.U1 = nn.Parameter(0.1 * torch.randn([g, uRanks[0], int(hidden_size / g)]))
+            self.U2 = nn.Parameter(0.1 * torch.randn([g, uRanks[0], int(hidden_size / g)]))
+            self.U3 = nn.Parameter(0.1 * torch.randn([g, uRanks[0], int(hidden_size / g)]))
+            self.U4 = nn.Parameter(0.1 * torch.randn([g, uRanks[0], int(hidden_size / g)]))
+
+            self.UU = nn.Parameter(0.1 * torch.randn([g, int(hidden_size / g), uRanks[1]]))
+            self.UU1 = nn.Parameter(0.1 * torch.randn([g, uRanks[1], int(hidden_size / g)]))
+            self.UU2 = nn.Parameter(0.1 * torch.randn([g, uRanks[1], int(hidden_size / g)]))
+            self.UU3 = nn.Parameter(0.1 * torch.randn([g, uRanks[1], int(hidden_size / g)]))
+            self.UU4 = nn.Parameter(0.1 * torch.randn([g, uRanks[1], int(hidden_size / g)]))
+
+        self.bias_f = nn.Parameter(torch.ones([1, hidden_size]))
+        self.bias_i = nn.Parameter(torch.ones([1, hidden_size]))
+        self.bias_c = nn.Parameter(torch.ones([1, hidden_size]))
+        self.bias_o = nn.Parameter(torch.ones([1, hidden_size]))
+
+    def forward(self, x, hiddenStates):
+        (h, c) = hiddenStates
+        index = list(range(self.g))
+
+        if self.wRank is None:
+            wVal1 = torch.matmul(x, self.W1)
+            wVal2 = torch.matmul(x, self.W2)
+            wVal3 = torch.matmul(x, self.W3)
+            wVal4 = torch.matmul(x, self.W4)
+        else:
+            wVal1 = torch.matmul(
+                torch.matmul(x, self.W), self.W1)
+            wVal2 = torch.matmul(
+                torch.matmul(x, self.W), self.W2)
+            wVal3 = torch.matmul(
+                torch.matmul(x, self.W), self.W3)
+            wVal4 = torch.matmul(
+                torch.matmul(x, self.W), self.W4)
+
+        if self.uRanks is None:
+            uVal1 = torch.matmul(h, self.U1)
+            uVal2 = torch.matmul(h, self.U2)
+            uVal3 = torch.matmul(h, self.U3)
+            uVal4 = torch.matmul(h, self.U4)
+        else:
+            #############################
+            batch_size = h.shape[0]
+            h2 = h.view(batch_size, self.g, int(self.hidden_size / self.g))
+            h2 = torch.transpose(h2, 0, 1)
+            h2 = torch.bmm(h2, self.U)
+            uVal1 = torch.bmm(h2, self.U1)
+            uVal2 = torch.bmm(h2, self.U2)
+            uVal3 = torch.bmm(h2, self.U3)
+            uVal4 = torch.bmm(h2, self.U4)
+            uVal1 = torch.transpose(uVal1, 0, 1)
+            uVal2 = torch.transpose(uVal2, 0, 1)
+            uVal3 = torch.transpose(uVal3, 0, 1)
+            uVal4 = torch.transpose(uVal4, 0, 1)
+            uVal1 = uVal1.contiguous().view(batch_size, self.hidden_size)
+            uVal2 = uVal2.contiguous().view(batch_size, self.hidden_size)
+            uVal3 = uVal3.contiguous().view(batch_size, self.hidden_size)
+            uVal4 = uVal4.contiguous().view(batch_size, self.hidden_size)
+
+            #############################
+            h3 = h.view(batch_size, self.g, int(self.hidden_size / self.g))
+            index = index[1:] + index[0:1]
+            h3 = h3[:, index, :]
+            h3 = torch.transpose(h3, 0, 1)
+            h3 = torch.bmm(h3, self.UU)
+            uuVal1 = torch.bmm(h3, self.UU1)
+            uuVal2 = torch.bmm(h3, self.UU2)
+            uuVal3 = torch.bmm(h3, self.UU3)
+            uuVal4 = torch.bmm(h3, self.UU4)
+            uuVal1 = torch.transpose(uuVal1, 0, 1)
+            uuVal2 = torch.transpose(uuVal2, 0, 1)
+            uuVal3 = torch.transpose(uuVal3, 0, 1)
+            uuVal4 = torch.transpose(uuVal4, 0, 1)
+            uuVal1 = uuVal1.contiguous().view(batch_size, self.hidden_size)
+            uuVal2 = uuVal2.contiguous().view(batch_size, self.hidden_size)
+            uuVal3 = uuVal3.contiguous().view(batch_size, self.hidden_size)
+            uuVal4 = uuVal4.contiguous().view(batch_size, self.hidden_size)
+
+        matVal_i = wVal1 + uVal1 + uuVal1
+        matVal_f = wVal2 + uVal2 + uuVal2
+        matVal_o = wVal3 + uVal3 + uuVal3
+        matVal_c = wVal4 + uVal4 + uuVal4
+
+        i = F.sigmoid(matVal_i + self.bias_i)
+        f = F.sigmoid(matVal_f + self.bias_f)
+        o = F.sigmoid(matVal_o + self.bias_o)
+
+        c_tilda = F.tanh(matVal_c + self.bias_c)
+
+        c_next = f * c + i * c_tilda
+        h_next = o * F.tanh(c_next)
+        return c_next, h_next
+
 class myLSTMCell_diag(nn.Module):
     '''
     LR - Low Rank
