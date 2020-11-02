@@ -2220,7 +2220,6 @@ class myLSTM(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
-
 class myLSTM2(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRank=None, **kwargs):
@@ -2281,3 +2280,63 @@ class myLSTM2(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
+
+class myLSTM_group2(nn.Module):
+    def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
+                 hidden_inits=None, wRank=None, uRanks=None, **kwargs):
+        super(myLSTM_group2, self).__init__()
+        self.input_size = input_size
+        self.hidden_layer_sizes = hidden_layer_sizes
+        self.batch_first = batch_first
+        self.wRank = wRank
+        self.uRanks = uRanks
+
+        if batch_first:
+            self.time_index = 1
+            self.batch_index = 0
+        else:
+            self.time_index = 0
+            self.batch_index = 1
+
+        rnn_cells = []
+        in_size = input_size
+        i = 0
+        for i, hidden_size in enumerate(hidden_layer_sizes):
+            if recurrent_inits is not None:
+                kwargs["recurrent_init"] = recurrent_inits[i]
+            if hidden_inits is not None:
+                kwargs["hidden_init"] = hidden_inits[i]
+            rnn_cells.append(myLSTMCell_group2(in_size, hidden_size, wRank=self.wRank, uRanks=self.uRanks, **kwargs))
+            in_size = hidden_size
+
+        self.rnncells = nn.ModuleList(rnn_cells)
+
+        # h0 = torch.zeros(hidden_size * num_directions, requires_grad=False)
+        # self.register_buffer('h0', h0)
+
+    def forward(self, x, hidden=None):
+        time_index = self.time_index
+        batch_index = self.batch_index
+        hiddens = []
+
+        i = 0
+        for cell in self.rnncells:
+            # hx = self.h0.unsqueeze(0).expand(
+            #    x.size(batch_index),
+            #    self.hidden_size * num_directions).contiguous()
+            self.device = x.device
+            h = torch.zeros(x.size(batch_index), self.hidden_layer_sizes[i]).to(self.device)
+            c = torch.zeros(x.size(batch_index), self.hidden_layer_sizes[i]).to(self.device)
+            x_n = []
+            outputs = []
+            x_time = torch.unbind(x, time_index)
+            seqlen = len(x_time)
+            for t in range(seqlen):
+                h, c = cell(x_time[t], (h, c))
+                outputs.append(h)
+            x = torch.stack(outputs, time_index)
+            # x=torch.cat(outputs, -1)
+            hiddens.append(h)
+            i = i + 1
+
+        return x, torch.cat(hiddens, -1)
