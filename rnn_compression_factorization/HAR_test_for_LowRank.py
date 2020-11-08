@@ -3,21 +3,20 @@ Module using implemented group GRU, LSTM cell as a building block for
 classifying activity from sensor data
 """
 
-from compressed_rnn import myGRU, myLSTM, myGRU2, myLSTM2, myGRU_group, myGRU_group2, myGRU_group3, myGRU_group4, \
-    myGRU_group5, myGRU_group6
+from compressed_rnn import myGRU, myLSTM
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import datasets, transforms
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
-from sklearn.metrics import f1_score
 import argparse
 from time import time
+from sklearn.metrics import f1_score
 
 parser = argparse.ArgumentParser(description='PyTorch group GRU, LSTM testing')
 parser.add_argument('--lr', type=float, default=0.002,
-                    help='learning rate (default: 0.0002)')
+                    help='learning rate (default: 0.002)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
 parser.add_argument('--no-batch-norm', action='store_true', default=False,
@@ -38,18 +37,16 @@ parser.add_argument('--layer_sizes', type=int, nargs='+', default=None,
                     help='list of layers')
 parser.add_argument('--wRank', type=int, default=None,
                     help='compress rank of non-recurrent weight')
-parser.add_argument('--uRanks', type=int, nargs='+', default=None,
+parser.add_argument('--uRank', type=int, default=None,
                     help='compress rank of recurrent weight')
-parser.add_argument('--gpu_id', type=int, default=0,
-                    help='gpu_id assign')
-parser.add_argument('--group', type=int, default=2,
-                    help='choosing # of group')
-
+parser.add_argument('--gpu', type=int, default=0,
+                    help='gpu_id')
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 args.batch_norm = not args.no_batch_norm
 
-TIME_STEPS = 24
+# Parameters taken from https://arxiv.org/abs/1803.04831
+TIME_STEPS = 24  # 28x28 pixels
 RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
 RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
 
@@ -57,8 +54,10 @@ cuda = torch.cuda.is_available()
 
 
 class Net(nn.Module):
-    def __init__(self, input_size, layer_sizes=[32, 32], wRank=None, uRanks=None, model=myGRU_group2):
+    def __init__(self, input_size, layer_sizes=[32, 32], wRank=None, uRank=None, model=myGRU):
         super(Net, self).__init__()
+
+        self.deepconv = DeepConv()
         recurrent_inits = []
 
         n_layer = len(layer_sizes) + 1
@@ -71,9 +70,10 @@ class Net(nn.Module):
         self.rnn = model(
             input_size, hidden_layer_sizes=layer_sizes,
             batch_first=True, recurrent_inits=recurrent_inits,
-            wRank=wRank, uRanks=uRanks
+            wRank=wRank, uRank=uRank
         )
         self.lin = nn.Linear(layer_sizes[-1], 18)
+        # self.lin = nn.Linear(layer_sizes[-1], 10)
 
         self.lin.bias.data.fill_(.1)
         self.lin.weight.data.normal_(0, .01)
@@ -84,27 +84,21 @@ class Net(nn.Module):
 
 
 def main():
-    call_dict = {
-        'myGRU_group2': myGRU_group2,
-        'myGRU_group3': myGRU_group3,
-        'myGRU_group4': myGRU_group4,
-        'myGRU_group5': myGRU_group5,
-        'myGRU_group6': myGRU_group6,
-    }
-
     # build model
-    if args.model.lower() == "mygru_group":
-        model_fullname = "myGRU_group" + str(args.group)
-        model = Net(113, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
-                    model=call_dict[model_fullname])
+    if args.model.lower() == "mygru":
+        model = Net(113, layer_sizes=args.layer_sizes, wRank=args.wRank, uRank=args.uRank, model=myGRU)
+    elif args.model.lower() == "mylstm":
+        model = Net(113, layer_sizes=args.layer_sizes, wRank=args.wRank, uRank=args.uRank, model=myLSTM)
+
     else:
         raise Exception("unsupported cell model")
     # model.load_state_dict(torch.load("./weights/{}.pt".format(args.model.lower())))
-    gpu_id = args.gpu_id
-    device = 'cuda:{}'.format(gpu_id)
-    print(device)
+    # print(model.state_dict())
+
+    device = 'cuda:{}'.format(args.gpu)
 
     if cuda:
+        # model.cuda()
         model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
@@ -120,8 +114,8 @@ def main():
         start = time()
         for data, target in train_data:
             if cuda:
-                data, target = data.to(device), target.to(device)
                 # data, target = data.cuda(), target.cuda()
+                data, target = data.to(device), target.to(device)
             model.zero_grad()
             out = model(data)
             loss = F.cross_entropy(out, target.long())
@@ -149,14 +143,14 @@ def main():
     target_array = np.array([])
     for data_test, target_test in test_data:
         if cuda:
-            data_test, target_test = data_test.cuda(), target_test.cuda()
+            data_test, target_test = data_test.to(device), target_test.to(device)
         out = model(data_test)
         pred = out.data.max(1, keepdim=True)[1]
         correct += pred.eq(target_test.data.view_as(pred)).cpu().sum()
         pred_array = np.append(pred_array, pred.cpu())
         target_array = np.append(target_array, target_test.cpu())
-    print("Test f-score")
     print(f1_score(pred_array, target_array, average=None))
+    # print( "Test f-score : {:.4f}".format(100 * f1_score(pred_array, target_array, average=None)))
     print(
         "Test accuracy:: {:.4f}".format(
             100. * correct / len(test_data.dataset)))
