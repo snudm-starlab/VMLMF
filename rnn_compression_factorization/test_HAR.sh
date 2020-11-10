@@ -2,9 +2,7 @@
 
 mkdir "./weights"
 
-echo "$1"
-
-if [ "$1" == "HAR_deepconv" ]; then
+if [[ "$1" == "HAR_deepconv" ]]; then
   echo "******************************************************************"
   echo "Test for Oppurtunity HAR dataset"
   echo "******************************************************************"
@@ -25,7 +23,7 @@ if [ "$1" == "HAR_deepconv" ]; then
 
   python HAR_test_for_deepconv_group_LowRank.py  --layer_sizes 128 128 --uRanks 28 10 --wRank 19 --max-steps 200 --model myLSTM_group --group 2 --gpu 0 --lr 0.0002 --log_epoch -1
 
-elif [ "$1" == "HAR" ]; then
+elif [[ "$1" == "HAR" ]]; then
   echo "******************************************************************"
   echo "Test for Oppurtunity HAR dataset"
   echo "******************************************************************"
@@ -46,7 +44,7 @@ elif [ "$1" == "HAR" ]; then
 
   python HAR_test_for_group_LowRank.py  --layer_sizes 64 64 --uRanks 12 6 --wRank 9 --max-steps 200 --model myLSTM_group --group 2 --gpu 0 --lr 0.002 --log_epoch -1
 
-elif [ "$1" == "UCI" ]; then
+elif [[ "$1" == "UCI" ]]; then
   echo "******************************************************************"
   echo "Test for UCI_HAR dataset"
   echo "******************************************************************"
