@@ -161,7 +161,7 @@ def main():
         correct += pred.eq(target_test.data.view_as(pred)).cpu().sum()
         pred_array = np.append(pred_array, pred.cpu())
         target_array = np.append(target_array, target_test.cpu())
-    print("Test f-score : {:.4f}".format(f1_score(pred_array, target_array, average="weighted")))
+    print("Test f-score : {:.4f}".format(f1_score(pred_array, target_array, average="macro")))
     #print(f1_score(pred_array, target_array, average=None))
     # print( "Test f-score : {:.4f}".format(100 * f1_score(pred_array, target_array, average=None)))
     print(
