@@ -102,11 +102,11 @@ def main():
     # build model
     if args.model.lower() == "mygru_group":
         model_fullname = "myGRU_group" + str(args.group)
-        model = Net(113, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
+        model = Net(9, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
                     model=call_dict[model_fullname])
     elif args.model.lower() == "mylstm_group":
-        model_fullname = "mylstm_group" + str(args.group)
-        model = Net(113, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
+        model_fullname = "myLSTM_group" + str(args.group)
+        model = Net(9, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
                     model=call_dict[model_fullname])
     else:
         raise Exception("unsupported cell model")

@@ -72,7 +72,8 @@ class Net(nn.Module):
             w, RECURRENT_MIN, RECURRENT_MAX))
         self.rnn = model(
             input_size, hidden_layer_sizes=layer_sizes,
-            batch_first=True, recurrent_inits=recurrent_inits
+            batch_first=True, recurrent_inits=recurrent_inits,
+            wRank=wRank, uRank=uRank
         )
         self.lin = nn.Linear(layer_sizes[-1], 10)
 
