@@ -106,7 +106,7 @@ def main():
         model = Net(113, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
                     model=call_dict[model_fullname])
     elif args.model.lower() == "mylstm_group":
-        model_fullname = "mylstm_group" + str(args.group)
+        model_fullname = "myLSTM_group" + str(args.group)
         model = Net(113, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
                     model=call_dict[model_fullname])
     else:

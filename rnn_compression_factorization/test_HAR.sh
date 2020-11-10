@@ -30,13 +30,13 @@ elif [[ "$1" == "HAR" ]]; then
   echo "baseline LSTM model test result"
   echo "******************************************************************"
 
-  python HAR_test_for_Lowrank.py --layer_sizes 64 64 --max-steps 200 --model myLSTM --gpu 0 --lr 0.002 --log_epoch -1
+  python HAR_test_for_LowRank.py --layer_sizes 64 64 --max-steps 200 --model myLSTM --gpu 0 --lr 0.002 --log_epoch -1
 
   echo "******************************************************************"
   echo "Lowrank compression result on LSTM model, compression rate=7"
   echo "******************************************************************"
 
-  python HAR_test_for_Lowrank.py --layer_sizes 64 64 --uRank 9 --wRank 9 --max-steps 200 --model myLSTM --gpu 0 --lr 0.002 --log_epoch -1
+  python HAR_test_for_LowRank.py --layer_sizes 64 64 --uRank 9 --wRank 9 --max-steps 200 --model myLSTM --gpu 0 --lr 0.002 --log_epoch -1
 
   echo "*******************************************************************"
   echo "Proposed group-lowrank compression result on LSTM model, compression rate=7"
