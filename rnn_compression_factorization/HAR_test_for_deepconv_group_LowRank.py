@@ -186,8 +186,8 @@ class CustomDataset(Dataset):
         import numpy as np
         self.X = np.load((data_path + '/' + 'X_' + mode + '.npy'))
         self.y = np.load((data_path + '/' + 'y_' + mode + '.npy'))
-        print(self.X.shape)
-        print(self.y.shape)
+        #print(self.X.shape)
+        #print(self.y.shape)
 
     def __getitem__(self, index):
         return self.X[index], self.y[index]

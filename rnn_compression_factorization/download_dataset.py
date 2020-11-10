@@ -26,7 +26,7 @@ if not os.path.exists("OppurtunityUCIDataset.zip"):
 else:
     print("OppurtunityDataset already downloaded. Did not download twice.\n")
 
-"""
+
 print("Extracting...")
 extract_directory = os.path.abspath("UCI HAR Dataset")
 if not os.path.exists(extract_directory):
@@ -37,4 +37,3 @@ if not os.path.exists(extract_directory):
     print("Extracting successfully done to {}.".format(extract_directory))
 else:
     print("Dataset already extracted. Did not extract twice.\n")
-"""

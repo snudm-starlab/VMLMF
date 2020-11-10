@@ -46,8 +46,7 @@ args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 args.batch_norm = not args.no_batch_norm
 
-# Parameters taken from https://arxiv.org/abs/1803.04831
-TIME_STEPS = 128  # 28x28 pixels
+TIME_STEPS = 128
 RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
 RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
 
@@ -116,9 +115,10 @@ def main():
     model.train()
     step = 0
     epochs = 0
+    start = time()
     while step < args.max_steps:
         losses = []
-        start = time()
+        #start = time()
         for data, target in train_data:
             if cuda:
                 data, target = data.to(device), target.to(device)
@@ -136,10 +136,11 @@ def main():
                         step, np.mean(losses)))
             if step >= args.max_steps:
                 break
-        if epochs % args.log_epoch == 0:
+        if epochs % args.log_epoch == 0 and args.log_epoch != -1:
             print(
                 "Epoch {} cross_entropy {} ({} sec.)".format(
                     epochs, np.mean(losses), time() - start))
+            start = time()
         epochs += 1
 
     # get test error
