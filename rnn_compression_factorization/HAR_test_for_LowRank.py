@@ -64,7 +64,6 @@ class Net(nn.Module):
     def __init__(self, input_size, layer_sizes=[32, 32], wRank=None, uRank=None, model=myGRU):
         super(Net, self).__init__()
 
-        self.deepconv = DeepConv()
         recurrent_inits = []
 
         n_layer = len(layer_sizes) + 1
