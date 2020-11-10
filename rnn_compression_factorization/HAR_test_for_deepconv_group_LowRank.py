@@ -55,7 +55,7 @@ RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
 RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
 
 cuda = torch.cuda.is_available()
-seed = 1234
+seed = 3
 
 torch.backends.cudnn.enabled = False
 torch.backends.cudnn.deterministic = True
@@ -158,6 +158,9 @@ def main():
             start = time()
         epochs += 1
 
+    print(
+        "Total Epoch {} cross_entropy {} ({} sec.)".format(
+            epochs, np.mean(losses), time() - start))
     # get test error
     model.eval()
     correct = 0
@@ -178,7 +181,7 @@ def main():
     print(
         "Test accuracy:: {:.4f}".format(
             100. * correct / len(test_data.dataset)))
-    torch.save(model.state_dict(), "./weights/{}.pt".format(args.model.lower()))
+    torch.save(model.state_dict(), "./weights/deepconv_group_lowrank_{}.pt".format(args.model.lower()))
 
 
 class CustomDataset(Dataset):

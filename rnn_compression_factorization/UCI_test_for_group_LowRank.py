@@ -51,6 +51,13 @@ RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
 RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
 
 cuda = torch.cuda.is_available()
+seed = 3
+
+torch.backends.cudnn.enabled = False
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+torch.manual_seed(seed)
+torch.cuda.manual_seed(seed)
 
 
 class Net(nn.Module):
@@ -143,6 +150,9 @@ def main():
             start = time()
         epochs += 1
 
+    print(
+        "Total Epoch {} cross_entropy {} ({} sec.)".format(
+            epochs, np.mean(losses), time() - start))
     # get test error
     model.eval()
     correct = 0
