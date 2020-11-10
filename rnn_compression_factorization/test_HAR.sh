@@ -64,3 +64,8 @@ elif [ "$1"=="UCI" ]; then
   echo "******************************************************************"
 
   python UCI_test_for_group_LowRank.py  --layer_sizes 64 64 --uRanks 12 6 --wRank 9 --max-steps 200 --model myLSTM_group --group 2 --gpu 0 --lr 0.002 --log_epoch -1
+
+else
+  echo "specify Dataset and model"
+
+fi
