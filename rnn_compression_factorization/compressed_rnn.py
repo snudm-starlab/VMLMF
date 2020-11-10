@@ -90,8 +90,8 @@ class myGRUCell(nn.Module):
         matVal_r = wVal1 + uVal1
         matVal_z = wVal2 + uVal2
 
-        r = F.sigmoid(matVal_r + self.bias_r)
-        z = F.sigmoid(matVal_z + self.bias_gate)
+        r = torch.sigmoid(matVal_r + self.bias_r)
+        z = torch.sigmoid(matVal_z + self.bias_gate)
 
         if self.uRank is None:
             matVal_c = wVal3 + torch.matmul(r * h, self.U3)
@@ -99,7 +99,7 @@ class myGRUCell(nn.Module):
             matVal_c = wVal3 + \
                        torch.matmul(torch.matmul(r * h, self.U), self.U3)
 
-        c_tilda = F.tanh(matVal_c + self.bias_update)
+        c_tilda = torch.tanh(matVal_c + self.bias_update)
 
         h_next = z * h + (1.0 - z) * c_tilda
 
@@ -166,8 +166,8 @@ class myGRUCell_group2(nn.Module):
         self.wRank = wRank
         self.uRanks = uRanks
         self.g = g
-        print("wRank is:{}".format(wRank))
-        print("uRank is:{}".format(uRanks))
+        #print("wRank is:{}".format(wRank))
+        #print("uRank is:{}".format(uRanks))
 
         if wRank is None:
             self.W1 = nn.Parameter(
@@ -261,12 +261,12 @@ class myGRUCell_group2(nn.Module):
         matVal_r = wVal1 + uVal1 + uuVal1
         matVal_z = wVal2 + uVal2 + uuVal2
 
-        r = F.sigmoid(matVal_r + self.bias_r)
-        z = F.sigmoid(matVal_z + self.bias_gate)
+        r = torch.sigmoid(matVal_r + self.bias_r)
+        z = torch.sigmoid(matVal_z + self.bias_gate)
 
         matVal_c = wVal3 + r * (uVal3 + uuVal3)
 
-        c_tilda = F.tanh(matVal_c + self.bias_update)
+        c_tilda = torch.tanh(matVal_c + self.bias_update)
 
         h_next = z * h + (1.0 - z) * c_tilda
 
@@ -304,8 +304,8 @@ class myGRUCell_group3(nn.Module):
         self.wRank = wRank
         self.uRanks = uRanks
         self.g = g
-        print("wRank is:{}".format(wRank))
-        print("uRank is:{}".format(uRanks))
+        #print("wRank is:{}".format(wRank))
+        #print("uRank is:{}".format(uRanks))
 
         if wRank is None:
             self.W1 = nn.Parameter(
@@ -432,12 +432,12 @@ class myGRUCell_group3(nn.Module):
         matVal_r = wVal1 + uVal1 + uuVal1 + uuuVal1
         matVal_z = wVal2 + uVal2 + uuVal2 + uuuVal2
 
-        r = F.sigmoid(matVal_r + self.bias_r)
-        z = F.sigmoid(matVal_z + self.bias_gate)
+        r = torch.sigmoid(matVal_r + self.bias_r)
+        z = torch.sigmoid(matVal_z + self.bias_gate)
 
         matVal_c = wVal3 + r * (uVal3 + uuVal3 + uuuVal3)
 
-        c_tilda = F.tanh(matVal_c + self.bias_update)
+        c_tilda = torch.tanh(matVal_c + self.bias_update)
 
         h_next = z * h + (1.0 - z) * c_tilda
 
@@ -475,8 +475,8 @@ class myGRUCell_group4(nn.Module):
         self.wRank = wRank
         self.uRanks = uRanks
         self.g = g
-        print("wRank is:{}".format(wRank))
-        print("uRank is:{}".format(uRanks))
+        #print("wRank is:{}".format(wRank))
+        #print("uRank is:{}".format(uRanks))
 
         if wRank is None:
             self.W1 = nn.Parameter(
@@ -629,12 +629,12 @@ class myGRUCell_group4(nn.Module):
         matVal_r = wVal1 + uVal1 + uuVal1 + uuuVal1 + uuuuVal1
         matVal_z = wVal2 + uVal2 + uuVal2 + uuuVal2 + uuuuVal2
 
-        r = F.sigmoid(matVal_r + self.bias_r)
-        z = F.sigmoid(matVal_z + self.bias_gate)
+        r = torch.sigmoid(matVal_r + self.bias_r)
+        z = torch.sigmoid(matVal_z + self.bias_gate)
 
         matVal_c = wVal3 + r * (uVal3 + uuVal3 + uuuVal3 + uuuuVal3)
 
-        c_tilda = F.tanh(matVal_c + self.bias_update)
+        c_tilda = torch.tanh(matVal_c + self.bias_update)
 
         h_next = z * h + (1.0 - z) * c_tilda
 
@@ -672,8 +672,8 @@ class myGRUCell_group5(nn.Module):
         self.wRank = wRank
         self.uRanks = uRanks
         self.g = g
-        print("wRank is:{}".format(wRank))
-        print("uRank is:{}".format(uRanks))
+        #print("wRank is:{}".format(wRank))
+        #print("uRank is:{}".format(uRanks))
 
         if wRank is None:
             self.W1 = nn.Parameter(
@@ -852,12 +852,12 @@ class myGRUCell_group5(nn.Module):
         matVal_r = wVal1 + uVal1 + uuVal1 + uuuVal1 + uuuuVal1 + uuuuuVal1
         matVal_z = wVal2 + uVal2 + uuVal2 + uuuVal2 + uuuuVal2 + uuuuuVal2
 
-        r = F.sigmoid(matVal_r + self.bias_r)
-        z = F.sigmoid(matVal_z + self.bias_gate)
+        r = torch.sigmoid(matVal_r + self.bias_r)
+        z = torch.sigmoid(matVal_z + self.bias_gate)
 
         matVal_c = wVal3 + r * (uVal3 + uuVal3 + uuuVal3 + uuuuVal3 + uuuuuVal3)
 
-        c_tilda = F.tanh(matVal_c + self.bias_update)
+        c_tilda = torch.tanh(matVal_c + self.bias_update)
 
         h_next = z * h + (1.0 - z) * c_tilda
 
@@ -895,8 +895,8 @@ class myGRUCell_group6(nn.Module):
         self.wRank = wRank
         self.uRanks = uRanks
         self.g = g
-        print("wRank is:{}".format(wRank))
-        print("uRank is:{}".format(uRanks))
+        #print("wRank is:{}".format(wRank))
+        #print("uRank is:{}".format(uRanks))
 
         if wRank is None:
             self.W1 = nn.Parameter(
@@ -1101,12 +1101,12 @@ class myGRUCell_group6(nn.Module):
         matVal_r = wVal1 + uVal1 + uuVal1 + uuuVal1 + uuuuVal1 + uuuuuVal1 + uuuuuuVal1
         matVal_z = wVal2 + uVal2 + uuVal2 + uuuVal2 + uuuuVal2 + uuuuuVal2 + uuuuuuVal2
 
-        r = F.sigmoid(matVal_r + self.bias_r)
-        z = F.sigmoid(matVal_z + self.bias_gate)
+        r = torch.sigmoid(matVal_r + self.bias_r)
+        z = torch.sigmoid(matVal_z + self.bias_gate)
 
         matVal_c = wVal3 + r * (uVal3 + uuVal3 + uuuVal3 + uuuuVal3 + uuuuuVal3 + uuuuuuVal3)
 
-        c_tilda = F.tanh(matVal_c + self.bias_update)
+        c_tilda = torch.tanh(matVal_c + self.bias_update)
 
         h_next = z * h + (1.0 - z) * c_tilda
 
@@ -1143,8 +1143,8 @@ class myGRUCell_diag(nn.Module):
         self.hidden_init = hidden_init
         self.wRank = wRank
         self.uRank = uRank
-        print("wRank is:{}".format(wRank))
-        print("uRank is:{}".format(uRank))
+        #print("wRank is:{}".format(wRank))
+        #print("uRank is:{}".format(uRank))
 
         if wRank is None:
             self.W1 = nn.Parameter(
@@ -1208,15 +1208,15 @@ class myGRUCell_diag(nn.Module):
         matVal_r = wVal1 + uVal1 + uVal1_diag
         matVal_z = wVal2 + uVal2 + uVal2_diag
 
-        r = F.sigmoid(matVal_r + self.bias_r)
-        z = F.sigmoid(matVal_z + self.bias_gate)
+        r = torch.sigmoid(matVal_r + self.bias_r)
+        z = torch.sigmoid(matVal_z + self.bias_gate)
 
         if self.uRank is None:
             matVal_c = wVal3 + torch.matmul(r * h, self.U3)
         else:
             matVal_c = wVal3 + \
                        torch.matmul(torch.matmul(r * h, self.U), self.U3) + r * h * self.U3_diag
-        c_tilda = F.tanh(matVal_c + self.bias_update)
+        c_tilda = torch.tanh(matVal_c + self.bias_update)
 
         h_next = z * h + (1.0 - z) * c_tilda
 
@@ -1340,14 +1340,14 @@ class myLSTMCell(nn.Module):
         matVal_o = wVal3 + uVal3
         matVal_c = wVal4 + uVal4
 
-        i = F.sigmoid(matVal_i + self.bias_i)
-        f = F.sigmoid(matVal_f + self.bias_f)
-        o = F.sigmoid(matVal_o + self.bias_o)
+        i = torch.sigmoid(matVal_i + self.bias_i)
+        f = torch.sigmoid(matVal_f + self.bias_f)
+        o = torch.sigmoid(matVal_o + self.bias_o)
 
-        c_tilda = F.tanh(matVal_c + self.bias_c)
+        c_tilda = torch.tanh(matVal_c + self.bias_c)
 
         c_next = f * c + i * c_tilda
-        h_next = o * F.tanh(c_next)
+        h_next = o * torch.tanh(c_next)
         return c_next, h_next
 
 
@@ -1395,8 +1395,8 @@ class myLSTMCell_group2(nn.Module):
         self.uRanks = uRanks
         self.g = g
 
-        print("wRank is:{}".format(wRank))
-        print("uRank is:{}".format(uRanks))
+        #print("wRank is:{}".format(wRank))
+        #print("uRank is:{}".format(uRanks))
 
         if wRank is None:
             self.W1 = nn.Parameter(
@@ -1508,14 +1508,14 @@ class myLSTMCell_group2(nn.Module):
         matVal_o = wVal3 + uVal3 + uuVal3
         matVal_c = wVal4 + uVal4 + uuVal4
 
-        i = F.sigmoid(matVal_i + self.bias_i)
-        f = F.sigmoid(matVal_f + self.bias_f)
-        o = F.sigmoid(matVal_o + self.bias_o)
+        i = torch.sigmoid(matVal_i + self.bias_i)
+        f = torch.sigmoid(matVal_f + self.bias_f)
+        o = torch.sigmoid(matVal_o + self.bias_o)
 
-        c_tilda = F.tanh(matVal_c + self.bias_c)
+        c_tilda = torch.tanh(matVal_c + self.bias_c)
 
         c_next = f * c + i * c_tilda
-        h_next = o * F.tanh(c_next)
+        h_next = o * torch.tanh(c_next)
         return c_next, h_next
 
 class myLSTMCell_diag(nn.Module):
@@ -1644,14 +1644,14 @@ class myLSTMCell_diag(nn.Module):
         matVal_o = wVal3 + uVal3 + uVal3_diag
         matVal_c = wVal4 + uVal4 + uVal4_diag
 
-        i = F.sigmoid(matVal_i + self.bias_i)
-        f = F.sigmoid(matVal_f + self.bias_f)
-        o = F.sigmoid(matVal_o + self.bias_o)
+        i = torch.sigmoid(matVal_i + self.bias_i)
+        f = torch.sigmoid(matVal_f + self.bias_f)
+        o = torch.sigmoid(matVal_o + self.bias_o)
 
-        c_tilda = F.tanh(matVal_c + self.bias_c)
+        c_tilda = torch.tanh(matVal_c + self.bias_c)
 
         c_next = f * c + i * c_tilda
-        h_next = o * F.tanh(c_next)
+        h_next = o * torch.tanh(c_next)
         return c_next, h_next
 
 
@@ -1664,6 +1664,8 @@ class myGRU(nn.Module):
         self.batch_first = batch_first
         self.wRank = wRank
         self.uRank = uRank
+        print("start training with wRank:{}".format(wRank))
+        print("start training with uRank:{}".format(uRank))
 
         if batch_first:
             self.time_index = 1
@@ -1854,9 +1856,8 @@ class myGRU_group2(nn.Module):
         self.batch_first = batch_first
         self.wRank = wRank
         self.uRanks = uRanks
-        print("wRank is:{}".format(wRank))
-        print("uRank1 is:{}".format(uRanks[0]))
-        print("uRank2 is:{}".format(uRanks[1]))
+        print("start training with wRank:{}".format(wRank))
+        print("start training with uRank:{}".format(uRanks))
 
         if batch_first:
             self.time_index = 1
@@ -1917,9 +1918,8 @@ class myGRU_group3(nn.Module):
         self.batch_first = batch_first
         self.wRank = wRank
         self.uRanks = uRanks
-        print("wRank is:{}".format(wRank))
-        print("uRank1 is:{}".format(uRanks[0]))
-        print("uRank2 is:{}".format(uRanks[1]))
+        print("start training with wRank:{}".format(wRank))
+        print("start training with uRank:{}".format(uRanks))
 
         if batch_first:
             self.time_index = 1
@@ -1980,9 +1980,8 @@ class myGRU_group4(nn.Module):
         self.batch_first = batch_first
         self.wRank = wRank
         self.uRanks = uRanks
-        print("wRank is:{}".format(wRank))
-        print("uRank1 is:{}".format(uRanks[0]))
-        print("uRank2 is:{}".format(uRanks[1]))
+        print("start training with wRank:{}".format(wRank))
+        print("start training with uRank:{}".format(uRanks))
 
         if batch_first:
             self.time_index = 1
@@ -2043,9 +2042,8 @@ class myGRU_group5(nn.Module):
         self.batch_first = batch_first
         self.wRank = wRank
         self.uRanks = uRanks
-        print("wRank is:{}".format(wRank))
-        print("uRank1 is:{}".format(uRanks[0]))
-        print("uRank2 is:{}".format(uRanks[1]))
+        print("start training with wRank:{}".format(wRank))
+        print("start training with uRank:{}".format(uRanks))
 
         if batch_first:
             self.time_index = 1
@@ -2106,9 +2104,8 @@ class myGRU_group6(nn.Module):
         self.batch_first = batch_first
         self.wRank = wRank
         self.uRanks = uRanks
-        print("wRank is:{}".format(wRank))
-        print("uRank1 is:{}".format(uRanks[0]))
-        print("uRank2 is:{}".format(uRanks[1]))
+        print("start training with wRank:{}".format(wRank))
+        print("start training with uRank:{}".format(uRanks))
 
         if batch_first:
             self.time_index = 1
@@ -2169,6 +2166,8 @@ class myLSTM(nn.Module):
         self.batch_first = batch_first
         self.wRank = wRank
         self.uRank = uRank
+        print("start training with wRank:{}".format(wRank))
+        print("start training with uRank:{}".format(uRank))
 
         if batch_first:
             self.time_index = 1
@@ -2290,6 +2289,8 @@ class myLSTM_group2(nn.Module):
         self.batch_first = batch_first
         self.wRank = wRank
         self.uRanks = uRanks
+        print("start training with wRank:{}".format(wRank))
+        print("start training with uRank:{}".format(uRanks))
 
         if batch_first:
             self.time_index = 1

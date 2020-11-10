@@ -7,6 +7,7 @@ from compressed_rnn import myGRU, myLSTM, myGRU2, myLSTM2, DeepConvLSTM, DeepCon
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.backends.cudnn as cudnn
 from torchvision import datasets, transforms
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
@@ -51,7 +52,13 @@ RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
 RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
 
 cuda = torch.cuda.is_available()
+seed = 1234
 
+torch.backends.cudnn.enabled = False
+torch.backends.cudnn.deterministic = True
+torch.backends.cudnn.benchmark = False
+torch.manual_seed(seed)
+torch.cuda.manual_seed(seed)
 
 class Net(nn.Module):
     def __init__(self, input_size, layer_sizes=[32, 32], wRank=None, uRank=None, model=myGRU):
@@ -109,9 +116,10 @@ def main():
     model.train()
     step = 0
     epochs = 0
+    start = time()
     while step < args.max_steps:
         losses = []
-        start = time()
+        #start = time()
         for data, target in train_data:
             if cuda:
                 # data, target = data.cuda(), target.cuda()
@@ -130,10 +138,11 @@ def main():
                         step, np.mean(losses)))
             if step >= args.max_steps:
                 break
-        if epochs % args.log_epoch == 0:
+        if epochs % args.log_epoch == 0 and args.log_epoch != -1:
             print(
                 "Epoch {} cross_entropy {} ({} sec.)".format(
                     epochs, np.mean(losses), time() - start))
+            start = time()
         epochs += 1
 
     # get test error
@@ -149,7 +158,8 @@ def main():
         correct += pred.eq(target_test.data.view_as(pred)).cpu().sum()
         pred_array = np.append(pred_array, pred.cpu())
         target_array = np.append(target_array, target_test.cpu())
-    print(f1_score(pred_array, target_array, average=None))
+    print("Test f-score : {:.4f}".format(f1_score(pred_array, target_array, average="weighted")))
+    #print(f1_score(pred_array, target_array, average=None))
     # print( "Test f-score : {:.4f}".format(100 * f1_score(pred_array, target_array, average=None)))
     print(
         "Test accuracy:: {:.4f}".format(
