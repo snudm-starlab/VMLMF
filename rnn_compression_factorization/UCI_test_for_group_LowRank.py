@@ -41,6 +41,8 @@ parser.add_argument('--uRanks', type=int, nargs='+', default=None,
                     help='compress rank of recurrent weight')
 parser.add_argument('--gpu_id', type=int, default=0,
                     help='gpu_id assign')
+parser.add_argument('--group', type=int, default=2,
+                    help='choosing # of group')
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
