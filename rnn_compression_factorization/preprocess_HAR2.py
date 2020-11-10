@@ -4,6 +4,13 @@ import numpy as np
 import pickle as cp
 from sliding_window import sliding_window
 
+# Hardcoded number of sensor channels employed in the OPPORTUNITY challenge
+NB_SENSOR_CHANNELS = 113
+# Hardcoded length of the sliding window mechanism employed to segment the data
+SLIDING_WINDOW_LENGTH = 24
+# Hardcoded step of the sliding window mechanism employed to segment the data
+SLIDING_WINDOW_STEP = 12
+
 def load_dataset(filename):
 
     f = open(filename, 'rb')
