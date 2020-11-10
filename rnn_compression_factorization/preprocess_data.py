@@ -1,5 +1,3 @@
-__author__ = 'fjordonez'
-
 import os
 import zipfile
 import argparse
