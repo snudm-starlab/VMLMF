@@ -16,7 +16,7 @@ if not os.path.exists("UCI HAR Dataset.zip"):
     print("Downloading done.\n")
 else:
     print("UCI Dataset already downloaded. Did not download twice.\n")
-    
+
 if not os.path.exists("OppurtunityUCIDataset.zip"):
     call(
         'wget https://archive.ics.uci.edu/ml/machine-learning-databases/00226/OpportunityUCIDataset.zip',
