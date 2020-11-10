@@ -47,7 +47,7 @@ print(" ..after sliding window (testing): inputs {0}, targets {1}".format(X_test
 X_train, y_train = opp_sliding_window(X_train, y_train, SLIDING_WINDOW_LENGTH, SLIDING_WINDOW_STEP)
 print(" ..after sliding window (testing): inputs {0}, targets {1}".format(X_train.shape, y_train.shape))
 
-np.save('X_test', X_test)
-np.save('y_test', y_test)
-np.save('X_train', X_train)
-np.save('y_train', y_train)
+np.save('./data/X_test', X_test)
+np.save('./data/y_test', y_test)
+np.save('./data/X_train', X_train)
+np.save('./data/y_train', y_train)
