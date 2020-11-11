@@ -188,7 +188,7 @@ class CustomDataset(Dataset):
         return len(self.X)
 
 
-def HAR_dataloader(batch_size, dataset_folder='./data'):
+def HAR_dataloader(batch_size, dataset_folder='./src/data'):
     dataset_train = CustomDataset(dataset_folder, 'train')
     train_loader = DataLoader(dataset=dataset_train,
                               batch_size=64,

@@ -209,7 +209,7 @@ class UCIDataset(Dataset):
         return len(self.X)
 
 
-def UCI_dataloader(batch_size, dataset_folder='./data/UCI HAR Dataset/'):
+def UCI_dataloader(batch_size, dataset_folder='./src/data/UCI HAR Dataset/'):
     dataset_train = UCIDataset(dataset_folder, 'train')
     train_loader = DataLoader(dataset=dataset_train,
                               batch_size=64,
