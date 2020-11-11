@@ -240,7 +240,7 @@ def generate_data(dataset, target_filename, label):
 
     data_dir = check_data(dataset)
 
-    if os.path.exists("./data/oppChallenge_gestures.data"):
+    if os.path.exists("./src/data/oppChallenge_gestures.data"):
         return
 
     data_x = np.empty((0, NB_SENSOR_CHANNELS))

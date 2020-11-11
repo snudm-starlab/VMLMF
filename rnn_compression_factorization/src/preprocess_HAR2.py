@@ -33,7 +33,7 @@ def load_dataset(filename):
     return X_train, y_train, X_test, y_test
 
 print("Loading data...")
-X_train, y_train, X_test, y_test = load_dataset('data/oppChallenge_gestures.data')
+X_train, y_train, X_test, y_test = load_dataset('./src/data/oppChallenge_gestures.data')
 
 assert NB_SENSOR_CHANNELS == X_train.shape[1]
 def opp_sliding_window(data_x, data_y, ws, ss):
@@ -47,7 +47,7 @@ print(" ..after sliding window (testing): inputs {0}, targets {1}".format(X_test
 X_train, y_train = opp_sliding_window(X_train, y_train, SLIDING_WINDOW_LENGTH, SLIDING_WINDOW_STEP)
 print(" ..after sliding window (testing): inputs {0}, targets {1}".format(X_train.shape, y_train.shape))
 
-np.save('./data/X_test', X_test)
-np.save('./data/y_test', y_test)
-np.save('./data/X_train', X_train)
-np.save('./data/y_train', y_train)
+np.save('./src/data/X_test', X_test)
+np.save('./src/data/y_test', y_test)
+np.save('./src/data/X_train', X_train)
+np.save('./src/data/y_train', y_train)
