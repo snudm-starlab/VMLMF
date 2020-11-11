@@ -105,36 +105,6 @@ class myGRUCell(nn.Module):
 
         return h_next
 
-
-class myGroupGRUCell(nn.Module):
-    def __init__(self, input_size, hidden_size, wRank_diag=None, wRank_offdiag=None, uRank_diag=None,
-                 uRank_offdiag=None, recurrent_init=None,
-                 hidden_init=None):
-        super(myGroupGRUCell, self).__init__()
-        self.input_size = input_size
-        self.hidden_size = hidden_size
-        self.recurrent_init = recurrent_init
-        self.hidden_init = hidden_init
-        self.wRank_diag = wRank_diag
-        self.uRank_diag = uRank_diag
-        self.wRank_offdiag = wRank_offdiag
-        self.uRank_offdiag = uRank_offdiag
-        self.GRUa = myGRUCell(input_size, hidden_size // 2, wRank_diag, uRank_diag)
-        self.GRUb = myGRUCell(input_size, hidden_size // 2, wRank_offdiag, uRank_offdiag)
-        self.GRUc = myGRUCell(input_size, hidden_size // 2, wRank_offdiag, uRank_offdiag)
-        self.GRUd = myGRUCell(input_size, hidden_size // 2, wRank_diag, uRank_diag)
-
-    def forward(self, x, h):
-        # print(self.input_size)
-        # print(self.hidden_size)
-        # print(x.shape)
-        # x1 = x[:, :(self.input_size // 2)]
-        # x2 = x[:, (self.input_size // 2):]
-        h1 = h[:, :(self.hidden_size // 2)]
-        h2 = h[:, (self.hidden_size // 2):]
-        return torch.cat((self.GRUa(x, h1) + self.GRUb(x, h2), self.GRUc(x, h1) + self.GRUd(x, h2)), dim=1)
-
-
 class myGRUCell_group2(nn.Module):
     """
     wRank = rank of W matrix
