@@ -5,7 +5,7 @@ from subprocess import call
 print("")
 
 print("Downloading...")
-if not os.path.exists("./data/UCI HAR Dataset.zip"):
+if not os.path.exists("./src/data/UCI HAR Dataset.zip"):
     call(
         'wget "https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI HAR Dataset.zip"',
         shell=True
@@ -14,7 +14,7 @@ if not os.path.exists("./data/UCI HAR Dataset.zip"):
 else:
     print("UCI Dataset already downloaded. Did not download twice.\n")
 
-if not os.path.exists("./data/OpportunityUCIDataset.zip"):
+if not os.path.exists("./src/data/OpportunityUCIDataset.zip"):
     call(
         'wget https://archive.ics.uci.edu/ml/machine-learning-databases/00226/OpportunityUCIDataset.zip',
         shell=True
@@ -25,7 +25,7 @@ else:
 
 
 print("Extracting...")
-extract_directory = os.path.abspath("./data/UCI HAR Dataset")
+extract_directory = os.path.abspath("./src/data/UCI HAR Dataset")
 if not os.path.exists(extract_directory):
     call(
         'unzip -nq "UCI HAR Dataset.zip"',
