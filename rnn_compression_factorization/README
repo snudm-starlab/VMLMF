@@ -1,5 +1,5 @@
 ################################################################################
-# Starlab RNN-compression : Lowrank and group-lowrank rnn
+# Starlab RNN-compression with factorization method : Lowrank and group-lowrank rnn
 #
 # Author: Donghae Jang (jangdonghae@gmail.com), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
@@ -22,87 +22,26 @@ and it's implementation for training and testing lowrank and group-lowrank compr
 2. How to run CTTP
 
 IMPORTANT!
-- Before you use it, please check that the script files is executable. If not,
-you may manually modify the permission of scripts or you may type "make install"
-to do the same work.
-- You may type "make demo" if you want to just try CTTP.
-- Hadoop and Java should be installed in your system in advance.
+- First, check if pytorch, pandas, numpy, scipy is installed
+- If you are Linux user, you can easily use shell script.
+- If you are Windows user, you have to manually download dataset, and run the preprocess code
 
-To run CTTP, you need to do the followings:
-- prepare a graph edge file in a HDFS directory.
-  The graph edge file is a plain text file where each line is in "NODE1 DELIMITER
-  NODE2" format. The delimiter can be a tab, a space, or a comma.
-  The graph should be an undirected simple graph; that is, the edge file must
-  not contain any duplicate edge and any self loop edge. CTTP considers that
-  two edges (a, b) and (b, a) are the same; thus, only one of the two edges
-  (a, b) and (b, a) should exist.
-
-  For example, this is the sample edge file 'cttp_sample.edge'
-
-   0    1
-   0    2
-   0    3
-   1    2
-   1    3
-   1    5
-   2    3
-   2    4
-   2    6
-   4    6
-
-- execute ./cttp.sh
-  Usage: ./cttp.sh [OPTIONS] [INPUT (EDGE LIST FILE)]
-  Enumerate triangles in a graph
-
-    -o[OUTPUT]     --output[OUTPUT]         set the output path of the triangle
-                                            list. (default: [INPUT].triangle)
-    -l[LOG]        --log[LOG]               set the path of the log file.
-                                            (default: [INPUT].log)
-    -p[PARTITIONS] --partitions[PARTITIONS] set the number of partitions.
-    -r[ROUNDS]     --rounds[ROUNDS]         set the number of rounds.
-                                            (default: the same as the number
-                                            of partitions)
-    -s[STARTROUND] --start[STARTROUND]      set the first round to start the
-                                            algorithm.
-    -i[ITERATIONS] --iterations[ITERATIONS] set the iteration number.
-    -M[MAPTASKS]   --maptasks[MAPTASKS]     set the number of map tasks.
-    -R[MAPTASKS]   --reducetasks[MAPTASKS]  set the number of reduce tasks.
-
-  Example:
-    ./cttp.sh path/to/triangle/file
-
-You can find the output of CTTP in the HDFS directory specified by -o option
-after execution. Each line of the output represents a triangle and the format is
-"NODE1 TAB NODE2 TAB NODE3".
-
-You can test CTTP with ./do_cttp.sh.
-The script executes CTTP with a simple graph (cttp_sample.edge).
-The result is stored in the HDFS path cttp_edge.triangle.
-You can check the output with the following command.
-
-$ hadoop fs -cat cttp_edge.triangle/0/*
-0       1       3
-0       1       2
-3       1       2
-4       2       6
-0       2       3
-
-If you see the output shown above, you can be assured that CTTP has finished successfully.
-Note that the '0' after cttp_edge.triangle/ means the triangle enumeration finished at round 0
-since the graph is very small. Running CTTP on larger graphs would require multiple rounds;
-in that case the output of a round x will be stored in /x subdirectory of the base output path.
-
+To run RNN-compression code in Linux
+- First, run $bash preprocess.sh
+  This shell script will download "Opportunity dataset" and "UCI HAR datset", and do a
+  proper preprocessing
+- Check if dataset is downloaded at ./src/data folder, and preprocessing is done
+- Second, run $bash test_HAR.sh "HAR_deepconv" to check the result for the rnn-compression
+  result on DeepConvolutionalLSTM model for the Opportunity dataset
+- You can also run run $bash test_HAR.sh "HAR" to check the result for the rnn-compression
+  result on basic LSTM model for the Opportunity dataset
+- You can also run run $bash test_HAR.sh "UCI" to check the result for the rnn-compression
+  result on basic LSTM model for the UCI HAR dataset
 
 3. Rebuilding source codes
 
 CTTP distribution includes the source code. You can modify the code and rebuild
 the code. The source codes are in 'src' directory.
-Since the binary file CTTP.jar already exists in 'jar' directory, normally you
-don't need to build the code again. Thus, this is the instruction when you
-modify the source code and build it.
-To build the source code, use the script 'compile_cttp.sh'. When you
-execute the script, it automatically compile the source codes in 'src' and make
-a jar file CTTP.jar in 'jar' directory. Usually, the script automatically finds
-the path for hadoop core library file; but if you want to designate the path,
-set the environment variable $HADOOP_CORE to the path.
+To do a manual experiment, check the code in test_HAR.sh file to learn the usage
+of the test codes.
 
