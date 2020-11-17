@@ -1367,6 +1367,7 @@ class myLSTMCell_group2(nn.Module):
         h_next = o * torch.tanh(c_next)
         return c_next, h_next
 
+# module which have multiple layer of myGRU cell
 class myGRU(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRank=None, **kwargs):
@@ -1428,6 +1429,7 @@ class myGRU(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
+# module which have multiple layer of myGRU_group cell
 class myGRU_group(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank_diag=None, wRank_offdiag=None, uRank_diag=None, uRank_offdiag=None, **kwargs):
@@ -1495,7 +1497,7 @@ class myGRU_group(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
-
+# module which have multiple layer of myGRU_group2 cell
 class myGRU_group2(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRanks=None, **kwargs):
@@ -1557,7 +1559,7 @@ class myGRU_group2(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
-
+# module which have multiple layer of myGRU_group3 cell
 class myGRU_group3(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRanks=None, **kwargs):
@@ -1619,7 +1621,7 @@ class myGRU_group3(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
-
+# module which have multiple layer of myGRU_group4 cell
 class myGRU_group4(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRanks=None, **kwargs):
@@ -1681,7 +1683,7 @@ class myGRU_group4(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
-
+# module which have multiple layer of myGRU_group5 cell
 class myGRU_group5(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRanks=None, **kwargs):
@@ -1743,7 +1745,7 @@ class myGRU_group5(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
-
+# module which have multiple layer of myGRU_group6 cell
 class myGRU_group6(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRanks=None, **kwargs):
@@ -1805,7 +1807,7 @@ class myGRU_group6(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
-
+# module which have multiple layer of myLSTM cell
 class myLSTM(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRank=None, **kwargs):
@@ -1868,6 +1870,7 @@ class myLSTM(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
+# module which have multiple layer of myLSTM_group cell
 class myLSTM_group2(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRanks=None, **kwargs):
@@ -1930,7 +1933,7 @@ class myLSTM_group2(nn.Module):
 
         return x, torch.cat(hiddens, -1)
 
-
+# Code for implementing DeepConvLSTM
 class DeepConvLSTM(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRank=None, **kwargs):
@@ -1982,7 +1985,8 @@ class DeepConvLSTM(nn.Module):
         #########################################
         return x, h
 
-
+# Code for implementing DeepConvLSTM
+# This is implementation of DeepcConvolutional part, and LSTM part will be added
 class DeepConv(nn.Module):
     def __init__(self, filter_size=5, filter_count=64):
         super(DeepConv, self).__init__()
