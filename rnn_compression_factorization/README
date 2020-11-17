@@ -19,7 +19,7 @@
 This project is for Starlab RNN-compression which propose group-lowrank compression for RNN model,
 and it's implementation for training and testing lowrank and group-lowrank compression for RNN model
 
-2. How to run CTTP
+2. How to run RNN-compression
 
 IMPORTANT!
 - First, check if pytorch, pandas, numpy, scipy is installed
@@ -40,7 +40,7 @@ To run RNN-compression code in Linux
 
 3. Rebuilding source codes
 
-CTTP distribution includes the source code. You can modify the code and rebuild
+RNN-compression code package includes the source code. You can modify the code and rebuild
 the code. The source codes are in 'src' directory.
 To do a manual experiment, check the code in test_HAR.sh file to learn the usage
 of the test codes.
