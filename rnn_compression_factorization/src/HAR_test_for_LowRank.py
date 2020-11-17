@@ -159,9 +159,6 @@ def main():
                     epochs, np.mean(losses), time() - start))
             start = time()
         epochs += 1
-    print(
-        "Total Epoch {} cross_entropy {} ({} sec.)".format(
-            epochs, np.mean(losses), time() - start))
 
     # get test error
     model.eval()

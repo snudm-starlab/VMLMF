@@ -17,7 +17,7 @@ Module using implemented group GRU, LSTM cell as a building block for
 classifying activity from sensor data
 """
 
-from compressed_rnn import myGRU, myLSTM, myGRU2, myLSTM2, DeepConvLSTM, DeepConv
+from compressed_rnn import myGRU, myLSTM, DeepConvLSTM, DeepConv
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -160,9 +160,6 @@ def main():
                     epochs, np.mean(losses), time() - start))
             start = time()
         epochs += 1
-    print(
-        "Total Epoch {} cross_entropy {} ({} sec.)".format(
-            epochs, np.mean(losses), time() - start))
 
     # get test error
     model.eval()
