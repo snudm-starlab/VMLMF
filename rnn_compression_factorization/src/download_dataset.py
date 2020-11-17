@@ -13,6 +13,7 @@
 #
 ################################################################################
 # import copy
+# Code for downloading and extract Opportunity dataset and UCI HAR dataset
 import os
 from subprocess import call
 

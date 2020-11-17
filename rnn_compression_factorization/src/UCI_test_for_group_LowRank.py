@@ -77,7 +77,7 @@ torch.backends.cudnn.benchmark = False
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 
-
+# class for making final network
 class Net(nn.Module):
     def __init__(self, input_size, layer_sizes=[32, 32], wRank=None, uRanks=None, model=myGRU_group2):
         super(Net, self).__init__()

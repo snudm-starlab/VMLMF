@@ -12,6 +12,9 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
+# Code for preprocessing Opportunity dataset
+# Final output is (x, y) pair which is saved as numpy format
+
 import os
 import zipfile
 import argparse
