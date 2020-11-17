@@ -52,6 +52,8 @@ TIME_STEPS = 128
 RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
 RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
 
+# Code for setting random seed for reproduce
+# You can change seed number by setting seed = n
 cuda = torch.cuda.is_available()
 seed = 3
 

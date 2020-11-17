@@ -1,3 +1,17 @@
+################################################################################
+# Starlab RNN-compression with factorization method : Lowrank and group-lowrank rnn
+#
+# Author: Donghae Jang (jangdonghae@gmail.com), Seoul National University
+#         U Kang (ukang@snu.ac.kr), Seoul National University
+#
+# Version : 1.0
+# Date : Nov 10, 2020
+# Main Contact: Donghae Jang
+#
+# This software is free of charge under research purposes.
+# For commercial purposes, please contact the authors.
+#
+################################################################################
 """
 Module using implemented group GRU, LSTM cell as a building block for
 classifying activity from sensor data
@@ -49,6 +63,8 @@ TIME_STEPS = 128
 RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
 RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
 
+# Code for setting random seed for reproduce
+# You can change seed number by setting seed = n
 cuda = torch.cuda.is_available()
 seed = 3
 
