@@ -29,7 +29,7 @@ import argparse
 from time import time
 
 parser = argparse.ArgumentParser(description='PyTorch group GRU, LSTM testing')
-parser.add_argument('--lr', type=float, default=0.002,
+parser.add_argument('--lr', type=float, default=0.0002,
                     help='learning rate (default: 0.0002)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
