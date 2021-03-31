@@ -18,6 +18,8 @@ from torch.nn import Parameter, ParameterList
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+from compressed_lstm import myLSTM
+from compressed_gru import myGRU
 
 # Code for implementing DeepConvLSTM
 class DeepConvLSTM(nn.Module):
