@@ -59,7 +59,7 @@ class myLSTMCell(nn.Module):
         self.hidden_init = hidden_init
         self.wRank = wRank
         self.uRanks = uRanks
-        self.g=g
+        
 
         if wRank is None:
             self.W1 = nn.Parameter(
