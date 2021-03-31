@@ -1,4 +1,24 @@
 
+################################################################################
+# Starlab RNN-compression with factorization method : Lowrank and group-lowrank rnn
+#
+# Author: Donghae Jang (jangdonghae@gmail.com), Seoul National University
+#         U Kang (ukang@snu.ac.kr), Seoul National University
+#
+# Version : 1.0
+# Date : Nov 10, 2020
+# Main Contact: Donghae Jang
+#
+# This software is free of charge under research purposes.
+# For commercial purposes, please contact the authors.
+#
+################################################################################
+import torch
+from torch.nn import Parameter, ParameterList
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
 # Code for implementing DeepConvLSTM
 class DeepConvLSTM(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
