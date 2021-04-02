@@ -6,7 +6,7 @@
 #
 # Version : 1.0
 # Date : Nov 10, 2020
-# Main Contact: Donghae Jang
+# Main Contact: Hyojin Jeon
 #
 # This software is free of charge under research purposes.
 # For commercial purposes, please contact the authors.
@@ -147,7 +147,8 @@ class myLSTMCell(nn.Module):
         c_next = f * c + i * c_tilda
         h_next = o * torch.tanh(c_next)
         return h_next, c_next
-### 3. Group LSTM cell
+    
+### 2. Group LSTM cell
 class myLSTMGroupCell(nn.Module):
   
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None,g=2,recurrent_init=None,
@@ -281,7 +282,8 @@ class myLSTMGroupCell(nn.Module):
         h_next=self.shuffle(h_next) if self.isShuffle else h_next
         
         return h_next,c_next
-
+    
+###3. lstm network using both non-group/group lstm cells
 class myLSTM(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRanks=None, recurrent=False,cell=myLSTMCell,g=None,isShuffle=False, **kwargs):
