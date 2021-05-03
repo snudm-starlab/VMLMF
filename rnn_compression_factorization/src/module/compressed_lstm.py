@@ -1,7 +1,7 @@
 ################################################################################
 # Starlab RNN-compression with factorization method : Lowrank and group-lowrank rnn
 #
-# Author: Hyojin Jeon (tarahjjeon@gmail.com), Seoul National University
+# Author: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
 #
 # Version : 1.0
@@ -18,6 +18,77 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 
+
+
+### 0. Diagonal LSTM Cell
+class myDiagonalLSTMCell(nn.Module):
+    def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, recurrent_init=None,
+                 hidden_init=None,g=3,isShuffle=False,isdiagonal=True):
+        super(myDiagonalLSTMCell, self).__init__()
+        print("init diagonal cell __ use only diagonal elements")
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.recurrent_init = recurrent_init
+        self.hidden_init = hidden_init
+        self.wRank = wRank
+        self.uRanks = uRanks 
+        if type(self.uRanks) is list:
+            self.uRanks=uRanks[0]
+        self.g=g
+        self.cnt=0
+        unit_block=torch.zeros(int(self.hidden_size/self.g),int(self.hidden_size/self.g)).fill_(0.1321)
+        self.blockdiagonal_h_weight=torch.block_diag(unit_block,unit_block,unit_block) #diagonal block 3
+        self.diagonal_i_weight=torch.zeros(self.input_size,self.hidden_size).fill_diagonal_(0.1321) if isdiagonal else self.blockdiagonal_h_weight
+        self.diagonal_h_weight=torch.zeros(self.hidden_size,self.hidden_size).fill_diagonal_(0.1231) if isdiagonal else self.blockdiagonal_h_weight
+
+        self.W1 = nn.Parameter(self.diagonal_i_weight)
+        self.W2 = nn.Parameter(self.diagonal_i_weight)
+        self.W3 = nn.Parameter(self.diagonal_i_weight)
+        self.W4 = nn.Parameter(self.diagonal_i_weight)
+        
+        
+        self.U1 = nn.Parameter(self.diagonal_h_weight)
+        self.U2 = nn.Parameter(self.diagonal_h_weight)
+        self.U3 = nn.Parameter(self.diagonal_h_weight)
+        self.U4 = nn.Parameter(self.diagonal_h_weight)
+     
+        self.bias_f = nn.Parameter(torch.ones([1, hidden_size]))
+        self.bias_i = nn.Parameter(torch.ones([1, hidden_size]))
+        self.bias_c = nn.Parameter(torch.ones([1, hidden_size]))
+        self.bias_o = nn.Parameter(torch.ones([1, hidden_size]))
+
+        
+    def forward(self, x, hiddenStates,device):
+        (h, c) = hiddenStates
+        wVal1 = torch.dot(x.squeeze(), torch.diagonal(self.W1,0))
+        wVal2 = torch.dot(x.squeeze(), torch.diagonal(self.W2,0))
+        wVal3 = torch.dot(x.squeeze(), torch.diagonal(self.W3,0))
+        wVal4 = torch.dot(x.squeeze(), torch.diagonal(self.W4,0))
+       
+        uVal1 = torch.dot(h.squeeze(), torch.diagonal(self.U1,0))
+        uVal2 = torch.dot(h.squeeze(), torch.diagonal(self.U2,0))
+        uVal3 = torch.dot(h.squeeze(), torch.diagonal(self.U3,0))
+        uVal4 = torch.dot(h.squeeze(), torch.diagonal(self.U4,0))
+       
+        matVal_i = wVal1 + uVal1
+        matVal_f = wVal2 + uVal2
+        matVal_o = wVal3 + uVal3
+        matVal_c = wVal4 + uVal4
+
+        i = torch.sigmoid(matVal_i + self.bias_i)
+        f = torch.sigmoid(matVal_f + self.bias_f)
+        o = torch.sigmoid(matVal_o + self.bias_o)
+
+        c_tilda = torch.tanh(matVal_c + self.bias_c)
+
+        c_next = f * c + i * c_tilda
+        h_next = o * torch.tanh(c_next)
+        if self.cnt % 10000==0:
+            print(self.W1)
+            print("recurrent weights")
+            print(self.U1)
+        self.cnt+=1   
+        return h_next, c_next
 
 ### 1. Vanilla LSTM Cell (no group)
 class myLSTMCell(nn.Module):
@@ -62,7 +133,7 @@ class myLSTMCell(nn.Module):
         if type(self.uRanks) is list:
             self.uRanks=uRanks[0]
         self.g=g
-
+        self.cnt=0
         if wRank is None:
             self.W1 = nn.Parameter(
                 0.1 * torch.randn([input_size, hidden_size]))
@@ -146,9 +217,12 @@ class myLSTMCell(nn.Module):
 
         c_next = f * c + i * c_tilda
         h_next = o * torch.tanh(c_next)
+        self.cnt+=1
+
+        if self.cnt%100000==0:
+            print(self.U1)
         return h_next, c_next
-    
-### 2. Group LSTM cell
+### 3. Group LSTM cell
 class myLSTMGroupCell(nn.Module):
   
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None,g=2,recurrent_init=None,
@@ -162,23 +236,22 @@ class myLSTMGroupCell(nn.Module):
         self.uRanks = uRanks
         self.g=g
         self.isShuffle=isShuffle
-        
         W_row=input_size if wRank is None else wRank
         self.W=None if wRank is None else nn.Parameter(0.1*torch.randn([input_size,wRank]))
-        Ws=[]
+        
         #case: only when uRank is not none
         #Ws=[W_f,W_i,W_c,W_o]
-        for i in range(4): # of lstm cell gates
-            Ws.append(nn.Parameter(0.1*torch.randn([W_row,hidden_size])))
-        Ws=torch.cat(Ws)
-        
-        self.Ws=Ws.view(4,W_row,hidden_size)
-        self.Ug=[[] for i in range(g)] # U, UU, UUU, UUUU ... > weight for group 1,2,3,4,...
+        self.Ws=nn.ParameterList([nn.Parameter(0.1*torch.randn([W_row,hidden_size])) for _ in ["f","i","c","o"]])
+        self.Us=nn.ParameterList([nn.Parameter(0.1*torch.randn([g,int(hidden_size/g),urank])) for urank in uRanks]) # U, UU, UUU, UUUU ... > weight for group 1,2,3,4,...
+        self.Ugate=nn.ParameterList()
+        for g_idx in range(g):
+            self.Ugate.extend(nn.ParameterList([nn.Parameter(0.1*torch.randn([g,uRanks[g_idx],int(hidden_size/g)])) for _ in ["f","i","c","o"]]))
+        '''
         for idx,urank in enumerate(uRanks):
-            self.Ug[idx].append(nn.Parameter(0.1*torch.randn([g,int(hidden_size/g),uRanks[idx]])))
+            self.Ug[idx].append()
             for i in range(4): #f,i,c,o
                 self.Ug[idx].append(nn.Parameter(0.1*torch.randn([g,uRanks[idx],int(hidden_size/g)])))
-        
+        '''
         self.bias_f=nn.Parameter(torch.ones([1,hidden_size]))
         self.bias_i=nn.Parameter(torch.ones([1,hidden_size]))
         self.bias_c=nn.Parameter(torch.ones([1,hidden_size]))
@@ -199,13 +272,15 @@ class myLSTMGroupCell(nn.Module):
         
         uVal_f=0
         
-        for g_idx,groupWeight in enumerate(self.Ug):
-            #groupWeight=[U,U_f,U_i,U_c,U_o]
+        for g_idx in range(self.g):
+            g_gate=g_idx*4 #4:f,i,c,o
+            # Us=[] group 별 U
+            # groupWeight=[U_f,U_i,U_c,U_o]
             index=gidx_list[g_idx:]+gidx_list[0:g_idx]
             g_h=hview[:,index,:]
             g_h=torch.transpose(g_h,0,1)
-            g_h=torch.bmm(g_h,groupWeight[0].to(device))
-            uVal_f+=self.hiddenOperation(g_h,groupWeight[1].to(device),batch_size) if self.uRanks[g_idx] > 0 else 0
+            g_h=torch.bmm(g_h,self.Us[g_idx].to(device))
+            uVal_f+=self.hiddenOperation(g_h,self.Ugate[g_gate].to(device),batch_size) if self.uRanks[g_idx] > 0 else 0
         
         return torch.sigmoid(wVal_f+uVal_f+self.bias_f)
     
@@ -217,13 +292,13 @@ class myLSTMGroupCell(nn.Module):
         
         uVal_i=0
         
-        for g_idx,groupWeight in enumerate(self.Ug):
-            #groupWeight=[U,U_f,U_i,U_c,U_o]
+        for g_idx in range(self.g):
+            g_gate=g_idx*4 #4:f,i,c,o
             index=gidx_list[g_idx:]+gidx_list[0:g_idx]
             g_h=hview[:,index,:]
             g_h=torch.transpose(g_h,0,1)
-            g_h=torch.bmm(g_h,groupWeight[0].to(device))
-            uVal_i+=self.hiddenOperation(g_h,groupWeight[2].to(device),batch_size) if self.uRanks[g_idx] > 0 else 0
+            g_h=torch.bmm(g_h,self.Us[g_idx].to(device))
+            uVal_i+=self.hiddenOperation(g_h,self.Ugate[g_gate+1].to(device),batch_size) if self.uRanks[g_idx] > 0 else 0
         
         return torch.sigmoid(wVal_i+uVal_i+self.bias_i)
         
@@ -235,13 +310,14 @@ class myLSTMGroupCell(nn.Module):
 
         uVal_o=0
 
-        for g_idx,groupWeight in enumerate(self.Ug):
-            #groupWeight=[U,U_f,U_i,U_c,U_o]
+        for g_idx in range(self.g):
+            #groupWeight=[U_f,U_i,U_c,U_o]
             index=gidx_list[g_idx:]+gidx_list[0:g_idx]
+            g_gate=g_idx*4 #4:f,i,c,o
             g_h=hview[:,index,:]
             g_h=torch.transpose(g_h,0,1)
-            g_h=torch.bmm(g_h,groupWeight[0].to(device))
-            uVal_o+=self.hiddenOperation(g_h,groupWeight[3].to(device),batch_size) if self.uRanks[g_idx] > 0 else 0
+            g_h=torch.bmm(g_h,self.Us[g_idx].to(device))
+            uVal_o+=self.hiddenOperation(g_h,self.Ugate[g_gate+2].to(device),batch_size) if self.uRanks[g_idx] > 0 else 0
 
         return torch.sigmoid(wVal_o+uVal_o+self.bias_o)   
         
@@ -253,13 +329,14 @@ class myLSTMGroupCell(nn.Module):
         
         uVal_g=0
         
-        for g_idx,groupWeight in enumerate(self.Ug):
+        for g_idx in range(self.g):
             #groupWeight=[U,U_f,U_i,U_c,U_o]
             index=gidx_list[g_idx:]+gidx_list[0:g_idx]
+            g_gate=g_idx*4 #4:f,i,c,o
             g_h=hview[:,index,:]
             g_h=torch.transpose(g_h,0,1)
-            g_h=torch.bmm(g_h,groupWeight[0].to(device))
-            uVal_g+=self.hiddenOperation(g_h,groupWeight[4].to(device),batch_size) if self.uRanks[g_idx] > 0 else 0
+            g_h=torch.bmm(g_h,self.Us[g_idx].to(device))
+            uVal_g+=self.hiddenOperation(g_h,self.Ugate[g_gate+3].to(device),batch_size) if self.uRanks[g_idx] > 0 else 0
         
         return torch.tanh(wVal_g+uVal_g+self.bias_c)   
 
@@ -282,8 +359,7 @@ class myLSTMGroupCell(nn.Module):
         h_next=self.shuffle(h_next) if self.isShuffle else h_next
         
         return h_next,c_next
-    
-###3. lstm network using both non-group/group lstm cells
+
 class myLSTM(nn.Module):
     def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True, recurrent_inits=None,
                  hidden_inits=None, wRank=None, uRanks=None, recurrent=False,cell=myLSTMCell,g=None,isShuffle=False, **kwargs):
@@ -351,6 +427,8 @@ class myLSTM(nn.Module):
             # x=torch.cat(outputs, -1)
             hiddens.append(h)
             i = i + 1
+
+        return x, torch.cat(hiddens, -1)
 
         return x, torch.cat(hiddens, -1)
 
