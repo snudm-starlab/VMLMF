@@ -57,18 +57,18 @@ class myDiagonalLSTMCell(nn.Module):
         self.bias_c = nn.Parameter(torch.ones([1, hidden_size]))
         self.bias_o = nn.Parameter(torch.ones([1, hidden_size]))
 
-        
+ 
     def forward(self, x, hiddenStates,device):
         (h, c) = hiddenStates
-        wVal1 = torch.dot(x.squeeze(), torch.diagonal(self.W1,0))
-        wVal2 = torch.dot(x.squeeze(), torch.diagonal(self.W2,0))
-        wVal3 = torch.dot(x.squeeze(), torch.diagonal(self.W3,0))
-        wVal4 = torch.dot(x.squeeze(), torch.diagonal(self.W4,0))
+        wVal1 = x.squeeze()*torch.diagonal(self.W1,0)
+        wVal2 = x.squeeze()*torch.diagonal(self.W2,0)
+        wVal3 = x.squeeze()*torch.diagonal(self.W3,0)
+        wVal4 = x.squeeze()*torch.diagonal(self.W4,0)
        
-        uVal1 = torch.dot(h.squeeze(), torch.diagonal(self.U1,0))
-        uVal2 = torch.dot(h.squeeze(), torch.diagonal(self.U2,0))
-        uVal3 = torch.dot(h.squeeze(), torch.diagonal(self.U3,0))
-        uVal4 = torch.dot(h.squeeze(), torch.diagonal(self.U4,0))
+        uVal1 = x.squeeze()*torch.diagonal(self.U1,0)
+        uVal2 = x.squeeze()*torch.diagonal(self.U2,0)
+        uVal3 = x.squeeze()*torch.diagonal(self.U3,0)
+        uVal4 = x.squeeze()*torch.diagonal(self.U4,0)
        
         matVal_i = wVal1 + uVal1
         matVal_f = wVal2 + uVal2
