@@ -18,6 +18,67 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 
+#MV_LMF LSTM cell
+class myDualDiagonalLSTMCell(nn.Module):
+    def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, recurrent_init=None,isMask=False,isBand=True,
+                 hidden_init=None,g=3,isShuffle=False,isdiagonal=True, initdiagonal=0.1111,zerodiagonal=False): #if isdiagonal: unblock diagonal else block diagonal // if zerodiagonal: change diagonal to zero when LMF
+        super(myDualDiagonalLSTMCell, self).__init__()
+        print("init diagonal cell __ diagonal elementwise multiplication and lowrank factorization with off diagonal elements")
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.recurrent_init = recurrent_init
+        self.hidden_init = hidden_init
+        self.wRank = wRank
+        self.uRanks = uRanks 
+       
+        self.cnt=0
+        
+        if self.wRank is not None:
+            self.W = nn.Parameter(0.1 * torch.randn([input_size, wRank]))
+        if self.uRanks is not None:
+            self.U = nn.Parameter(0.1 * torch.randn([hidden_size, uRanks]))
+
+        wrow=self.input_size if self.wRank is None else self.wRank
+        urow=self.hidden_size if self.uRanks is None else self.uRanks
+
+        self.Ws=nn.ParameterList([nn.Parameter(0.1*torch.randn([wrow,hidden_size])) for _ in ["f","i","c","o"]])
+        self.Us=nn.ParameterList([nn.Parameter(0.1 * torch.randn([urow, hidden_size])) for _ in ["f","i","c","o"]])
+        self.biases=nn.ParameterList([nn.Parameter(torch.ones([1,hidden_size])) for _ in ["f","i","c","o"]])
+
+
+    def forward(self, x, hiddenStates,device):
+        #step 01. diagonal elements vetor * x vector element-wise multiplication
+        #step 02. offdiagonal elements low rank approximation * x vector multiplication
+        #step 03. add 2 vectors from previous process
+        (h, c) = hiddenStates
+        batch_size=h.shape[0]
+        
+        paddingTensor=torch.zeros([batch_size,self.hidden_size-self.input_size]).to(device) if self.hidden_size-self.input_size else None
+     
+        output_of={}
+        for idx,gate in enumerate(['forget','input','gate','output']):
+            
+            W=self.Ws[idx] if self.wRank is None else torch.matmul(self.W, self.Ws[idx])
+            U=self.Us[idx] if self.uRanks is None else torch.matmul(self.U, self.Us[idx])
+
+            #input calculation
+            input_dia_mul=torch.cat([torch.diagonal(W,0)*x.squeeze(),paddingTensor],dim=1) if paddingTensor is not None else torch.diagonal(W,0)*x.squeeze()
+            input_lmf_mul=torch.matmul(x,W) 
+
+            #hidden state calculation
+            hstate_dia_mul=torch.diagonal(U,0)*h.squeeze()
+            hstate_lmf_mul=torch.matmul(h, U)
+
+            unactivated_output=input_dia_mul+input_lmf_mul+hstate_dia_mul+hstate_lmf_mul+self.biases[idx]
+            activated_output=torch.sigmoid(unactivated_output) if gate is not 'gate' else torch.tanh(unactivated_output)
+            
+            output_of[gate]=activated_output
+
+        c_next = output_of['forget'] * c + output_of['input'] * output_of['gate']
+        h_next = output_of['output']* torch.tanh(c_next)
+        
+        self.cnt+=1  
+        return h_next, c_next
 
 
 ### 0. Diagonal LSTM Cell
