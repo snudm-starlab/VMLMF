@@ -7,9 +7,9 @@ def print_model_parm_nums(model):
     modelparams=sum(p.numel() for p in model.parameters())
     print(" + Number of params:{:.2f}K".format(modelparams/1e3))
 
-def print_model_parm_flops(model,seq_len,batch_size): #model:Net, maxsteps:args.max_steps, batch_size:args.batch_size
+def print_model_parm_flops(model,seq_len,batch_size): 
     total_ops=count_lstm(model,seq_len,batch_size)
-    total_ops+=count_linear(model,10) #linear의 iN_FEATURES,OUTFEATURE
+    total_ops+=count_linear(model,10) #10: # of OUTFEATURE in linear layer
     print("  + Number of FLOPs: {:.2f}M".format(total_ops / 1e6))
     print(total_ops)
 
