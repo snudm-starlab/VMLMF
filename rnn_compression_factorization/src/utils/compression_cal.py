@@ -25,12 +25,17 @@ def print_model_parm_names(model):
 def _count_lstm_cell(input_size,hidden_size,wRank=None,uRank=None,bias=True):
     
     total_ops=0
+
+    #vector-vector multiplication
+    input_dia_ops  = input_size+hidden_size
+    hidden_dia_ops = hidden_sizse + hidden_size
+
     input_ops=input_size*hidden_size if wRank is None else (input_size+hidden_size)*wRank
     hidden_ops=hidden_size*hidden_size if uRank is None else (hidden_size*2)*uRank
-    state_ops=input_ops+hidden_ops+hidden_size
+    state_ops=input_ops+hidden_ops+hidden_size + input_dia_ops + hidden_dia_ops
     
     if bias:
-        state_ops+=hidden_size*2
+        state_ops+=hidden_size
     total_ops+=state_ops*4
 
     #hadamard addition (f*c + i*g )
