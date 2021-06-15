@@ -28,7 +28,7 @@ def _count_lstm_cell(input_size,hidden_size,wRank=None,uRank=None,bias=True):
 
     #vector-vector multiplication
     input_dia_ops  = input_size+hidden_size
-    hidden_dia_ops = hidden_sizse + hidden_size
+    hidden_dia_ops = hidden_size + hidden_size
 
     input_ops=input_size*hidden_size if wRank is None else (input_size+hidden_size)*wRank
     hidden_ops=hidden_size*hidden_size if uRank is None else (hidden_size*2)*uRank
