@@ -9,7 +9,7 @@ certifi==2020.12.5
 cffi==1.14.5
 chardet==4.0.0
 cycler==0.10.0
-dataclasses @ file:///tmp/build/80754af9/dataclasses_1614363715916/work
+
 decorator==4.4.2
 defusedxml==0.7.1
 entrypoints==0.3
@@ -47,7 +47,7 @@ pandocfilters==1.4.3
 parso==0.8.1
 pexpect==4.8.0
 pickleshare==0.7.5
-Pillow @ file:///tmp/build/80754af9/pillow_1615224027575/work
+
 prometheus-client==0.9.0
 prompt-toolkit==3.0.17
 protobuf==3.14.0
@@ -66,7 +66,7 @@ scikit-learn==0.24.1
 scipy==1.5.4
 seaborn==0.11.1
 Send2Trash==1.5.0
-six @ file:///home/linux1/recipes/ci/six_1610970791821/work
+
 tensorboard==1.6.0
 tensorflow-gpu @ https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.6.0-cp36-cp36m-linux_x86_64.whl
 termcolor==1.1.0
@@ -79,7 +79,7 @@ torchvision==0.9.0
 tornado==6.1
 tqdm==4.61.1
 traitlets==4.3.3
-typing-extensions @ file:///home/ktietz/src/ci_mi/typing_extensions_1612808209620/work
+
 urllib3==1.26.6
 wcwidth==0.2.5
 Werkzeug==1.0.1
