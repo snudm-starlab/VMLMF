@@ -86,7 +86,7 @@ torch.backends.cudnn.benchmark = False
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 torch.autograd.set_detect_anomaly(True)
-
+np.random.seed(seed)
 
 def main():
 
