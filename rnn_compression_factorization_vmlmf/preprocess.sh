@@ -1,7 +1,7 @@
 #!/bin/sh
 
-python ./src/download_dataset.py
 mkdir ./src/data/smalldata
+python ./src/download_dataset.py
 mv "OpportunityUCIDataset.zip"  ./src/data/smalldata
 mv "UCI HAR Dataset.zip" ./src/data
 mv "UCI HAR Dataset" ./src/data
