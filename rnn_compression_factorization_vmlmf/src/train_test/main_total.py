@@ -6,8 +6,6 @@ import os
 os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 
 from models.compressed_lstm import *
-### 0711 revised
-from models.compressed_lstm_revised import *
 
 from utils.compression_cal import *
 from utils.save_load import *
@@ -111,20 +109,13 @@ def main():
     train_data, test_data = HAR_dataloader(args.batch_size) if args.data.lower() == "opp" else UCI_dataloader(args.batch_size)
     set_seed(args.seed)
     input_size=77 if args.data.lower()=="opp" else 9
-    if args.model.lower()=="vmmodel_neo":
-        model = Net(input_size, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
-                model=myLSTM,cell=myVMLSTMCell_NEO3) 
-    elif args.model.lower()=="vmmodel":
+    
+    if args.model.lower()=="vmmodel":
         model = Net(input_size, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
                 model=myLSTM,cell=myVMLSTMCell_NEO3) 
     elif args.model.lower()=="vmmodel_final":
         model = Net(input_size, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
                 model=myLSTM,cell=myVMLSTMCELL_NEO_final) 
-    elif args.model.lower()=="vmmodel_unrevised":
-        model = Net(input_size, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
-                model=myLSTM,cell=myVMLSTMCell_NEO5) 
-    elif args.model.lower()=="vmmodel_0711":
-        model = Model(input_size, layer_sizes=args.layer_sizes, dropout=0,wRank=args.wRank, uRanks=args.uRanks)
     elif args.model.lower() =="mylstm":
         model = Net(input_size, layer_sizes=args.layer_sizes,model=myLSTM,cell=myLSTMCell) 
     else:
