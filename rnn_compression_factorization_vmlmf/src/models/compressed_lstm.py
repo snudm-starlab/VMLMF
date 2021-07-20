@@ -24,102 +24,73 @@ import ctypes
 import time
 
 torch.autograd.set_detect_anomaly(True)
-
-class myVMLSTMCell_NEO_faster(nn.Module): 
+class myVMLSTMCELL_NEO_final(nn.Module): 
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, recurrent_init=None,
                  hidden_init=None): 
-        super(myVMLSTMCell_NEO_faster, self).__init__()
+        super(myVMLSTMCELL_NEO_final, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
-        self.recurrent_init = recurrent_init
-        self.hidden_init = hidden_init
-        self.wRank = wRank
-        self.uRanks = uRanks
-    
-        
-        if self.wRank is not None:
-            self.Wu= nn.Parameter(0.1 * torch.randn([input_size, wRank]))
-        if self.uRanks is not None:
-            self.Uu= nn.Parameter(0.1 * torch.randn([hidden_size,uRanks]))
+        #self.dropout = dropout
 
-        wrow = self.input_size if self.wRank is None else self.wRank
-        urow = self.hidden_size if self.uRanks is None else self.uRanks
+        self.wRank=wRank
+        self.uRanks=uRanks
 
-        self.W_dia_vec = nn.Parameter(0.1*torch.randn([1,input_size]))
-        self.U_dia_vec = nn.Parameter(0.1*torch.randn([1,hidden_size]))
+        #U in LMF
+        self.U_x=nn.Parameter(0.1 * torch.randn([input_size,wRank]))
+        self.U_h=nn.Parameter(0.1 * torch.randn([hidden_size,uRanks]))
 
-        # forget gate
-        self.Wf = nn.Parameter(0.1 * torch.randn([wrow, hidden_size]))
-        self.Uf = nn.Parameter(0.1 * torch.randn([urow, hidden_size]))
-        self.bias_f = nn.Parameter(torch.ones([1, hidden_size]))
-        # input gate
-        self.Wi = nn.Parameter(0.1 * torch.randn([wrow, hidden_size]))
-        self.Ui = nn.Parameter(0.1 * torch.randn([urow, hidden_size]))
-        self.bias_i = nn.Parameter(torch.ones([1, hidden_size]))
-        # cell gate
-        self.Wc = nn.Parameter(0.1 * torch.randn([wrow, hidden_size]))
-        self.Uc = nn.Parameter(0.1 * torch.randn([urow, hidden_size]))
-        self.bias_c = nn.Parameter(torch.ones([1, hidden_size]))
-        # output gate
-        self.Wo = nn.Parameter(0.1 * torch.randn([wrow, hidden_size]))
-        self.Uo = nn.Parameter(0.1 * torch.randn([urow, hidden_size]))
-        self.bias_o = nn.Parameter(torch.ones([1, hidden_size]))
-        #diagonal_vector
-        self.dia_w=0;self.dia_u=0
-        #LMF for right
-        self.ux=0
-        self.uh=0
-        #navigator
-        self.cnt=0      
+        #V in LMF
+        self.V_x = nn.Parameter(0.1 * torch.randn([4 * hidden_size, wRank]))
+        self.V_h = nn.Parameter(0.1 * torch.randn([4 * hidden_size, uRanks]))
 
-    def gate_operation(self, x, h,wv,uv, b,padding=None):
-        
-        ### vector elementwise-multiplication   
-        #x_state_dia = torch.cat([w_dia * x.squeeze(), padding],dim=1) if padding is not None else w_dia * x.squeeze()  
-        #h_state_dia = u_dia * h.squeeze()
-        x_state_dia=self.dia_w
-        h_state_dia=self.dia_u
+        #bias
+        self.b_x = nn.Parameter(0.1 * torch.randn([4 * hidden_size]))
+        self.b_h = nn.Parameter(0.1 * torch.randn([4 * hidden_size]))
 
-        ###LMF
-        #x_state=torch.matmul(torch.matmul(x,wu),wv)
-        #h_state=torch.matmul(torch.matmul(h,uu),uv)
-        x_state=torch.matmul(self.ux,wv)
-        h_state=torch.matmul(self.uh,uv)
+        #diagonal vector
+        self.dia_x=nn.Parameter(0.1 * torch.randn([1,input_size]))
+        self.dia_h=nn.Parameter(0.1 * torch.randn([1,hidden_size]))
 
-        #avoid diagonal_over-calculated 
-        #print("uv shape",uv.shape,wv.shape)
-        # print(x.shape, h.shape)
-        # print(torch.sum((wu*wv[:,self.input_size].T),dim=1).shape)
-        result_w=x*(torch.sum((self.Wu*wv[:,:self.input_size].T),dim=1))
-        result_u=h*(torch.sum((self.Uu*uv.T),dim=1))
-        # print("0--->", result_w.shape)
-        result_w=torch.cat([result_w,padding],dim=1) if padding is not None else result_w
-        if self.cnt==0:
-            print("x_state_dia {}+ x_state {}+ h_state_dia {}+ h_state {}+ b{} -results_u {}-results_w{}".format(x_state_dia.shape, x_state.shape, h_state_dia.shape,h_state.shape, b.shape,result_u.shape,result_w.shape))
-            self.cnt+=1
-        return x_state_dia+ x_state + h_state_dia + h_state + b - result_w - result_u
+        #save navigator
+        self.cnt=0
 
-    def forward(self, x, hidden_states, device):
+    def __repr__(self):
+        return "LSTM_FINAL(input: {}, hidden: {}, wRank: {}, uRanks: {})".format(self.input_size, self.hidden_size,self.wRank,self.uRanks)
+    def forward(self, x, hidden_states,device):
         # step 01. diagonal elements vector * x vector element-wise multiplication
         # step 02. off diagonal elements low rank approximation * x vector multiplication
         # step 03. add 2 vectors from previous process
+        dev = next(self.parameters()).device
+
         (h, c) = hidden_states
-        batch_size = h.shape[0]
-        paddingTensor = torch.zeros([batch_size, self.hidden_size - self.input_size]).to(
-        device) if self.hidden_size - self.input_size >0 else None
-        
-        self.dia_w=torch.cat([self.W_dia_vec * x.squeeze(), paddingTensor],dim=1) if paddingTensor is not None else self.W_dia_vec * x.squeeze()
-        self.dia_u=self.U_dia_vec * h.squeeze()
-        
-        self.ux=torch.matmul(x,self.Wu)
-        self.uh=torch.matmul(h,self.Uu)
+        #save vm - redundant values
+        vm_refined_x=torch.zeros(x.shape[0],4*self.hidden_size,device=dev)
+        vm_refined_h=torch.zeros(x.shape[0],4*self.hidden_size,device=dev)
 
-        c_next = torch.sigmoid(self.gate_operation(x, h,self.Wf, self.Uf,self.bias_f,paddingTensor)) * c + torch.sigmoid(
-            self.gate_operation(x, h, self.Wi, self.Ui, self.bias_i, paddingTensor)) * torch.tanh(
-            self.gate_operation(x, h, self.Wc, self.Uc, self.bias_c,paddingTensor))
-        h_next = torch.sigmoid(self.gate_operation(x, h, self.Wo, self.Uo, self.bias_o, paddingTensor)) * torch.tanh(c_next)
+        #vm (for all 4 gates)
+        vm_x=torch.cat([self.dia_x*x.squeeze(),torch.zeros([h.shape[0],self.hidden_size-self.input_size],device=dev)],dim=1) if self.hidden_size>=self.input_size else None
+        vm_h=self.dia_h*h.squeeze()
+        """vm_x=torch.cat([vm_x for _ in range(4)],dim=1)
+        vm_h=torch.cat([vm_h for _ in range(4)],dim=1)"""
+       
+        #lmf
+        lowered_x=torch.matmul(torch.matmul(x,self.U_x),self.V_x.t())
+        lowered_h=torch.matmul(torch.matmul(h,self.U_h),self.V_h.t())
 
+        for gate_idx in range(0,4*self.hidden_size,self.hidden_size):
+            vm_refined_x[:,gate_idx:gate_idx+self.input_size]=x*torch.sum((self.U_x*self.V_x[gate_idx:gate_idx+self.input_size,:]),dim=1)
+            vm_refined_h[:,gate_idx:gate_idx+self.hidden_size]=h*torch.sum((self.U_h*self.V_h[gate_idx:gate_idx+self.hidden_size,:]),dim=1)
+        gx=lowered_x-vm_refined_x+self.b_x
+        gh=lowered_h-vm_refined_h+self.b_h
+        xi, xf, xo, xn = gx.chunk(4, 1)
+        hi, hf, ho, hn = gh.chunk(4, 1)
         
+        inputgate = torch.sigmoid(xi + hi+vm_x+vm_h)
+        forgetgate = torch.sigmoid(xf + hf+vm_x+vm_h)
+        outputgate = torch.sigmoid(xo + ho+vm_x+vm_h)
+        newgate = torch.tanh(xn + hn+vm_x+vm_h)
+        c_next = forgetgate * c + inputgate * newgate
+        h_next = outputgate * torch.tanh(c_next)
         return h_next, c_next
 ### 1. VM LMF LSTM Cell 
 class myVMLSTMCell_NEO3(nn.Module): 
