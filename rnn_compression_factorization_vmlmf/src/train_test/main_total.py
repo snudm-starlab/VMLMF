@@ -82,7 +82,7 @@ torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 random.seed(seed)
 np.random.seed(seed)
-torch.autograd.set_detect_anomaly(True)
+torch.autograd.set_detect_anomaly(False)
 gpu_id=args.gpu_id
 device='cuda:{}'.format(gpu_id)
 
