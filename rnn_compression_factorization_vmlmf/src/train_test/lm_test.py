@@ -1,10 +1,13 @@
+import sys
+sys.path.append('./')
+
 import numpy as np
 import torch
 import torch.nn as nn
 
 import timeit
 import argparse
-from lm_model import Model
+from models.lm_model import Model
 
 #Command line arguments parser. Described as in their 'help' sections.
 parser = argparse.ArgumentParser(description="Replication of Zaremba et al. (2014). \n https://arxiv.org/abs/1409.2329")
