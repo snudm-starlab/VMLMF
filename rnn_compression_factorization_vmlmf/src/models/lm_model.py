@@ -73,6 +73,112 @@ class myHMD(nn.Module):
         return torch.stack(outputs), (h, c)
 
 
+class myVMLSTM_Group(nn.Module):
+    def __init__(self, input_size, hidden_size, dropout = 0, winit = 0.1,wRank=None,uRanks=None,device=None,g=2):
+        super().__init__()
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.dropout = dropout
+        self.g=g
+
+        self.wRank=wRank
+        self.uRanks=uRanks
+
+        #In-Hid in LMF
+        self.U_x=nn.Parameter(torch.Tensor(input_size,wRank))
+        self.W_x = nn.Parameter(torch.Tensor(4 * hidden_size, wRank))
+        #Hid-Hid in group_LMF
+        self.U_h = nn.ParameterList([nn.Parameter(torch.Tensor(g,int(hidden_size/g),uRanks[g_idx])) for g_idx in range(self.g)])
+        self.V_h = nn.ParameterList([ nn.Parameter(torch.Tensor(g,uRanks[g_idx],4 * int(hidden_size/g))) for g_idx in range(self.g)])
+
+        #bias
+        self.b_x = nn.Parameter(torch.Tensor(4 * hidden_size))
+        self.b_h = nn.Parameter(torch.Tensor(4 * hidden_size))
+
+        #diagonal vector
+        self.dia_x=nn.Parameter(torch.Tensor(1,input_size))
+        self.dia_h=nn.Parameter(torch.Tensor(1,hidden_size))
+        self.cnt=0
+
+    def __repr__(self):
+        return "LSTM(input: {}, hidden: {})".format(self.input_size, self.hidden_size)
+
+    def lstm_step(self, x, h, c, W_x, V_h, b_x, b_h):
+        dev = next(self.parameters()).device
+        
+        #save vm - redundant values
+        vm_refined_x=torch.zeros(40,4*self.hidden_size,device=dev)
+        vm_refined_h=torch.zeros(40,4*self.hidden_size,device=dev)
+       
+        #vm (for all 4 gates)
+        vm_x=self.dia_x*x.squeeze()
+        vm_h=self.dia_h*h.squeeze()
+        #print(f"h shape:{h.shape}")
+        vm_x=torch.cat([vm_x for _ in range(4)],dim=1)
+        vm_h=torch.cat([vm_h for _ in range(4)],dim=1)
+        
+        lowered_x=torch.matmul(torch.matmul(x,self.U_x),self.W_x.t())
+        #lowered_h=torch.matmul(torch.matmul(h,self.U_h),self.W_h.t())
+        
+        batch_size=h.shape[0]
+        index=list(range(self.g))
+        for partial_h in range(self.g):
+            h_top=h.view(-1,self.g,int(self.hidden_size/self.g))
+            index=index[1:]+index[0:1] if partial_h>0 else index
+            h_top=h_top[:,index,:] if partial_h > 0 else h_top
+            h_top=torch.transpose(h_top,0,1) 
+
+            U_dia=self.U_h[partial_h]
+            V_dia=self.V_h[partial_h]
+            h_top=torch.bmm(h_top,U_dia)
+
+            h_top=torch.bmm(h_top,V_dia)
+            h_top=torch.transpose(h_top,0,1)
+            h_top=h_top.contiguous().view(-1,self.hidden_size*4)
+            lowered_h=h_top if partial_h==0 else h_top + lowered_h
+
+        
+
+
+        
+        #cal redundant values
+        hidden_size=self.hidden_size
+        input_size=self.input_size
+        re_Uh=self.U_h[0].view(self.hidden_size,self.uRanks[0])
+        re_Vh=torch.transpose(self.V_h[0],1,2).contiguous().view(4*self.hidden_size,self.uRanks[0])
+        
+        for gate_idx in range(0,4*hidden_size,hidden_size):
+            temp=torch.sum((self.U_x*self.W_x[gate_idx:gate_idx+input_size,:]),dim=1)
+            #print(f"vm_refined_x: {vm_refined_x.shape} temp:{temp.shape}/x.shape {x.shape}")
+            vm_refined_x[:,gate_idx:gate_idx+input_size]=x*torch.sum((self.U_x*self.W_x[gate_idx:gate_idx+input_size,:]),dim=1)
+            vm_refined_h[:,gate_idx:gate_idx+hidden_size]=h*torch.sum((re_Uh*re_Vh[gate_idx:gate_idx+hidden_size,:]),dim=1)
+        gx=vm_x+lowered_x-vm_refined_x+self.b_x
+        gh=vm_h+lowered_h-vm_refined_h+self.b_h
+            
+
+        #total
+        xi, xf, xo, xn = gx.squeeze().chunk(4, 1)
+        hi, hf, ho, hn = gh.chunk(4, 1)
+    
+        inputgate = torch.sigmoid(xi + hi)
+        forgetgate = torch.sigmoid(xf + hf)
+        outputgate = torch.sigmoid(xo + ho)
+        newgate = torch.tanh(xn + hn)
+        c = forgetgate * c + inputgate * newgate
+        h = outputgate * torch.tanh(c)
+        
+        return h, c
+
+    #Takes input tensor x with dimensions: [T, B, X].
+    def forward(self, x, states):
+        h, c = states
+        outputs = []
+        inputs = x.unbind(0)
+        for x_t in inputs:
+            h, c = self.lstm_step(x_t, h, c, self.W_x, self.V_h, self.b_x, self.b_h)
+            outputs.append(h)
+        return torch.stack(outputs), (h, c)
+    
 ######## <End of custom vmlmf lstm model code > ############
 
 class myVMLSTM(nn.Module):
