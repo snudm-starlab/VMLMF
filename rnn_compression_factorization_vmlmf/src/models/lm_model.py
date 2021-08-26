@@ -342,7 +342,7 @@ class Model(nn.Module):
         self.lstm_type = lstm_type
         self.embed = Embed(vocab_size, hidden_size)
         
-        if uRanks is not None and type(uRanks) is not list:
+        if uRanks is not None and lstm_type !="vm_group":
             uRanks=uRanks[-1]
         
         if lstm_type =="hmd":
