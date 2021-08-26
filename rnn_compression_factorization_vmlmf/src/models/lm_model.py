@@ -346,6 +346,9 @@ class Model(nn.Module):
         if lstm_type =="hmd":
             self.rnns=[myHMD(hidden_size, hidden_size,rich_rank=wRank,sparse_rank=uRanks,device=device) for i in range(layer_num)]
             self.rnns = nn.ModuleList(self.rnns)
+        elif lstm_type == "vmgroup":
+            self.rnns = [myVMLSTM_Group(hidden_size, hidden_size,wRank=wRank,uRanks=uRanks,device=device) for i in range(layer_num)]
+            self.rnns = nn.ModuleList(self.rnns)
         elif lstm_type!="vmlmf":
             self.rnns = [LSTM(hidden_size, hidden_size) if lstm_type == "custom" else nn.LSTM(hidden_size, hidden_size) for i in range(layer_num)]
             self.rnns = nn.ModuleList(self.rnns)
@@ -363,7 +366,7 @@ class Model(nn.Module):
             
     def state_init(self, batch_size):
         dev = next(self.parameters()).device
-        states = [(torch.zeros(batch_size, layer.hidden_size, device = dev), torch.zeros(batch_size, layer.hidden_size, device = dev)) if self.lstm_type == "custom" or self.lstm_type =="vmlmf" or self.lstm_type == "hmd"
+        states = [(torch.zeros(batch_size, layer.hidden_size, device = dev), torch.zeros(batch_size, layer.hidden_size, device = dev)) if self.lstm_type == "custom" or self.lstm_type =="vmlmf" or self.lstm_type == "vmgroup" or self.lstm_type == "hmd"
                   else (torch.zeros(1, batch_size, layer.hidden_size, device = dev), torch.zeros(1, batch_size, layer.hidden_size, device = dev)) for layer in self.rnns]
         return states
     
