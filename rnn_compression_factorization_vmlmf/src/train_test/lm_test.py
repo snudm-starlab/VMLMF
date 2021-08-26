@@ -13,7 +13,7 @@ from models.lm_model import Model
 parser = argparse.ArgumentParser(description="Replication of Zaremba et al. (2014). \n https://arxiv.org/abs/1409.2329")
 parser.add_argument("--layer_num", type=int, default=2, help="The number of LSTM layers the model has.")
 parser.add_argument("--hidden_size", type=int, default=650, help="The number of hidden units per layer.")
-parser.add_argument("--lstm_type", type=str, choices=["pytorch","custom","vmlmf"], default="pytorch", help="Which implementation of LSTM to use."
+parser.add_argument("--lstm_type", type=str, choices=["pytorch","custom","vmlmf","vm_group"], default="pytorch", help="Which implementation of LSTM to use."
                     + "Note that 'pytorch' is about 2 times faster.")
 parser.add_argument("--dropout", type=float, default=0.5, help="The dropout parameter.")
 parser.add_argument("--winit", type=float, default=0.05, help="The weight initialization parameter.")
@@ -28,7 +28,7 @@ parser.add_argument("--device", type=str, choices = ["cpu", "gpu"], default = "g
                     + "On default falls back to gpu if one exists, falls back to cpu otherwise.")
 parser.add_argument("--gpu_id", type=int, default=0, help="gpu_id")
 parser.add_argument("--wRank", type=int, default=300, help="wRank of vmlmf.")
-parser.add_argument("--uRanks", type=int, default=300, help="uRank of vmlmf.")
+parser.add_argument("--uRanks", type=int,nargs="+", default=300, help="uRank of vmlmf.")
 args = parser.parse_args()
 
 def setdevice():
