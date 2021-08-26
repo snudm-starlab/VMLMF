@@ -342,6 +342,8 @@ class Model(nn.Module):
         self.lstm_type = lstm_type
         self.embed = Embed(vocab_size, hidden_size)
         
+        if uRanks is not None and type(uRanks) is not list:
+            uRanks=uRanks[-1]
         
         if lstm_type =="hmd":
             self.rnns=[myHMD(hidden_size, hidden_size,rich_rank=wRank,sparse_rank=uRanks,device=device) for i in range(layer_num)]
