@@ -1,11 +1,15 @@
 ################################################################################
-# Starlab RNN-compression with factorization method : Lowrank Factorization with vector-multiplication
+# [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
+# Project: Starlab 
 #
-# Author: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
+# Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
 #
+# File: test.py
+# - test file for test VMLMF in Human Activity Recognition
+#
 # Version : 1.0
-# Date : Jul 08, 2021
+# Date : Oct 14, 2021
 # Main Contact: Hyojin Jeon
 #
 # This software is free of charge under research purposes.
@@ -14,6 +18,20 @@
 ################################################################################
 import torch
 def test(model,test_data,cuda,device):
+    """
+    test trained model with test data
+    @param model
+        model to test
+    @param test_data
+        test_data loader
+    @param args
+        arguments user decided
+    @param cuda
+        whether cuda is availabel
+    @param device
+        device user uses
+    @return trained model
+    """
     # get test error
     print("test the model")
     model.eval()

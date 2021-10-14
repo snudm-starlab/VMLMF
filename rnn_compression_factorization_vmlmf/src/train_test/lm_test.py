@@ -1,3 +1,23 @@
+################################################################################
+# [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
+# Project: Starlab 
+#
+# Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
+#         U Kang (ukang@snu.ac.kr), Seoul National University
+#
+# File: lm_test.py
+# - Test VMLMF in language modeling
+#
+# Version : 1.0
+# Date : Oct 14, 2021
+# Main Contact: Hyojin Jeon
+#
+# This software is free of charge under research purposes.
+# For commercial purposes, please contact the authors.
+# reference: https://github.com/ahmetumutdurmus/zaremba
+################################################################################
+
+
 import sys
 sys.path.append('./')
 
@@ -7,7 +27,7 @@ import torch.nn as nn
 
 import timeit
 import argparse
-from models.lm_model import Model
+from models.vmlmf_lm import Model
 
 #Command line arguments parser. Described as in their 'help' sections.
 parser = argparse.ArgumentParser(description="Replication of Zaremba et al. (2014). \n https://arxiv.org/abs/1409.2329")

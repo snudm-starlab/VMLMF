@@ -1,11 +1,15 @@
 ################################################################################
-# Starlab RNN-compression with factorization method : Lowrank Factorization with vector-multiplication
+# [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
+# Project: Starlab 
 #
-# Author: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
+# Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
 #
+# File: train.py
+# - train file for test VMLMF in Human Activity Recognition
+#
 # Version : 1.0
-# Date : Jul 08, 2021
+# Date : Oct 14, 2021
 # Main Contact: Hyojin Jeon
 #
 # This software is free of charge under research purposes.
@@ -20,9 +24,21 @@ import numpy as np
 
 
 def train(model,train_data,args,cuda,device):
+    """
+    train model with train data
+    @param model
+        model to train
+    @param train_data
+        train_data loader
+    @param args
+        arguments user decided
+    @param cuda
+        whether cuda is availabel
+    @param device
+        device user uses
+    @return trained model
+    """
     
-    #if cuda:
-    #    print("training with cuda ")
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # Train the model
     model.train()
@@ -47,8 +63,7 @@ def train(model,train_data,args,cuda,device):
 
             if step % args.log_iteration == 0 and args.log_iteration != -1:
                 print(
-                    "\tStep {} cross_entropy {}".format(
-                        step, np.mean(losses)))
+                    "\tStep {} cross_entropy {}".format(step, np.mean(losses)))
             if step >= args.max_steps:
                 break
         if epochs % args.log_epoch == 0 and args.log_epoch != -1:
