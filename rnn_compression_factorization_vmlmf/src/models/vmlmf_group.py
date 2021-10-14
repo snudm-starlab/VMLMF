@@ -1,9 +1,43 @@
+################################################################################
+# [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
+# Project: Starlab 
+#
+# Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
+#         U Kang (ukang@snu.ac.kr), Seoul National University
+#
+# File: vmlmf_group.py
+# - Cell and network class for VMLMF + Group rank version - general task
+#
+# Version : 1.0
+# Date : Oct 14, 2021
+# Main Contact: Hyojin Jeon
+#
+# This software is free of charge under research purposes.
+# For commercial purposes, please contact the authors.
+#
+################################################################################
 
-class myMMFCell_g2(nn.Module):
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
+TIME_STEPS = 128
+RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
+RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
+
+class myVMLMCell_g2(nn.Module):
+    """
+    LSTM Cell of VMLMF_group
+        - vmlmf group cell
+
+    @params wRank
+        rank of all W matrices
+    @params uRank
+        rank of all U matrices
+    """
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, g=2, recurrent_init=None,hidden_init=None):
-        super(myMMFCell_g2, self).__init__()
-        print("MMF with no g_structure for input2hid - last updated 10.08")
+        super(myVMLMCell_g2, self).__init__()
+
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.recurrent_init = recurrent_init
@@ -33,7 +67,7 @@ class myMMFCell_g2(nn.Module):
     def __repr__(self):
         return "LSTM VM Group (input:{}, hidden:{}, wRank:{}, uRanks:{})".format(self.input_size,self.hidden_size,self.wRank,self.uRanks)
 
-    def forward(self, x, hiddenStates,device):
+    def forward(self, x, hiddenStates):
 
         dev=next(self.parameters()).device
         (h, c) = hiddenStates
@@ -45,21 +79,13 @@ class myMMFCell_g2(nn.Module):
 
         #LMF_x operation 
         lowered_x=torch.matmul(torch.matmul(x,self.layers['Ux']),self.layers['Vx'].t())
-        ## x and h.shape[0] == batch_size 81 
         vm_refined_x=torch.zeros(x.shape[0],4*self.hidden_size,device=dev)
         vm_refined_h=torch.zeros(h.shape[0],4*self.hidden_size,device=dev)
-        #print(f"Uh shape:{self.layers['Uh_0'].shape}")
         vm_refined_Uh=self.layers['Uh_0'].view(self.hidden_size,self.uRanks[0])
-        #print(f">>> Vh_0 shape[g,urank,4*h/g] <-> {self.layers['Vh_0'].shape}")
         vm_refined_Vh=torch.transpose(self.layers['Vh_0'],1,2).contiguous()
-        #print(f">>> Vh_0 shape[g,urank,4*h/g] not influenced<-> {self.layers['Vh_0'].shape}")
-        #print(f">>> vm_refined_Vh shape[g,4*h/g,urank] <-> {vm_refined_Vh.shape}")
 
-        #vm_refined_Vh=vm_refined_Vh.view(-1,self.uRanks[0])
-        #print(f">>> vm_refined_Vh shape[g,4*h/g,urank] <-> {vm_refined_Vh.shape}")
         for gate_idx in range(0,4*self.hidden_size,self.hidden_size): 
             vm_refined_x[:,gate_idx:gate_idx+self.input_size]=x*torch.sum((self.layers['Ux']*self.layers['Vx'][gate_idx:gate_idx+self.input_size,:]),dim=1)
-            #vm_refined_h[:,gate_idx:gate_idx+self.hidden_size]=h*torch.sum((vm_refined_Uh*vm_refined_Vh[gate_idx:gate_idx+self.hidden_size,:]),dim=1)
             gate_g_idx,gate_g_size=int(gate_idx/self.g),int(self.hidden_size/self.g)
             gate_Vh=vm_refined_Vh[:,gate_g_idx:gate_g_idx+gate_g_size,:].view(-1,self.uRanks[0])
             vm_refined_h[:,gate_idx:gate_idx+self.hidden_size]=h*torch.sum((vm_refined_Uh*gate_Vh),dim=1) #10.04
@@ -71,24 +97,24 @@ class myMMFCell_g2(nn.Module):
         #LMF_h operation
         ## 1. LMF for each group
         ## 2. compute redundant values from g0
-        
         index = list(range(self.g))
+
         # h for each group operation
-        
         for i in range(self.g):
             h_op = h.view(batch_size, self.g, int(self.hidden_size / self.g))  
             index=index[1:]+index[0:1] if i>0 else index
             h_op=h_op[:,index,:] if i > 0 else h_op
-            h_op=torch.transpose(h_op,0,1) #[g,batch_size,h/g]
+            h_op=torch.transpose(h_op,0,1)      #[g,batch_size,h/g]
 
-            Uh=self.layers['Uh_{}'.format(i)] #[g,h/g,uRanks]
-            h_op=torch.bmm(h_op,Uh) #[g,batch_size,uRanks]
-            Vh=self.layers['Vh_{}'.format(i)] #[g,uRanks,h/g*4]
-            h_op=torch.bmm(h_op,Vh) #[g,batch_size,h/g*4]
-            h_op=torch.transpose(h_op,0,1) #[batch_size,g,h/g*4]
+            Uh=self.layers['Uh_{}'.format(i)]   #[g,h/g,uRanks]
+            h_op=torch.bmm(h_op,Uh)             #[g,batch_size,uRanks]
+            Vh=self.layers['Vh_{}'.format(i)]   #[g,uRanks,h/g*4]
+            h_op=torch.bmm(h_op,Vh)             #[g,batch_size,h/g*4]
+            h_op=torch.transpose(h_op,0,1)      #[batch_size,g,h/g*4]
             h_op_chunked=h_op if i==0 else h_op_chunked+h_op
             
         f_h,i_h,n_h,o_h=h_op_chunked.chunk(4,dim=2)
+
         f_h=f_h.contiguous().view(batch_size,self.hidden_size)
         i_h=i_h.contiguous().view(batch_size,self.hidden_size)
         n_h=n_h.contiguous().view(batch_size,self.hidden_size)
@@ -108,11 +134,19 @@ class myMMFCell_g2(nn.Module):
         return h_next, c_next
 
 
-class myMMFgCell_g2(nn.Module):
+class myVMLMCellg_g2(nn.Module):
+    """
+    LSTM Cell of VMLMF_group
+        - vmlmf group cell without vm module
+        - for ablation study
 
+    @params wRank
+        rank of all W matrices
+    @params uRank
+        rank of all U matrices
+    """
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, g=2, recurrent_init=None,hidden_init=None):
-        super(myMMFgCell_g2, self).__init__()
-        print("MMF without cmpl_vector - last updated 10.08")
+        super(myVMLMCellg_g2, self).__init__()
 
         self.input_size = input_size
         self.hidden_size = hidden_size
@@ -139,7 +173,7 @@ class myMMFgCell_g2(nn.Module):
     def __repr__(self):
         return "LSTM VM Group (input:{}, hidden:{}, wRank:{}, uRanks:{})".format(self.input_size,self.hidden_size,self.wRank,self.uRanks)
 
-    def forward(self, x, hiddenStates,device):
+    def forward(self, x, hiddenStates):
 
         dev=next(self.parameters()).device
         (h, c) = hiddenStates
@@ -157,18 +191,17 @@ class myMMFgCell_g2(nn.Module):
         
         index = list(range(self.g))
         # h for each group operation
-        
         for i in range(self.g):
             h_op = h.view(batch_size, self.g, int(self.hidden_size / self.g))  
             index=index[1:]+index[0:1] if i>0 else index
             h_op=h_op[:,index,:] if i > 0 else h_op
-            h_op=torch.transpose(h_op,0,1) #[g,batch_size,h/g]
+            h_op=torch.transpose(h_op,0,1)    #[g,batch_size,h/g]
 
             Uh=self.layers['Uh_{}'.format(i)] #[g,h/g,uRanks]
-            h_op=torch.bmm(h_op,Uh) #[g,batch_size,uRanks]
+            h_op=torch.bmm(h_op,Uh)           #[g,batch_size,uRanks]
             Vh=self.layers['Vh_{}'.format(i)] #[g,uRanks,h/g*4]
-            h_op=torch.bmm(h_op,Vh) #[g,batch_size,h/g*4]
-            h_op=torch.transpose(h_op,0,1) #[batch_size,g,h/g*4]
+            h_op=torch.bmm(h_op,Vh)           #[g,batch_size,h/g*4]
+            h_op=torch.transpose(h_op,0,1)    #[batch_size,g,h/g*4]
             h_op_chunked=h_op if i==0 else h_op_chunked+h_op
             
         f_h,i_h,n_h,o_h=h_op_chunked.chunk(4,dim=2)
@@ -189,11 +222,19 @@ class myMMFgCell_g2(nn.Module):
         h_next = outputgate * torch.tanh(c_next)
         return h_next, c_next
 
-class myMMFcCell_g2(nn.Module):
+class myVMLMCellc_g2(nn.Module):
+    """
+    LSTM Cell of VMLMF_group
+        - vmlmf group cell without group structure
+        - for ablation study
 
+    @params wRank
+        rank of all W matrices
+    @params uRank
+        rank of all U matrices
+    """
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, g=2, recurrent_init=None,hidden_init=None):
-        super(myMMFcCell_g2, self).__init__()
-        print("MMF without g_structure - last updated 10.08_")
+        super(myVMLMCellc_g2, self).__init__()
 
         self.input_size = input_size
         self.hidden_size = hidden_size
@@ -201,7 +242,6 @@ class myMMFcCell_g2(nn.Module):
         self.hidden_init = hidden_init
         self.wRank = wRank
         self.uRank= uRanks
-        print("u",uRanks)
         self.layers=nn.ParameterDict()
         
         for vec in ['x','h']:
@@ -214,7 +254,7 @@ class myMMFcCell_g2(nn.Module):
     def __repr__(self):
         return "LSTM VM Group (input:{}, hidden:{}, wRank:{}, uRanks:{})".format(self.input_size,self.hidden_size,self.wRank,self.uRank)
 
-    def forward(self, x, hiddenStates,device):
+    def forward(self, x, hiddenStates):
 
         dev=next(self.parameters()).device
         (h, c) = hiddenStates

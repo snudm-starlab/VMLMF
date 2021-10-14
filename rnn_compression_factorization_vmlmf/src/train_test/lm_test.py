@@ -52,6 +52,10 @@ parser.add_argument("--uRanks", type=int,nargs="+", default=300, help="uRank of 
 args = parser.parse_args()
 
 def setdevice():
+    """
+    set the device for execution 
+    
+    """
     if args.device == "gpu" and torch.cuda.is_available():
         print("Model will be training on the GPU.\n")
         args.device = torch.device(f'cuda:{args.gpu_id}')
@@ -63,11 +67,15 @@ def setdevice():
         args.device = torch.device('cpu')
 
 setdevice()
-print('Parameters of the model:')
 print('Args:', args)
 print("\n")
 
 def data_init():
+    """
+    load data files and map words to indexes
+
+    @return index array of each dataset
+    """
     with open("./data/ptb.train.txt") as f:
         file = f.read()
         trn = file[1:].split(' ')
@@ -84,8 +92,18 @@ def data_init():
     tst = [char2ind[c] for c in tst]
     return np.array(trn).reshape(-1, 1), np.array(vld).reshape(-1, 1), np.array(tst).reshape(-1, 1), len(words)
 
-#Batches the data with [T, B] dimensionality.
 def minibatch(data, batch_size, seq_length):
+    """
+    Batches the data with [T, B] dimensionality.
+    @param data
+        dataset
+    @param batch_size
+        size of batch
+    @param seq_length
+        length of sequence
+
+    @return minibatch of data
+    """
     data = torch.tensor(data, dtype = torch.int64)
     num_batches = data.size(0)//batch_size
     data = data[:num_batches*batch_size]
@@ -99,8 +117,16 @@ def minibatch(data, batch_size, seq_length):
             dataset.append((x, y))
     return dataset
 
-#The loss function.
 def nll_loss(scores, y):
+    """
+    #The loss function.
+    #param scores 
+        model's prediction
+    #param y
+        groundtruth label
+
+    @return loss
+    """
     batch_size = y.size(1)
     expscores = scores.exp()
     probabilities = expscores / expscores.sum(1, keepdim = True)
@@ -110,6 +136,10 @@ def nll_loss(scores, y):
     return torch.mean(-torch.log(answerprobs) * batch_size)
 
 def perplexity(data, model):
+    """
+    #The loss function.
+    @return perplexity
+    """
     with torch.no_grad():
         losses = []
         states = model.state_init(args.batch_size)
@@ -121,10 +151,31 @@ def perplexity(data, model):
     return np.exp(np.mean(losses))
 
 def train(data, model, epochs, epoch_threshold, lr, factor, max_norm):
+    """
+    #train & validate & test model
+    #param data
+        minibatch of train, validation, test data
+    #param model
+        model to train
+    #param epochs
+        max epochs
+    #epoch_threshold
+        epoch to start factoring the learning rate
+    #lr
+        learning rate
+    #factor
+        amount of factoring learning rate
+    #max_norm
+        maximun normalization 
+
+    @return loss
+    """
     trn, vld, tst = data
     tic = timeit.default_timer()
     total_words = 0
+
     print("Starting training.\n")
+
     for epoch in range(epochs):
         states = model.state_init(args.batch_size)
         model.train()
@@ -153,25 +204,33 @@ def train(data, model, epochs, epoch_threshold, lr, factor, max_norm):
                       "lr = {:.3f}, ".format(lr) +
                       "since beginning = {:d} mins, ".format(round((toc-tic)/60)) + 
                       "cuda memory = {:.3f} GBs".format(torch.cuda.max_memory_allocated()/1024/1024/1024))
+        ## Validation
         model.eval()
         val_perp = perplexity(vld, model)
         print("Epoch : {:d} || Validation set perplexity : {:.3f}".format(epoch+1, val_perp))
         print("*************************************************\n")
+
+    #Evaluation
     tst_perp = perplexity(tst, model)
     print("Test set perplexity : {:.3f}".format(tst_perp))
     print("Training is over.")
     
 def main():
+    """
+    Initiate language model and train/validate/test it
+    
+    """
     trn, vld, tst, vocab_size = data_init()
     trn = minibatch(trn, args.batch_size, args.seq_length)
     vld = minibatch(vld, args.batch_size, args.seq_length)
     tst = minibatch(tst, args.batch_size, args.seq_length)
     model = Model(vocab_size, args.hidden_size, args.layer_num, args.dropout, args.winit,args.wRank,args.uRanks, args.lstm_type,device=args.device)
+    
     print("*"*32)
     params=sum(p.numel() for p in model.parameters())
     print("*pameters of model{}: {}M".format(args.lstm_type,params/1e6))
-    #print("Compression rate:x{}".format(19780400/params))
     print("*"*32)
+    
     model.to(args.device)
     train((trn, vld, tst), model, args.total_epochs, args.factor_epoch, args.learning_rate, args.factor, args.max_grad_norm)
 

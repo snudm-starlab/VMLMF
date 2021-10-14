@@ -1,18 +1,21 @@
 ################################################################################
-# Starlab RNN-compression with factorization method : Lowrank Factorization with vector-multiplication
+# [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
+# Project: Starlab 
 #
-# Author: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
+# Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
 #
+# File: UCI_dataloader.py
+# - utilities for processing UCI dataset
+#
 # Version : 1.0
-# Date : Jul 08, 2021
+# Date : Oct 14, 2021
 # Main Contact: Hyojin Jeon
 #
 # This software is free of charge under research purposes.
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-
 from torch.utils.data import Dataset, DataLoader
 import torch
 import numpy as np
@@ -76,6 +79,15 @@ class UCIDataset(Dataset):
 
 
 def UCI_dataloader(batch_size, dataset_folder='./data/UCI HAR Dataset/'):
+    """
+    get dataloader - dataloader the batch size of load data 
+    @param batch_size
+        batch_size of dataset
+    @param dataset_folder
+        file path to load dataset from
+    @return train and test dataloader
+    """
+
     dataset_train = UCIDataset(dataset_folder, 'train')
     train_loader = DataLoader(dataset=dataset_train,
                                 batch_size=64,

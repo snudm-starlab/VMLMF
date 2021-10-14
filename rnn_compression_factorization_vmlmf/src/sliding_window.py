@@ -1,12 +1,16 @@
 ################################################################################
-# Starlab RNN-compression with factorization method : Lowrank and group-lowrank rnn
+# [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
+# Project: Starlab 
 #
-# Author: Donghae Jang (jangdonghae@gmail.com), Seoul National University
+# Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
 #
+# File: sliding_window.py
+# - utilities for process data using sliding window
+#
 # Version : 1.0
-# Date : Nov 10, 2020
-# Main Contact: Donghae Jang
+# Date : Oct 14, 2021
+# Main Contact: Hyojin Jeon
 #
 # This software is free of charge under research purposes.
 # For commercial purposes, please contact the authors.

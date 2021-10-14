@@ -1,11 +1,15 @@
 ################################################################################
-# Starlab RNN-compression with factorization method : Lowrank Factorization with vector-multiplication
+# [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
+# Project: Starlab 
 #
-# Author: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
+# Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
 #
+# File: OPP_dataloader.py
+# - utilities for processing OPP data
+#
 # Version : 1.0
-# Date : Jul 08, 2021
+# Date : Oct 14, 2021
 # Main Contact: Hyojin Jeon
 #
 # This software is free of charge under research purposes.
@@ -32,6 +36,15 @@ class CustomDataset(Dataset):
 
 
 def HAR_dataloader(batch_size, dataset_folder='./data/smalldata'):
+    """
+    get dataloader - dataloader the batch size of load data 
+    @param batch_size
+        batch_size of dataset
+    @param dataset_folder
+        file path to load dataset from
+    @return train and test dataloader
+    """
+
     dataset_train = CustomDataset(dataset_folder, 'train')
     train_loader = DataLoader(dataset=dataset_train,
                               batch_size=batch_size,

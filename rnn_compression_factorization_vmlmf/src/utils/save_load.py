@@ -1,11 +1,15 @@
 ################################################################################
-# Starlab RNN-compression with factorization method : Lowrank Factorization with vector-multiplication
+# [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
+# Project: Starlab 
 #
-# Author: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
+# Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
 #
+# File: save_load.py
+# - utilities for save and load compressed model 
+#
 # Version : 1.0
-# Date : Jul 08, 2021
+# Date : Oct 14, 2021
 # Main Contact: Hyojin Jeon
 #
 # This software is free of charge under research purposes.
@@ -17,6 +21,17 @@ import sys
 import torch
 
 def save_model(model,args,path="./train_test/trained_model/",name=None):
+    """
+    Save the compressed state dictionary of model to input file path
+    @param model
+        model to save
+    @param args
+        argument user decided
+    @param path
+        path to save the model in
+    @param name
+        filename to save
+    """
     
     name="comp_vmmodel_wRank{}_uRank_{}_data_{}_layer{}_seed{}".format(args.wRank,args.uRanks,args.data,args.layer_sizes,args.seed) if name is None else name
     if not os.path.exists(path):
@@ -25,7 +40,18 @@ def save_model(model,args,path="./train_test/trained_model/",name=None):
     print("model saved in %s"%(path+name+".pkl"))
 
 def load_model(model,args,path="./train_test/trained_model/",name=None):
-    
+    """
+    load the compressed model from input file path
+    @param model
+        model to load
+    @param args
+        argument user decided
+    @param path
+        path where the model exists
+    @param name
+        filename to load
+    """
+
     name="comp_vmmodel_wRank{}_uRank_{}_data_{}_layer{}_seed{}".format(args.wRank,args.uRanks,args.data,args.layer_sizes,args.seed) if name is None else name
     file=path+name+".pkl"
     
