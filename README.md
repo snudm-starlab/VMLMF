@@ -28,8 +28,8 @@ VMLMF
   │    └── train_test
   │    |     ├── main.py: control training and testing 
   │    |     ├── train.py: train the models on the Human Activity Recognition tasks 
-   |    |     └── test.py: test the models on the Human Activity Recognition tasks 
-   |    |  
+  |    |     └── test.py: test the models on the Human Activity Recognition tasks 
+  |    |  
   │    └── utils
   |           └── utilities for the package
   │    
