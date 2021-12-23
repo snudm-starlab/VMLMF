@@ -17,17 +17,16 @@
 #
 ################################################################################
 import sys
-
 sys.path.append('../')
-from utils.sliding_window import *
+
 import os
 import zipfile
+import urllib
 import argparse
-
+import pickle as cp
 from io import BytesIO
 from pandas import Series
-import pickle as cp
-
+from utils.sliding_window import *
 # number of sensor channels employed in the OPPORTUNITY challenge
 NB_SENSOR_CHANNELS = 77
 
@@ -47,18 +46,20 @@ OPPORTUNITY_DATA_FILES_DICT = {
 }
 
 # Hard coded threshold to normalize data from each sensor
-NORM_MAX_THRESHOLDS = [3000, 3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000, 10000,
-                       1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000, 3000, 3000,
-                       10000, 10000, 10000, 1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500,
-                       250, 25, 200, 5000, 5000, 5000, 5000, 5000, 5000, 10000, 10000, 10000, 10000, 10000, 10000, 250,
-                       250, 25, 200, 5000, 5000, 5000, 5000, 5000, 5000, 10000, 10000, 10000, 10000, 10000, 10000, 250]
+NORM_MAX_THRESHOLDS = [3000, 3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000,
+                       10000,1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000,
+                       3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000, 10000,
+                       1500, 1500, 1500,250, 25, 200, 5000, 5000, 5000, 5000, 5000, 5000, 10000, 10000, 10000,
+                       10000, 10000, 10000, 250, 250, 25, 200, 5000, 5000, 5000, 5000, 5000, 5000, 10000, 10000,
+                       10000, 10000, 10000, 10000, 250]
 
-NORM_MIN_THRESHOLDS = [-3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000, -3000, -3000, -3000, -10000,
-                       -10000, -10000, -1000, -1000, -1000, -3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000,
-                       -1000, -3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000, -3000, -3000, -3000,
-                       -10000, -10000, -10000, -1000, -1000, -1000, -250, -100, -200, -5000, -5000, -5000, -5000, -5000,
-                       -5000, -10000, -10000, -10000, -10000, -10000, -10000, -250, -250, -100, -200, -5000, -5000,
-                       -5000, -5000, -5000, -5000, -10000, -10000, -10000, -10000, -10000, -10000, -250]
+NORM_MIN_THRESHOLDS = [-3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000, -3000, -3000, -3000,
+                       -10000, -10000, -10000, -1000, -1000, -1000, -3000, -3000, -3000, -10000, -10000, -10000,
+                       -1000, -1000, -1000, -3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000,
+                       -3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000, -250, -100, -200, -5000,
+                       -5000, -5000, -5000, -5000, -5000, -10000, -10000, -10000, -10000, -10000, -10000, -250,
+                       -250, -100, -200, -5000, -5000,  -5000, -5000, -5000, -5000, -10000, -10000, -10000,
+                       -10000, -10000, -10000, -250]
 
 
 def select_columns_opp(data):
@@ -70,35 +71,35 @@ def select_columns_opp(data):
         Selection of features
     """
     # features to exclude
-    features_delete = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
-                       27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 46, 47, 48, 49, 59, 60, 61, 62, 72, 73, 74, 75, 85, 86,
-                       87, 88, 98, 99, 100, 101, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147,
-                       148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166,
-                       167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185,
-                       186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204,
-                       205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223,
-                       224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242,
-                       243, 244, 245, 246, 247, 248]
+    features_delete = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+                       24, 25, 26,27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 46, 47, 48, 49, 59, 60, 61, 62, 72,
+                       73, 74, 75, 85, 86, 87, 88, 98, 99, 100, 101, 134, 135, 136, 137, 138, 139, 140, 141,
+                       142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158,
+                       159, 160, 161, 162, 163, 164, 165, 166,  167, 168, 169, 170, 171, 172, 173, 174, 175,
+                       176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+                       193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
+                       210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
+                       228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245,
+                       246, 247, 248]
     return np.delete(data, features_delete, 1)
-
 
 def normalize(data, max_list, min_list):
     """
         Normalizes all sensor channels
-    :param data: numpy integer matrix
+    @ param data: numpy integer matrix
         Sensor data
-    :param max_list: numpy integer array
+    @ param max_list: numpy integer array
         Array containing maximums values for every one of the 113 sensor channels
-    :param min_list: numpy integer array
+    @ param min_list: numpy integer array
         Array containing minimum values for every one of the 113 sensor channels
-    :return:
+    @ return:
         Normalized sensor data
     """
     max_list, min_list = np.array(max_list), np.array(min_list)
     diffs = max_list - min_list
     for i in np.arange(data.shape[1]):
         data[:, i] = (data[:, i] - min_list[i]) / diffs[i]
-    #     Checking the boundaries
+    # Checking the boundaries
     data[data > 1] = 0.99
     data[data < 0] = 0.00
     return data
@@ -107,7 +108,7 @@ def normalize(data, max_list, min_list):
 def refine_data(data):
     """
     remove rows which have nan values
-    @ param data 
+    @ param data
         data to refine
     @ return data with complete instance without NaN values
     """
@@ -115,7 +116,6 @@ def refine_data(data):
     # instances that have NaN values
     instances_delete = []
     for idx, row in enumerate(data):
-        cnt = 0
         if np.isnan(row).any():
             instances_delete.append(idx)
             continue
@@ -125,7 +125,6 @@ def refine_data(data):
     print("*" * 32)
     return np.delete(data, instances_delete, 0)
 
-
 def divide_x_y(data, label):
     """
     Segments each sample into features and label
@@ -134,13 +133,13 @@ def divide_x_y(data, label):
         Sensor data
     @ param label: string, ['gestures' (default), 'locomotion']
         Type of activities to be recognized
-    ! return: numpy integer matrix, numpy integer array
+    @ return: numpy integer matrix, numpy integer array
         Features encapsulated into a matrix and labels as an array
     """
 
     data_x = data[:, :77]
     if label not in ['locomotion', 'gestures']:
-        raise RuntimeError("Invalid label: '%s'" % label)
+        raise RuntimeError(f"Invalid label: {label}")
     if label == 'locomotion':
         data_y = data[:, 114]  # Locomotion label
     elif label == 'gestures':
@@ -203,15 +202,14 @@ def check_data(data_set):
 
     # When dataset not found, try to download it from UCI repository
     if (not os.path.isfile(data_set)) and data_file == 'OpportunityUCIDataset.zip':
-        print('... dataset path {} not found'.format(data_set))
-        import urllib
+        print(f'... dataset path {data_set} not found')
         origin = (
             'https://archive.ics.uci.edu/ml/machine-learning-databases/00226/OpportunityUCIDataset.zip'
         )
         if not os.path.exists(data_dir):
-            print('... creating directory {0}'.format(data_dir))
+            print(f'... creating directory {data_dir}')
             os.makedirs(data_dir)
-        print('... downloading data from {0}'.format(origin))
+        print(f'... downloading data from {origin}')
         urllib.request.urlretrieve(origin, data_set)
 
     return data_dir
@@ -276,7 +274,7 @@ def generate_data(dataset, target_filename, label):
         data_x = np.empty((0, NB_SENSOR_CHANNELS))
         data_y = np.empty((0))
         for filename in data:
-            filename = "OpportunityUCIDataset/dataset/{}".format(filename)
+            filename = f"OpportunityUCIDataset/dataset/{filename}"
             try:
                 data = np.loadtxt(BytesIO(zf.read(filename)))
                 print('... file {0}'.format(filename))
@@ -284,17 +282,12 @@ def generate_data(dataset, target_filename, label):
                 data_x = np.vstack((data_x, x))
                 data_y = np.concatenate([data_y, y])
             except KeyError:
-                print('ERROR: Did not find {0} in zip file'.format(filename))
+                print(f'ERROR: Did not find {filename} in zip file')
         if datatype == 'training':
             X_train, y_train = data_x, data_y
         else:
             X_test, y_test = data_x, data_y
-    # Dataset is segmented into train and test
-    nb_training_samples = 557963
-
-    print("Final datasets with size: | train {0} | test {1} | ".format(X_train.shape, X_test.shape))
-
-    #obj = [(X_train, y_train), (X_test, y_test), (X_valid, y_valid)]
+    print(f"Final datasets with size: | train {X_train.shape} | test {X_test.shape}")
     obj = [(X_train, y_train), (X_test, y_test)]
     f = open(os.path.join(data_dir, target_filename), 'wb')
     cp.dump(obj, f, protocol=cp.HIGHEST_PROTOCOL)
@@ -303,11 +296,8 @@ def generate_data(dataset, target_filename, label):
 
 def get_args():
     '''
-
     This function parses and return arguments passed in
-    
     @ return results of parsing arguments
-
     '''
     parser = argparse.ArgumentParser(
         description='Preprocess OPPORTUNITY dataset')
@@ -333,7 +323,6 @@ def load_dataset(filename):
     """
     load dataset and process it for training, validation, test
     """
-
     f = open(filename, 'rb')
     data = cp.load(f)
     f.close()
@@ -341,8 +330,8 @@ def load_dataset(filename):
     X_train, y_train = data[0]
     X_test, y_test = data[1]
 
-    print(" ..from file {}".format(filename))
-    print(" ..reading instances: train {0}, test {1}".format(X_train.shape, X_test.shape))
+    print(f" ..from file {filename}")
+    print(f" ..reading instances: train {X_train.shape}, test {X_test.shape}")
 
     X_train = X_train.astype(np.float32)
     X_test = X_test.astype(np.float32)
@@ -370,15 +359,14 @@ if __name__ == '__main__':
     # Hardcoded step of the sliding window mechanism employed to segment the data
     SLIDING_WINDOW_STEP = 12
 
-    # X_train, y_train, X_test, y_test= load_dataset('./src/data/oppChallenge_gestures.data')
     X_train, y_train, X_test, y_test = load_dataset('./src/data/oppChallenge_gestures.data')
 
     assert NB_SENSOR_CHANNELS == X_train.shape[1]
     # Sensor data is segmented using a sliding window mechanism
     X_train, y_train = opp_sliding_window(X_train, y_train, SLIDING_WINDOW_LENGTH, SLIDING_WINDOW_STEP)
-    print(" ..after sliding window (train): inputs {0}, targets {1}".format(X_train.shape, y_train.shape))
+    print(f" ..after sliding window (train): inputs {X_train.shape}, targets {y_train.shape}")
     X_test, y_test = opp_sliding_window(X_test, y_test, SLIDING_WINDOW_LENGTH, SLIDING_WINDOW_STEP)
-    print(" ..after sliding window (test): inputs {0}, targets {1}".format(X_test.shape, y_test.shape))
+    print(f" ..after sliding window (test): inputs {X_test.shape}, targets {y_test.shape}")
 
     np.save('./src/data/opp/X_test', X_test)
     np.save('./src/data/opp/y_test', y_test)
