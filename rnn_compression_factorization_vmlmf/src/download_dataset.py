@@ -48,6 +48,6 @@ if not os.path.exists(extract_directory):
         'unzip -nq "UCI HAR Dataset.zip"',
         shell=True
     )
-    print("Extracting successfully done to {}.".format(extract_directory))
+    print(f"Extracting successfully done to {extract_directory}.")
 else:
     print("Dataset already extracted. Did not extract twice.\n")
