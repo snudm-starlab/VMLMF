@@ -45,7 +45,7 @@ def train(model,train_data,args,cuda,device):
     step = 0
     epochs = 0
     start_time = time()
-    while step < args.max_steps:
+    while epochs < args.max_epochs:
         print("****************** EPOCH = %d ******************" % epochs)
 
         losses = []
@@ -64,15 +64,13 @@ def train(model,train_data,args,cuda,device):
             if step % args.log_iteration == 0 and args.log_iteration != -1:
                 print(
                     "\tStep {} cross_entropy {}".format(step, np.mean(losses)))
-            if step >= args.max_steps:
-                break
+           
         if epochs % args.log_epoch == 0 and args.log_epoch != -1:
             print(
                 "Epoch {} cross_entropy {} ({} sec.)".format(
                     epochs, np.mean(losses), time() - start))
             start = time()
         epochs += 1
-        #torch.save(model.state_dict(), "./weights/comp_cal_{}.pt".format(args.model.lower()))
     end_time=time()
     print('Finished Training. It took %ds in total' % (end_time - start_time))    
     return model
