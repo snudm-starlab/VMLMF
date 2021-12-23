@@ -16,10 +16,9 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from time import time
+import torch
+import torch.nn.functional as F
 import numpy as np
 
 
