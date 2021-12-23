@@ -61,7 +61,7 @@ If other packages are required, use "pip install" to install them.
     sh ./script/demo.sh
 
 #### Training & Evaluation
-* Tou can test the models you want:
+* You can test the models you want:
     ```    
     bash demo.sh
     ```
