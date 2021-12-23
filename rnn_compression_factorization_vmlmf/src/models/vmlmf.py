@@ -20,7 +20,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
 
 TIME_STEPS = 128
 RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
@@ -155,7 +154,6 @@ class myLSTMCell(nn.Module):
         self.uRanks = uRanks 
         if type(self.uRanks) is list:
             self.uRanks=uRanks[0]
-        self.g=g
         
         if wRank is None:   #for four gates in vanilla LSTM
             self.W1 = nn.Parameter(
@@ -264,11 +262,11 @@ class myLSTM(nn.Module):
         self.hidden_layer_sizes = hidden_layer_sizes
         self.batch_first = batch_first
         self.wRank = wRank
-        self.uRanks = uRanks
+        self.uRanks = uRanks[-1] if type(uRanks) == list and len(uRanks)<2 else uRanks
         self.drop=nn.Dropout(p=0.5)
         self.cell=cell
         
-        self.uRanks=uRanks[0] if type(uRanks) is list else uRanks
+        self.uRanks=uRanks[0] if type(uRanks) is list and len(uRanks) < 2 else uRanks
        
         if batch_first:
             self.time_index = 1
@@ -307,7 +305,7 @@ class myLSTM(nn.Module):
             seqlen = len(x_time)
 
             for t in range(seqlen):
-                h, c = cell(x_time[t], (h, c),self.device)
+                h, c = cell(x_time[t], (h, c))
                 outputs.append(h)
 
             x = torch.stack(outputs, time_index)
@@ -333,6 +331,7 @@ class Net(nn.Module):
         recurrent_inits = []
         self.cell=cell
         n_layer = len(layer_sizes) + 1
+        
         for _ in range(n_layer - 1):
             recurrent_inits.append(lambda w: nn.init.uniform_(w, 0, RECURRENT_MAX))
         recurrent_inits.append(lambda w: nn.init.uniform_(w, RECURRENT_MIN, RECURRENT_MAX))
