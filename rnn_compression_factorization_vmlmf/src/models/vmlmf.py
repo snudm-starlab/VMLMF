@@ -329,7 +329,7 @@ class Net(nn.Module):
     def __init__(self, input_size, layer_sizes=[32, 32], wRank=None, uRanks=None, model=myLSTM,cell=myLSTMCell,g=None):
         super(Net, self).__init__()
         recurrent_inits = []
-        self.cell=cell
+        
         n_layer = len(layer_sizes) + 1
         
         for _ in range(n_layer - 1):
@@ -338,12 +338,14 @@ class Net(nn.Module):
         self.rnn = model(
             input_size, hidden_layer_sizes=layer_sizes,
             batch_first=True, recurrent_inits=recurrent_inits,
-            wRank=wRank, uRanks=uRanks,cell=self.cell
+            wRank=wRank, uRanks=uRanks,cell=cell
         )
         self.lin = nn.Linear(layer_sizes[-1], 18)
         self.lin.bias.data.fill_(.1)
         self.lin.weight.data.normal_(0, .01)
 
+        ## for unit_test
+        self.cell=cell(input_size,layer_sizes[-1],wRank=wRank,uRanks=uRanks)
     def forward(self, x, hidden=None):
         y, _ = self.rnn(x, hidden)
         return self.lin(y[:, -1]).squeeze(1)
