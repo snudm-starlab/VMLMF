@@ -1,4 +1,3 @@
-"# rnn-compression" 
 # VMLMF: Vector multiplication on Low-rank Matrix Factorization
 This package provide implementations of VMLMF learning a compressed LSTM model.
 
@@ -29,8 +28,8 @@ VMLMF
   │    └── train_test
   │    |     ├── main.py: control training and testing 
   │    |     ├── train.py: train the models on the Human Activity Recognition tasks 
-  |    |     └── test.py: test the models on the Human Activity Recognition tasks 
-  |    |  
+   |    |     └── test.py: test the models on the Human Activity Recognition tasks 
+   |    |  
   │    └── utils
   |           └── utilities for the package
   │    
@@ -50,7 +49,7 @@ VMLMF
     cd VMLMF
 
 #### Install the required packages
-    install pytorch == 1.7.1 proper to your environment
+    install pytorch 1.7.1 proper to your environment  (1.7.1 is required!!)
     pip install -r requirements.txt
     
 If other packages are required, use "pip install" to install them.
@@ -62,7 +61,7 @@ If other packages are required, use "pip install" to install them.
     sh ./script/demo.sh
 
 #### Training & Evaluation
-* You can test the models you want:
+* Tou can test the models you want:
     ```    
     bash demo.sh
     ```
