@@ -35,7 +35,6 @@ from train_test.test import test
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision import datasets, transforms
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import argparse
@@ -57,19 +56,17 @@ parser.add_argument('--bidirectional', action='store_true', default=False,
                     help='enable bidirectional processing')
 parser.add_argument('--batch-size', type=int, default=81,
                     help='input batch size for training (default: 81)')
-parser.add_argument('--max-epochs', type=int, default=10000,
-                    help='max iterations of training (default: 10000)')
-parser.add_argument('--max-steps', type=int, default=10000,
-                    help='max iterations of training (default: 10000)')
+parser.add_argument('--max_epochs', type=int, default=100,
+                    help='max iterations of training (default: 100)')
 parser.add_argument('--model', type=str, default="myLSTM",
                     help='if either myLSTM cells should be used for optimization')
 parser.add_argument('--layer_sizes', type=int, nargs='+', default=None,
                     help='list of layers')
 parser.add_argument('--wRank', type=int, default=None,
                     help='compress rank of non-recurrent weight')
-parser.add_argument('--uRanks', type=int, default=None,
+parser.add_argument('--uRanks', type=int, default=None,nargs='+',
                     help='compress rank of recurrent weight')
-parser.add_argument('--gpu_id', type=int, default=1,
+parser.add_argument('--gpu_id', type=int, default=0,
                     help='gpu_id assign')
 parser.add_argument("-train", "--is_train",help="whether train_test the model (train_test-True; test-False)",action="store_true")
 parser.add_argument("--seed",type=int,default=1,help='seed')
@@ -126,10 +123,10 @@ def main():
     
     if args.model.lower()=="vmmodel":
         model = Net(input_size, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
-                model=myLSTM,cell=myVMLSTMCELL_NEO_final) 
-    elif args.model.lower()=="vmlmf_g2":
+                model=myLSTM,cell=myVMLMF_CELL )
+    elif args.model.lower()=="vmlmf_group2":
         model = Net(input_size, layer_sizes=args.layer_sizes, wRank=args.wRank, uRanks=args.uRanks,
-                model=myLSTM,cell=myMMFCell_g2) 
+                model=myLSTM,cell=myVMLMFCell_g2) 
     elif args.model.lower() =="mylstm":
         model = Net(input_size, layer_sizes=args.layer_sizes,model=myLSTM,cell=myLSTMCell) 
     else:
@@ -137,12 +134,6 @@ def main():
     
     if cuda:
         model.to(device)
-    
-
-    # load data
-    for data,target in train_data:
-        print(data[0])
-        break
     
     trained_model=train(model,train_data,args,cuda,device)
 
