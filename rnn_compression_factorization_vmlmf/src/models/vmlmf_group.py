@@ -25,7 +25,7 @@ TIME_STEPS = 128
 RECURRENT_MAX = pow(2, 1 / TIME_STEPS)
 RECURRENT_MIN = pow(1 / 2, 1 / TIME_STEPS)
 
-class myVMLMCell_g2(nn.Module):
+class myVMLMFCell_g2(nn.Module):
     """
     LSTM Cell of VMLMF_group
         - vmlmf group cell
@@ -36,7 +36,7 @@ class myVMLMCell_g2(nn.Module):
         rank of all U matrices
     """
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, g=2, recurrent_init=None,hidden_init=None):
-        super(myVMLMCell_g2, self).__init__()
+        super(myVMLMFCell_g2, self).__init__()
 
         self.input_size = input_size
         self.hidden_size = hidden_size
@@ -87,7 +87,7 @@ class myVMLMCell_g2(nn.Module):
         for gate_idx in range(0,4*self.hidden_size,self.hidden_size): 
             vm_refined_x[:,gate_idx:gate_idx+self.input_size]=x*torch.sum((self.layers['Ux']*self.layers['Vx'][gate_idx:gate_idx+self.input_size,:]),dim=1)
             gate_g_idx,gate_g_size=int(gate_idx/self.g),int(self.hidden_size/self.g)
-            gate_Vh=vm_refined_Vh[:,gate_g_idx:gate_g_idx+gate_g_size,:].view(-1,self.uRanks[0])
+            gate_Vh=vm_refined_Vh[:,gate_g_idx:gate_g_idx+gate_g_size,:].reshape(-1,self.uRanks[0])
             vm_refined_h[:,gate_idx:gate_idx+self.hidden_size]=h*torch.sum((vm_refined_Uh*gate_Vh),dim=1) #10.04
 
         gx=lowered_x-vm_refined_x+self.layers['bias_x']
@@ -134,7 +134,7 @@ class myVMLMCell_g2(nn.Module):
         return h_next, c_next
 
 
-class myVMLMCellg_g2(nn.Module):
+class myVMLMFCellg_g2(nn.Module):
     """
     LSTM Cell of VMLMF_group
         - vmlmf group cell without vm module
@@ -146,7 +146,7 @@ class myVMLMCellg_g2(nn.Module):
         rank of all U matrices
     """
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, g=2, recurrent_init=None,hidden_init=None):
-        super(myVMLMCellg_g2, self).__init__()
+        super(myVMLMFCellg_g2, self).__init__()
 
         self.input_size = input_size
         self.hidden_size = hidden_size
@@ -222,7 +222,7 @@ class myVMLMCellg_g2(nn.Module):
         h_next = outputgate * torch.tanh(c_next)
         return h_next, c_next
 
-class myVMLMCellc_g2(nn.Module):
+class myVMLMFcCELL_g2(nn.Module):
     """
     LSTM Cell of VMLMF_group
         - vmlmf group cell without group structure
@@ -234,7 +234,7 @@ class myVMLMCellc_g2(nn.Module):
         rank of all U matrices
     """
     def __init__(self, input_size, hidden_size, wRank=None, uRanks=None, g=2, recurrent_init=None,hidden_init=None):
-        super(myVMLMCellc_g2, self).__init__()
+        super(myVMLMFcCELL_g2, self).__init__()
 
         self.input_size = input_size
         self.hidden_size = hidden_size
