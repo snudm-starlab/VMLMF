@@ -341,7 +341,8 @@ class Net(nn.Module):
         self.lin.bias.data.fill_(.1)
         self.lin.weight.data.normal_(0, .01)
         ## for unit_test
-        self.cell = cell(input_size, layer_sizes[-1], w_rank=w_rank, u_ranks=u_rank[-1])
+        u=u_rank[-1] if cell == MyVMLMFCell else u_rank
+        self.cell = cell(input_size, layer_sizes[-1], w_rank=w_rank, u_ranks=u)
 
     def forward(self, x, hidden=None):
         y, _ = self.rnn(x, hidden)
