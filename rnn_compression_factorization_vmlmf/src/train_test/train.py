@@ -1,6 +1,6 @@
 ################################################################################
 # [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
-# Project: Starlab 
+# Project: Starlab
 #
 # Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
@@ -16,6 +16,17 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
+# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401
+"""
+====================================
+ :mod:`train`
+====================================
+.. moduleauthor:: Hyojin Jeon  <tarahjjeon@snu.ac.kr>
+설명
+=====
+모델의 학습을 위한 모듈입니다.
+
+"""
 from time import time
 import torch
 import torch.nn.functional as F
@@ -23,21 +34,16 @@ import numpy as np
 
 
 def train(model,train_data,args,cuda,device):
+    """train model with train data
+
+    :param model: model to train
+    :param train_data: train_data loader
+    :param args: arguments user decided
+    :param cuda: whether cuda is available or not
+    :param device: device users use
+
+    :returns: trained model
     """
-    train model with train data
-    @param model
-        model to train
-    @param train_data
-        train_data loader
-    @param args
-        arguments user decided
-    @param cuda
-        whether cuda is availabel
-    @param device
-        device user uses
-    @return trained model
-    """
-    
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     # Train the model
     model.train()
@@ -45,7 +51,7 @@ def train(model,train_data,args,cuda,device):
     epochs = 0
     start_time = time()
     while epochs < args.max_epochs:
-        print("****************** EPOCH = %d ******************" % epochs)
+        print(f"****************** EPOCH ={epochs}******************")
 
         losses = []
         start = time()
@@ -61,15 +67,12 @@ def train(model,train_data,args,cuda,device):
             step += 1
 
             if step % args.log_iteration == 0 and args.log_iteration != -1:
-                print(
-                    "\tStep {} cross_entropy {}".format(step, np.mean(losses)))
-           
+                print(f"\tStep {step} cross_entropy {np.mean(losses)}")
+
         if epochs % args.log_epoch == 0 and args.log_epoch != -1:
-            print(
-                "Epoch {} cross_entropy {} ({} sec.)".format(
-                    epochs, np.mean(losses), time() - start))
+            print(f"Epoch {epochs} cross_entropy {np.mean(losses)} ({time() - start} sec.)")
             start = time()
         epochs += 1
     end_time=time()
-    print('Finished Training. It took %ds in total' % (end_time - start_time))    
+    print(f'Finished Training. It took {end_time-start_time}s in total')
     return model

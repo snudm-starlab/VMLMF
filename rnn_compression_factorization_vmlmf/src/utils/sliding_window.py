@@ -1,6 +1,6 @@
 ################################################################################
 # [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
-# Project: Starlab 
+# Project: Starlab
 #
 # Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
@@ -17,20 +17,26 @@
 #
 ################################################################################
 # from http://www.johnvinyard.com/blog/?p=268
+# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401
+"""
+====================================
+ :mod:`sliding_window`
+====================================
+.. moduleauthor:: Hyojin Jeon  <tarahjjeon@snu.ac.kr>
+설명
+=====
+sliding window를 사용하여 데이터를 전처리하기 위한 모듈입니다.
 
+"""
 import numpy as np
 from numpy.lib.stride_tricks import as_strided as ast
 
 def norm_shape(shape):
-    '''
-    Normalize numpy array shapes so they're always expressed as a tuple,
+    '''Normalize numpy array shapes so they're always expressed as a tuple,
     even for one-dimensional shapes.
 
-    Parameters
-        shape - an int, or a tuple of ints
-
-    Returns
-        a shape tuple
+    :param shape: an int, or a tuple of ints
+    :returns: a shape tuple
     '''
     try:
         i = int(shape)
@@ -49,21 +55,17 @@ def norm_shape(shape):
     raise TypeError('shape must be an int, or a tuple of ints')
 
 def sliding_window(a,ws,ss = None,flatten = True):
-    '''
-    Return a sliding window over a in any number of dimensions
+    '''Return a sliding window over a in any number of dimensions
 
-    Parameters:
-        a  - an n-dimensional numpy array
-        ws - an int (a is 1D) or tuple (a is 2D or greater) representing the size
+    :param a: an n-dimensional numpy array
+    :param ws: an int (a is 1D) or tuple (a is 2D or greater) representing the size
              of each dimension of the window
-        ss - an int (a is 1D) or tuple (a is 2D or greater) representing the
+    :param ss: an int (a is 1D) or tuple (a is 2D or greater) representing the
              amount to slide the window in each dimension. If not specified, it
              defaults to ws.
-        flatten - if True, all slices are flattened, otherwise, there is an
+    :param flatten: if True, all slices are flattened, otherwise, there is an
                   extra dimension for each dimension of the input.
-
-    Returns
-        an array containing each n-dimensional window from a
+    :returns: an array containing each n-dimensional window from a
     '''
 
     if None is ss:
@@ -79,18 +81,17 @@ def sliding_window(a,ws,ss = None,flatten = True):
     shape = np.array(a.shape)
     print(shape)
 
-
     # ensure that ws, ss, and a.shape all have the same number of dimensions
     ls = [len(shape),len(ws),len(ss)]
     if 1 != len(set(ls)):
         raise ValueError(\
-        'a.shape, ws and ss must all have the same length. They were %s' % str(ls))
+        f'a.shape, ws and ss must all have the same length. They were {str(ls)}')
 
     # ensure that ws is smaller than a in every dimension
     if np.any(ws > shape):
         raise ValueError(\
-        'ws cannot be larger than a in any dimension.\
- a.shape was %s and ws was %s' % (str(a.shape),str(ws)))
+        f'ws cannot be larger than a in any dimension.\
+ a.shape was {str(a.shape)} and ws was {str(ws)}')
 
     # how many slices will there be in each dimension?
     newshape = norm_shape(((shape - ws) // ss) + 1)
@@ -105,6 +106,5 @@ def sliding_window(a,ws,ss = None,flatten = True):
 
     if not flatten:
         return strided
-
 
     return np.squeeze(strided)

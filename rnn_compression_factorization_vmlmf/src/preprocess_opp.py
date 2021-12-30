@@ -1,6 +1,6 @@
 ################################################################################
 # [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
-# Project: Starlab 
+# Project: Starlab
 #
 # Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
@@ -16,17 +16,29 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
+# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401, W0621,C0301
+"""
+====================================
+ :mod:`preprocess_opp`
+====================================
+.. moduleauthor:: Hyojin Jeon  <tarahjjeon@snu.ac.kr>
+설명
+=====
+Opportunity 데이터셋의 전처리를 위한 모듈입니다.
+
+"""
 import sys
 sys.path.append('../')
 
 import os
 import zipfile
-import urllib
+import urllib.request
 import argparse
 import pickle as cp
 from io import BytesIO
 from pandas import Series
-from utils.sliding_window import *
+import numpy as np
+from utils.sliding_window import sliding_window
 # number of sensor channels employed in the OPPORTUNITY challenge
 NB_SENSOR_CHANNELS = 77
 
@@ -46,54 +58,55 @@ OPPORTUNITY_DATA_FILES_DICT = {
 }
 
 # Hard coded threshold to normalize data from each sensor
-NORM_MAX_THRESHOLDS = [3000, 3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000,
-                       10000,1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000,
-                       3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000, 3000, 3000, 10000, 10000, 10000,
-                       1500, 1500, 1500,250, 25, 200, 5000, 5000, 5000, 5000, 5000, 5000, 10000, 10000, 10000,
-                       10000, 10000, 10000, 250, 250, 25, 200, 5000, 5000, 5000, 5000, 5000, 5000, 10000, 10000,
-                       10000, 10000, 10000, 10000, 250]
+NORM_MAX_THRESHOLDS = [3000, 3000, 3000, 10000, 10000, 10000,\
+    1500, 1500,1500, 3000, 3000, 3000, 10000, 10000,10000,1500, 1500,\
+    1500, 3000, 3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000,\
+    3000, 3000, 10000, 10000, 10000, 1500, 1500, 1500, 3000, 3000, 3000,\
+    10000, 10000, 10000,1500, 1500, 1500,250, 25, 200, 5000, 5000, 5000,\
+    5000, 5000, 5000, 10000, 10000, 10000,10000, 10000, 10000, 250, 250,\
+    25, 200, 5000, 5000, 5000, 5000, 5000, 5000, 10000, 10000,10000, 10000,\
+    10000, 10000, 250]
 
-NORM_MIN_THRESHOLDS = [-3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000, -3000, -3000, -3000,
-                       -10000, -10000, -10000, -1000, -1000, -1000, -3000, -3000, -3000, -10000, -10000, -10000,
-                       -1000, -1000, -1000, -3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000,
-                       -3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000, -250, -100, -200, -5000,
-                       -5000, -5000, -5000, -5000, -5000, -10000, -10000, -10000, -10000, -10000, -10000, -250,
-                       -250, -100, -200, -5000, -5000,  -5000, -5000, -5000, -5000, -10000, -10000, -10000,
-                       -10000, -10000, -10000, -250]
+NORM_MIN_THRESHOLDS = [-3000, -3000, -3000, -10000, -10000, -10000,\
+    -1000, -1000, -1000, -3000, -3000, -3000,-10000, -10000, -10000, -1000,\
+    -1000, -1000, -3000, -3000, -3000, -10000, -10000, -10000,-1000, -1000,\
+    -1000, -3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000,\
+    -3000, -3000, -3000, -10000, -10000, -10000, -1000, -1000, -1000, -250,\
+    -100, -200, -5000,-5000, -5000, -5000, -5000, -5000, -10000, -10000,\
+    -10000, -10000, -10000, -10000, -250,-250, -100, -200, -5000, -5000,\
+    -5000, -5000, -5000, -5000, -10000, -10000, -10000,-10000, -10000,\
+    -10000, -250]
 
 
 def select_columns_opp(data):
-    """
-    Selection of the 77 columns employed in the OPPORTUNITY challenge
-    @ param data: numpy integer matrix
-        Sensor data (all features)
-    @ return: numpy integer matrix
-        Selection of features
+    """Selection of the 77 columns employed in the OPPORTUNITY challenge
+
+    :param data: numpy integer matrix. Sensor data (all features)
+    :returns: numpy integer matrix. Selection of features
     """
     # features to exclude
-    features_delete = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-                       24, 25, 26,27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 46, 47, 48, 49, 59, 60, 61, 62, 72,
-                       73, 74, 75, 85, 86, 87, 88, 98, 99, 100, 101, 134, 135, 136, 137, 138, 139, 140, 141,
-                       142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158,
-                       159, 160, 161, 162, 163, 164, 165, 166,  167, 168, 169, 170, 171, 172, 173, 174, 175,
-                       176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
-                       193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
-                       210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227,
-                       228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245,
-                       246, 247, 248]
+    features_delete = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,\
+        20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 46, 47, 48, 49, 59,\
+        60, 61, 62, 72, 73, 74, 75, 85, 86, 87, 88, 98, 99, 100, 101, 134, 135, 136, 137,\
+        138, 139,140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153,\
+        154, 155, 156,157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169,\
+        170, 171, 172, 173,174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185,\
+        186, 187, 188, 189,190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201,\
+        202, 203, 204, 205,206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217,\
+        218, 219, 220, 221,222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233,\
+        234, 235, 236, 237,238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248]
     return np.delete(data, features_delete, 1)
 
 def normalize(data, max_list, min_list):
-    """
-        Normalizes all sensor channels
-    @ param data: numpy integer matrix
+    """Normalizes all sensor channels
+
+    :param data: numpy integer matrix
         Sensor data
-    @ param max_list: numpy integer array
+    :param max_list: numpy integer array
         Array containing maximums values for every one of the 113 sensor channels
-    @ param min_list: numpy integer array
+    :param min_list: numpy integer array
         Array containing minimum values for every one of the 113 sensor channels
-    @ return:
-        Normalized sensor data
+    :returns: Normalized sensor data
     """
     max_list, min_list = np.array(max_list), np.array(min_list)
     diffs = max_list - min_list
@@ -106,11 +119,10 @@ def normalize(data, max_list, min_list):
 
 
 def refine_data(data):
-    """
-    remove rows which have nan values
-    @ param data
-        data to refine
-    @ return data with complete instance without NaN values
+    """remove rows which have nan values
+
+    :param data: data to refine
+    :returns: data with complete instance without NaN values
     """
 
     # instances that have NaN values
@@ -126,14 +138,13 @@ def refine_data(data):
     return np.delete(data, instances_delete, 0)
 
 def divide_x_y(data, label):
-    """
-    Segments each sample into features and label
+    """Segments each sample into features and label
 
-    @ param data: numpy integer matrix
+    :param data: numpy integer matrix
         Sensor data
-    @ param label: string, ['gestures' (default), 'locomotion']
+    :param label: string, ['gestures' (default), 'locomotion']
         Type of activities to be recognized
-    @ return: numpy integer matrix, numpy integer array
+    :returns: numpy integer matrix, numpy integer array
         Features encapsulated into a matrix and labels as an array
     """
 
@@ -149,14 +160,15 @@ def divide_x_y(data, label):
 
 
 def adjust_idx_labels(data_y, label):
-    """
-    Transforms original labels into the range [0, nb_labels-1]
+    """Transforms original labels into the range [0, nb_labels-1]
 
-    @ param data_y: numpy integer array
+    :param data_y: numpy integer array
         Sensor labels
-    @ param label: string, ['gestures' (default), 'locomotion']
-        Type of activities to be recognized
-    @ return: numpy integer array
+    :param label: string, ['gestures' (default), 'locomotion']
+        Type of activities to be recognized. The OPPORTUNITY dataset
+        includes several annotations to perform recognition modes of
+        locomotion/postures and recognition of sporadic gestures.
+    :returns: numpy integer array
         Modified sensor labels
     """
 
@@ -185,13 +197,12 @@ def adjust_idx_labels(data_y, label):
 
 
 def check_data(data_set):
-    """
-    Try to access to the file and checks if dataset is in the data directory
-       In case the file is not found try to download it from original location
+    """Try to access to the file and checks if dataset is in the data directory
+    In case the file is not found try to download it from original location
 
-    @ param data_set:
+    :param data_set:
             Path with original OPPORTUNITY zip file
-    @ return: data directory
+    :return: data directory
     """
     data_dir, data_file = os.path.split(data_set)
     # When a directory is not provided, check if dataset is in the data directory
@@ -216,14 +227,13 @@ def check_data(data_set):
 
 
 def process_dataset_file(data, label):
-    """
-    Function defined as a pipeline to process individual OPPORTUNITY files
+    """ Function defined as a pipeline to process individual OPPORTUNITY files
 
-    @ param data: numpy integer matrix
+    :param data: numpy integer matrix
         Matrix containing data samples (rows) for every sensor channel (column)
-    @ param label: string, ['gestures' (default), 'locomotion']
+    :param label: string, ['gestures' (default), 'locomotion']
         Type of activities to be recognized
-    @ return: numpy integer matrix, numy integer array
+    :returns: numpy integer matrix, numy integer array
         Processed sensor data, segmented into features (x) and labels (y)
     """
 
@@ -247,16 +257,13 @@ def process_dataset_file(data, label):
 
 
 def generate_data(dataset, target_filename, label):
-    """
-    Function to read the OPPORTUNITY challenge raw data and process all sensor channels
+    """Function to read the OPPORTUNITY challenge raw data and process
+    all sensor channels
 
-    @ param dataset: string
-        Path with original OPPORTUNITY zip file
-    @ param target_filename: string
-        Processed file
-    @ param label: string, ['gestures' (default), 'locomotion']
-        Type of activities to be recognized. The OPPORTUNITY dataset includes several annotations to perform
-        recognition modes of locomotion/postures and recognition of sporadic gestures.
+    :param dataset: Path with original OPPORTUNITY zip file
+    :param target_filename: Processed file
+    :param label: ['gestures' (default), 'locomotion']
+        Type of activities to be recognized.
     """
 
     data_dir = check_data(dataset)
@@ -267,37 +274,36 @@ def generate_data(dataset, target_filename, label):
     data_x = np.empty((0, NB_SENSOR_CHANNELS))
     data_y = np.empty((0))
 
-    zf = zipfile.ZipFile(dataset)
-    print('Processing dataset files ...')
-    for datatype, data in OPPORTUNITY_DATA_FILES_DICT.items():
-        print("data type:", datatype)
-        data_x = np.empty((0, NB_SENSOR_CHANNELS))
-        data_y = np.empty((0))
-        for filename in data:
-            filename = f"OpportunityUCIDataset/dataset/{filename}"
-            try:
-                data = np.loadtxt(BytesIO(zf.read(filename)))
-                print('... file {0}'.format(filename))
-                x, y = process_dataset_file(data, label)
-                data_x = np.vstack((data_x, x))
-                data_y = np.concatenate([data_y, y])
-            except KeyError:
-                print(f'ERROR: Did not find {filename} in zip file')
-        if datatype == 'training':
-            X_train, y_train = data_x, data_y
-        else:
-            X_test, y_test = data_x, data_y
-    print(f"Final datasets with size: | train {X_train.shape} | test {X_test.shape}")
+    with zipfile.ZipFile(dataset,'r') as zf:
+        print('Processing dataset files ...')
+        for datatype, data in OPPORTUNITY_DATA_FILES_DICT.items():
+            print("data type:", datatype)
+            data_x = np.empty((0, NB_SENSOR_CHANNELS))
+            data_y = np.empty((0))
+            for filename in data:
+                filename = f"OpportunityUCIDataset/dataset/{filename}"
+                try:
+                    data = np.loadtxt(BytesIO(zf.read(filename)))
+                    print(f'... file {filename}')
+                    x, y = process_dataset_file(data, label)
+                    data_x = np.vstack((data_x, x))
+                    data_y = np.concatenate([data_y, y])
+                except KeyError:
+                    print(f'ERROR: Did not find {filename} in zip file')
+            if datatype == 'training':
+                X_train, y_train = data_x, data_y
+            else:
+                X_test, y_test = data_x, data_y
+        print(f"Final datasets with size: | train {X_train.shape} | test {X_test.shape}")
     obj = [(X_train, y_train), (X_test, y_test)]
-    f = open(os.path.join(data_dir, target_filename), 'wb')
-    cp.dump(obj, f, protocol=cp.HIGHEST_PROTOCOL)
-    f.close()
+    with open(os.path.join(data_dir, target_filename), 'wb') as f:
+        cp.dump(obj, f, protocol=cp.HIGHEST_PROTOCOL)
 
 
 def get_args():
-    '''
-    This function parses and return arguments passed in
-    @ return results of parsing arguments
+    '''This function parses and return arguments passed in
+
+    :returns: dataset, target_filename, label:results of parsing arguments
     '''
     parser = argparse.ArgumentParser(
         description='Preprocess OPPORTUNITY dataset')
@@ -307,7 +313,8 @@ def get_args():
     parser.add_argument(
         '-o', '--output', type=str, help='Processed data file', required=True)
     parser.add_argument(
-        '-t', '--task', type=str.lower, help='Type of activities to be recognized', default="gestures",
+        '-t', '--task', type=str.lower, help='Type of activities to be recognized',\
+            default="gestures",
         choices=["gestures", "locomotion"], required=False)
     # Array for all arguments passed to script
     args = parser.parse_args()
@@ -320,12 +327,12 @@ def get_args():
 
 
 def load_dataset(filename):
+    """load dataset and process it for training, validation, test
+
+    :param filename: string of file name
     """
-    load dataset and process it for training, validation, test
-    """
-    f = open(filename, 'rb')
-    data = cp.load(f)
-    f.close()
+    with open(filename,'rb') as f:
+        data=cp.load(f)
 
     X_train, y_train = data[0]
     X_test, y_test = data[1]
@@ -341,10 +348,18 @@ def load_dataset(filename):
     y_test = y_test.astype(np.float64)
 
 
-    return X_train, y_train, X_test, y_test 
+    return X_train, y_train, X_test, y_test
 
 
 def opp_sliding_window(data_x, data_y, ws, ss):
+    """Preprocess data using sliding window
+
+    :param data_x: numpy matrix of feature data
+    :param data_y: numpy array of label data
+    :param ws: numpy integer of window size
+    :param ss: nunmpy interger of step size
+    :returns: numpy array of data
+    """
     data_x = sliding_window(data_x, (ws, data_x.shape[1]), (ss, 1))
     data_y = np.asarray([[i[-1]] for i in sliding_window(data_y, ws, ss)])
     return data_x.astype(np.float32), data_y.reshape(len(data_y)).astype(np.float64)
@@ -363,9 +378,11 @@ if __name__ == '__main__':
 
     assert NB_SENSOR_CHANNELS == X_train.shape[1]
     # Sensor data is segmented using a sliding window mechanism
-    X_train, y_train = opp_sliding_window(X_train, y_train, SLIDING_WINDOW_LENGTH, SLIDING_WINDOW_STEP)
+    X_train, y_train = opp_sliding_window(X_train, y_train,\
+        SLIDING_WINDOW_LENGTH, SLIDING_WINDOW_STEP)
     print(f" ..after sliding window (train): inputs {X_train.shape}, targets {y_train.shape}")
-    X_test, y_test = opp_sliding_window(X_test, y_test, SLIDING_WINDOW_LENGTH, SLIDING_WINDOW_STEP)
+    X_test, y_test = opp_sliding_window(X_test, y_test,\
+        SLIDING_WINDOW_LENGTH, SLIDING_WINDOW_STEP)
     print(f" ..after sliding window (test): inputs {X_test.shape}, targets {y_test.shape}")
 
     np.save('./src/data/opp/X_test', X_test)

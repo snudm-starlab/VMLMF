@@ -1,6 +1,6 @@
 ################################################################################
 # [VMLMF] Lowrank Matrix Factorization with Vector-Multiplication
-# Project: Starlab 
+# Project: Starlab
 #
 # Authors: Hyojin Jeon (tarahjjeon@snu.ac.kr), Seoul National University
 #         U Kang (ukang@snu.ac.kr), Seoul National University
@@ -16,6 +16,18 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
+# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401
+"""
+====================================
+ :mod:`download_dataset`
+====================================
+.. moduleauthor:: Hyojin Jeon  <tarahjjeon@snu.ac.kr>
+설명
+=====
+데이터 다운로드를 위한 모듈입니다.
+
+- 웹에서 UCI HAR Dataset.zip 파일과 Opportunity UCI Dataset.zip 파일을 다운로드 받습니다.
+"""
 import os
 from subprocess import call
 
@@ -24,7 +36,8 @@ print("")
 print("Downloading...")
 if not os.path.exists("./src/data/UCI HAR Dataset.zip"):
     call(
-        'wget "https://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI HAR Dataset.zip"',
+        'wget "https://archive.ics.uci.edu/ml/machine-learning-databases\
+            /00240/UCI HAR Dataset.zip"',
         shell=True
     )
     print("Downloading done.\n")
@@ -33,7 +46,8 @@ else:
 
 if not os.path.exists("./src/data/OpportunityUCIDataset.zip"):
     call(
-        'wget https://archive.ics.uci.edu/ml/machine-learning-databases/00226/OpportunityUCIDataset.zip',
+        'wget https://archive.ics.uci.edu/ml/machine-learning-databases\
+            /00226/OpportunityUCIDataset.zip',
         shell=True
     )
     print("Downloading done.\n")
