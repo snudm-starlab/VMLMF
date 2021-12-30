@@ -1,0 +1,505 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ko" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ko" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>train_test package &mdash; VMLMF  문서</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="index" title="색인" href="genindex.html" />
+    <link rel="search" title="검색" href="search.html" />
+    <link rel="next" title="utils package" href="utils.html" />
+    <link rel="prev" title="preprocess_opp module" href="preprocess_opp.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VMLMF
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="download_dataset.html">download_dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess_opp.html">preprocess_opp module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">train_test package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-train_test.lm_test">train_test.lm_test module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lm-test"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lm_test</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-train_test.main">train_test.main module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main"><code class="xref py py-mod docutils literal notranslate"><span class="pre">main</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-train_test.main_total">train_test.main_total module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main-total"><code class="xref py py-mod docutils literal notranslate"><span class="pre">main_total</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-train_test.test">train_test.test module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#test"><code class="xref py py-mod docutils literal notranslate"><span class="pre">test</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-train_test.train">train_test.train module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#train"><code class="xref py py-mod docutils literal notranslate"><span class="pre">train</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-train_test">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VMLMF</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+      <li>train_test package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/train_test.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="train-test-package">
+<h1>train_test package<a class="headerlink" href="#train-test-package" title="이 표제에 대한 퍼머링크">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="이 표제에 대한 퍼머링크">¶</a></h2>
+</section>
+<section id="module-train_test.lm_test">
+<span id="train-test-lm-test-module"></span><h2>train_test.lm_test module<a class="headerlink" href="#module-train_test.lm_test" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="lm-test">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">lm_test</span></code><a class="headerlink" href="#lm-test" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id1">
+<h4>설명<a class="headerlink" href="#id1" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>VMLMF 기반 언어 모델을 시험하기 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.lm_test.data_init">
+<span class="sig-prename descclassname"><span class="pre">train_test.lm_test.</span></span><span class="sig-name descname"><span class="pre">data_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#train_test.lm_test.data_init" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>load data files and map words to indexes</p>
+<dl class="field-list simple">
+<dt class="field-odd">반환값</dt>
+<dd class="field-odd"><p>index array of each dataset</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.lm_test.get_args">
+<span class="sig-prename descclassname"><span class="pre">train_test.lm_test.</span></span><span class="sig-name descname"><span class="pre">get_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#train_test.lm_test.get_args" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>parse arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">반환값</dt>
+<dd class="field-odd"><p>parsed arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.lm_test.main">
+<span class="sig-prename descclassname"><span class="pre">train_test.lm_test.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#train_test.lm_test.main" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Train, validate, test the language model</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.lm_test.minibatch">
+<span class="sig-prename descclassname"><span class="pre">train_test.lm_test.</span></span><span class="sig-name descname"><span class="pre">minibatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_length</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.lm_test.minibatch" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Batches the data with [T, B] dimensionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – dataset</p></li>
+<li><p><strong>batch_size</strong> – integer size of batch</p></li>
+<li><p><strong>seq_length</strong> – integer length of sequence</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>mini batch of data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.lm_test.nll_loss">
+<span class="sig-prename descclassname"><span class="pre">train_test.lm_test.</span></span><span class="sig-name descname"><span class="pre">nll_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.lm_test.nll_loss" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Compute nll loss</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scores</strong> – model’s prediction</p></li>
+<li><p><strong>y</strong> – ground truth label</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>loss</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.lm_test.perplexity">
+<span class="sig-prename descclassname"><span class="pre">train_test.lm_test.</span></span><span class="sig-name descname"><span class="pre">perplexity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.lm_test.perplexity" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Compute the perplexity</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – feature and label data</p></li>
+<li><p><strong>model</strong> – model to train</p></li>
+<li><p><strong>batch_size</strong> – integer size of batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>perplexity of the model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.lm_test.setdevice">
+<span class="sig-prename descclassname"><span class="pre">train_test.lm_test.</span></span><span class="sig-name descname"><span class="pre">setdevice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.lm_test.setdevice" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>set the device for execution</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>args</strong> – parsed arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.lm_test.train">
+<span class="sig-prename descclassname"><span class="pre">train_test.lm_test.</span></span><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch_threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_norm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.lm_test.train" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>train &amp; validate &amp; test model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – minibatch of train, validation, test data</p></li>
+<li><p><strong>model</strong> – model to train</p></li>
+<li><p><strong>epochs</strong> – integer max epochs</p></li>
+<li><p><strong>epoch_threshold</strong> – integer epoch to start factoring the learning rate</p></li>
+<li><p><strong>lr</strong> – float learning rate while training the model</p></li>
+<li><p><strong>factor</strong> – float amount of factoring learning rate</p></li>
+<li><p><strong>max_norm</strong> – float maximun normalization</p></li>
+<li><p><strong>batch_size</strong> – integer size of batch</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-train_test.main">
+<span id="train-test-main-module"></span><h2>train_test.main module<a class="headerlink" href="#module-train_test.main" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="main">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">main</span></code><a class="headerlink" href="#main" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id2">
+<h4>설명<a class="headerlink" href="#id2" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>사람 행동 인지 문제 관련, 모델의 학습과 테스트, 모델 저장을 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.main.get_args">
+<span class="sig-prename descclassname"><span class="pre">train_test.main.</span></span><span class="sig-name descname"><span class="pre">get_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#train_test.main.get_args" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Parse the arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">반환값</dt>
+<dd class="field-odd"><p>parsed arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.main.main">
+<span class="sig-prename descclassname"><span class="pre">train_test.main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#train_test.main.main" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>train and test HAR model</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.main.set_seed">
+<span class="sig-prename descclassname"><span class="pre">train_test.main.</span></span><span class="sig-name descname"><span class="pre">set_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.main.set_seed" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Set random seed for reproducability</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>seed</strong> – random seed integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-train_test.main_total">
+<span id="train-test-main-total-module"></span><h2>train_test.main_total module<a class="headerlink" href="#module-train_test.main_total" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="main-total">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">main_total</span></code><a class="headerlink" href="#main-total" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id3">
+<h4>설명<a class="headerlink" href="#id3" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>사람 행동 인지 문제 관련, 모델의 학습과 테스트, 모델 저장을 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.main_total.get_args">
+<span class="sig-prename descclassname"><span class="pre">train_test.main_total.</span></span><span class="sig-name descname"><span class="pre">get_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#train_test.main_total.get_args" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Parse the arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">반환값</dt>
+<dd class="field-odd"><p>parsed arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.main_total.main">
+<span class="sig-prename descclassname"><span class="pre">train_test.main_total.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#train_test.main_total.main" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>train and test HAR model
+start train and test following the arguments user decided</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.main_total.set_seed">
+<span class="sig-prename descclassname"><span class="pre">train_test.main_total.</span></span><span class="sig-name descname"><span class="pre">set_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.main_total.set_seed" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>set random seed for reproducability</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>seed</strong> – random seed integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-train_test.test">
+<span id="train-test-test-module"></span><h2>train_test.test module<a class="headerlink" href="#module-train_test.test" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="test">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">test</span></code><a class="headerlink" href="#test" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id4">
+<h4>설명<a class="headerlink" href="#id4" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>학습한 모델의 테스트를 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.test.test">
+<span class="sig-prename descclassname"><span class="pre">train_test.test.</span></span><span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cuda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.test.test" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>test trained model with test data</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – model to test</p></li>
+<li><p><strong>test_data</strong> – test_data loader</p></li>
+<li><p><strong>args</strong> – arguments user decided</p></li>
+<li><p><strong>cuda</strong> – whether cuda is availabel</p></li>
+<li><p><strong>device</strong> – device user uses</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>trained model</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-train_test.train">
+<span id="train-test-train-module"></span><h2>train_test.train module<a class="headerlink" href="#module-train_test.train" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="train">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">train</span></code><a class="headerlink" href="#train" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id5">
+<h4>설명<a class="headerlink" href="#id5" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>모델의 학습을 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="train_test.train.train">
+<span class="sig-prename descclassname"><span class="pre">train_test.train.</span></span><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cuda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#train_test.train.train" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>train model with train data</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – model to train</p></li>
+<li><p><strong>train_data</strong> – train_data loader</p></li>
+<li><p><strong>args</strong> – arguments user decided</p></li>
+<li><p><strong>cuda</strong> – whether cuda is available or not</p></li>
+<li><p><strong>device</strong> – device users use</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>trained model</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-train_test">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-train_test" title="이 표제에 대한 퍼머링크">¶</a></h2>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="utils.html" class="btn btn-neutral float-right" title="utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="preprocess_opp.html" class="btn btn-neutral float-left" title="preprocess_opp module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Hyojin Jeon
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
