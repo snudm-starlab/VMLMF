@@ -407,7 +407,7 @@ class Model(nn.Module):
 
     def state_init(self, batch_size):
         """Initialize state vectors
-        
+
         :param int batch_size: size of batch
         """
         dev = next(self.parameters()).device

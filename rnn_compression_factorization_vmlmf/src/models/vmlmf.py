@@ -242,7 +242,8 @@ class MyLSTM(nn.Module):
 
     :param int input_size: size of input vector
     :param int hidden_layer_sizes: size of hidden layers
-    :param boolean batch_first:  If True, then the input and output tensors are provided as (batch, seq, feature) instead of (seq, batch, feature).
+    :param boolean batch_first:  If True, then the input and output
+    tensors are provided as (batch, seq, feature) instead of (seq, batch, feature).
     :param int w_rank: rank of all input to hidden matrices
     :param int u_ranks: rank of all hidden to hidden matrices
     :param list recurrent_init: list to initialize recurrent layers

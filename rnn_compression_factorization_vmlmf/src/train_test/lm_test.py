@@ -71,8 +71,7 @@ def get_args():
     parser.add_argument("--max_grad_norm", type=float, default=5, \
         help="The maximum norm of gradients we impose on training.")
     parser.add_argument("--device", type=str, choices = ["cpu", "gpu"],\
-        default = "gpu", help = "Whether to use cpu or gpu."
-                        + "On default falls back to gpu if one exists, falls back to cpu otherwise.")
+        default = "gpu", help = "Whether to use cpu or gpu.")
     parser.add_argument("--gpu_id", type=int, default=0, help="gpu_id")
     parser.add_argument("--wRank", type=int, default=300, help="wRank of vmlmf.")
     parser.add_argument("--uRanks", type=int,nargs="+", default=300, \
@@ -181,7 +180,7 @@ def train(data, model, epochs, epoch_threshold, lr, factor, max_norm,batch_size)
     :param lr: float learning rate while training the model
     :param factor: float amount of factoring learning rate
     :param max_norm: float maximun normalization
-    :param batch_size: integer size of batch 
+    :param batch_size: integer size of batch
     """
     trn, vld, tst = data
     tic = timeit.default_timer()
@@ -224,7 +223,7 @@ def train(data, model, epochs, epoch_threshold, lr, factor, max_norm,batch_size)
         print("*************************************************\n")
 
     #Evaluation
-    tst_perp = perplexity(tst, model)
+    tst_perp = perplexity(tst, model,batch_size)
     print(f"Test set perplexity : {tst_perp:.3f}")
     print("Training is over.")
 

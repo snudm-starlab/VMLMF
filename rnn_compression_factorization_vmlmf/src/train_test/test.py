@@ -30,7 +30,7 @@
 import torch
 def test(model,test_data,cuda,device):
     """test trained model with test data
- 
+
     :param model: model to test
     :param test_data: test_data loader
     :param args: arguments user decided

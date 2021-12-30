@@ -30,14 +30,14 @@
 import sys
 sys.path.append('./')
 import argparse
+import torch
+import numpy as np
 from models.vmlmf import MyVMLMFCell,MyLSTMCell,MyLSTM,Net
 from models.vmlmf_group import MyVMLMFCellg2
 from utils.compression_cal import print_model_parm_nums,print_model_parm_flops
 from utils.save_load import save_model,load_model
 from utils.OPP_dataloader import HAR_dataloader
 from utils.UCI_dataloader import UCI_dataloader
-import torch
-import numpy as np
 from train_test.train import train
 from train_test.test import test
 def get_args():
@@ -113,10 +113,10 @@ def main():
 
     if args.model.lower()=="vmmodel":
         model = Net(input_size, layer_sizes=args.layer_sizes,\
-             wRank=args.wRank, uRanks=args.uRanks, model=MyLSTM,cell=MyVMLMFCell)
+             w_rank=args.wRank, u_rank=args.uRanks, model=MyLSTM,cell=MyVMLMFCell)
     elif args.model.lower()=="vmmodel_group2":
         model = Net(input_size, layer_sizes=args.layer_sizes, \
-            wRank=args.wRank, uRanks=args.uRanks, model=MyLSTM,cell=MyVMLMFCellg2)
+            w_rank=args.wRank, u_rank=args.uRanks, model=MyLSTM,cell=MyVMLMFCellg2)
     elif args.model.lower() =="mylstm":
         model = Net(input_size, layer_sizes=args.layer_sizes,\
             model=MyLSTM,cell=MyLSTMCell)

@@ -166,8 +166,8 @@ class MyVMLMFgCellg2(nn.Module):
     """
     def __init__(self, input_size, hidden_size, w_rank=None, u_ranks=None,\
         g=2, recurrent_init=None,hidden_init=None):
-        super().__init__()
         """Initialize VMLMFgCell"""
+        super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.recurrent_init = recurrent_init

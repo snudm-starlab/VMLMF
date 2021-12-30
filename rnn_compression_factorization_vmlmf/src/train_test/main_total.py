@@ -34,13 +34,13 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 
 import argparse
 import random
+import torch
+import numpy as np
 from models.vmlmf import MyLSTM,MyLSTMCell,MyVMLMFCell,Net
 from models.vmlmf_group import MyVMLMFCellg2
 from utils.compression_cal import print_model_parm_flops,print_model_parm_nums
 from utils.OPP_dataloader import HAR_dataloader
 from utils.UCI_dataloader import UCI_dataloader
-import torch
-import numpy as np
 from train_test.train import train
 from train_test.test import test
 
