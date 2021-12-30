@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ko" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ko" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>preprocess_opp module &mdash; VMLMF  문서</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="index" title="색인" href="genindex.html" />
+    <link rel="search" title="검색" href="search.html" />
+    <link rel="next" title="train_test package" href="train_test.html" />
+    <link rel="prev" title="models package" href="models.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VMLMF
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="download_dataset.html">download_dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">preprocess_opp module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preprocess-opp"><code class="xref py py-mod docutils literal notranslate"><span class="pre">preprocess_opp</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">설명</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="train_test.html">train_test package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VMLMF</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+      <li>preprocess_opp module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/preprocess_opp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="module-preprocess_opp">
+<span id="preprocess-opp-module"></span><h1>preprocess_opp module<a class="headerlink" href="#module-preprocess_opp" title="이 표제에 대한 퍼머링크">¶</a></h1>
+<section id="preprocess-opp">
+<h2><a class="reference internal" href="#module-preprocess_opp" title="preprocess_opp"><code class="xref py py-mod docutils literal notranslate"><span class="pre">preprocess_opp</span></code></a><a class="headerlink" href="#preprocess-opp" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="id1">
+<h3>설명<a class="headerlink" href="#id1" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<p>Opportunity 데이터셋의 전처리를 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.adjust_idx_labels">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">adjust_idx_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.adjust_idx_labels" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Transforms original labels into the range [0, nb_labels-1]</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_y</strong> – numpy integer array
+Sensor labels</p></li>
+<li><p><strong>label</strong> – string, [‘gestures’ (default), ‘locomotion’]
+Type of activities to be recognized. The OPPORTUNITY dataset
+includes several annotations to perform recognition modes of
+locomotion/postures and recognition of sporadic gestures.</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>numpy integer array
+Modified sensor labels</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.check_data">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">check_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.check_data" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Try to access to the file and checks if dataset is in the data directory
+In case the file is not found try to download it from original location</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>data_set</strong> – Path with original OPPORTUNITY zip file</p>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>data directory</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.divide_x_y">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">divide_x_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.divide_x_y" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Segments each sample into features and label</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – numpy integer matrix
+Sensor data</p></li>
+<li><p><strong>label</strong> – string, [‘gestures’ (default), ‘locomotion’]
+Type of activities to be recognized</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>numpy integer matrix, numpy integer array
+Features encapsulated into a matrix and labels as an array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.generate_data">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">generate_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.generate_data" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Function to read the OPPORTUNITY challenge raw data and process
+all sensor channels</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> – Path with original OPPORTUNITY zip file</p></li>
+<li><p><strong>target_filename</strong> – Processed file</p></li>
+<li><p><strong>label</strong> – [‘gestures’ (default), ‘locomotion’]
+Type of activities to be recognized.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.get_args">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">get_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.get_args" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>This function parses and return arguments passed in</p>
+<dl class="field-list simple">
+<dt class="field-odd">반환값</dt>
+<dd class="field-odd"><p>dataset, target_filename, label:results of parsing arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.load_dataset">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">load_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.load_dataset" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>load dataset and process it for training, validation, test</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>filename</strong> – string of file name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.normalize">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.normalize" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Normalizes all sensor channels</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – numpy integer matrix
+Sensor data</p></li>
+<li><p><strong>max_list</strong> – numpy integer array
+Array containing maximums values for every one of the 113 sensor channels</p></li>
+<li><p><strong>min_list</strong> – numpy integer array
+Array containing minimum values for every one of the 113 sensor channels</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>Normalized sensor data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.opp_sliding_window">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">opp_sliding_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ss</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.opp_sliding_window" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Preprocess data using sliding window</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_x</strong> – numpy matrix of feature data</p></li>
+<li><p><strong>data_y</strong> – numpy array of label data</p></li>
+<li><p><strong>ws</strong> – numpy integer of window size</p></li>
+<li><p><strong>ss</strong> – nunmpy interger of step size</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>numpy array of data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.process_dataset_file">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">process_dataset_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.process_dataset_file" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Function defined as a pipeline to process individual OPPORTUNITY files</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – numpy integer matrix
+Matrix containing data samples (rows) for every sensor channel (column)</p></li>
+<li><p><strong>label</strong> – string, [‘gestures’ (default), ‘locomotion’]
+Type of activities to be recognized</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>numpy integer matrix, numy integer array
+Processed sensor data, segmented into features (x) and labels (y)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.refine_data">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">refine_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.refine_data" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>remove rows which have nan values</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>data</strong> – data to refine</p>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>data with complete instance without NaN values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preprocess_opp.select_columns_opp">
+<span class="sig-prename descclassname"><span class="pre">preprocess_opp.</span></span><span class="sig-name descname"><span class="pre">select_columns_opp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#preprocess_opp.select_columns_opp" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Selection of the 77 columns employed in the OPPORTUNITY challenge</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>data</strong> – numpy integer matrix. Sensor data (all features)</p>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>numpy integer matrix. Selection of features</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="train_test.html" class="btn btn-neutral float-right" title="train_test package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="models.html" class="btn btn-neutral float-left" title="models package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Hyojin Jeon
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

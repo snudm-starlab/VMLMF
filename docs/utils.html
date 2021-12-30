@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ko" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ko" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>utils package &mdash; VMLMF  문서</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="index" title="색인" href="genindex.html" />
+    <link rel="search" title="검색" href="search.html" />
+    <link rel="prev" title="train_test package" href="train_test.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VMLMF
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="download_dataset.html">download_dataset module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess_opp.html">preprocess_opp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="train_test.html">train_test package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.OPP_dataloader">utils.OPP_dataloader module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#opp-dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">OPP_dataloader</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.UCI_dataloader">utils.UCI_dataloader module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#uci-dataloader"><code class="xref py py-mod docutils literal notranslate"><span class="pre">UCI_dataloader</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.compression_cal">utils.compression_cal module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#compression-cal"><code class="xref py py-mod docutils literal notranslate"><span class="pre">compression_cal</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.save_load">utils.save_load module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#save-load"><code class="xref py py-mod docutils literal notranslate"><span class="pre">save_load</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.sliding_window">utils.sliding_window module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sliding-window"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sliding_window</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VMLMF</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+      <li>utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="utils-package">
+<h1>utils package<a class="headerlink" href="#utils-package" title="이 표제에 대한 퍼머링크">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="이 표제에 대한 퍼머링크">¶</a></h2>
+</section>
+<section id="module-utils.OPP_dataloader">
+<span id="utils-opp-dataloader-module"></span><h2>utils.OPP_dataloader module<a class="headerlink" href="#module-utils.OPP_dataloader" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="opp-dataloader">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">OPP_dataloader</span></code><a class="headerlink" href="#opp-dataloader" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id1">
+<h4>설명<a class="headerlink" href="#id1" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>Opportunity data를 로드하기 위한 모듈입니다.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.OPP_dataloader.CustomDataset">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">utils.OPP_dataloader.</span></span><span class="sig-name descname"><span class="pre">CustomDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.OPP_dataloader.CustomDataset" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<p>Dataset class</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.OPP_dataloader.HAR_dataloader">
+<span class="sig-prename descclassname"><span class="pre">utils.OPP_dataloader.</span></span><span class="sig-name descname"><span class="pre">HAR_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./data/opp'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.OPP_dataloader.HAR_dataloader" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>get dataloader - dataloader the batch size of load data</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_size</strong> – integer batch_size of dataset</p></li>
+<li><p><strong>dataset_folder</strong> – string file path to load dataset from</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>train_loader, test dataloader:</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-utils.UCI_dataloader">
+<span id="utils-uci-dataloader-module"></span><h2>utils.UCI_dataloader module<a class="headerlink" href="#module-utils.UCI_dataloader" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="uci-dataloader">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">UCI_dataloader</span></code><a class="headerlink" href="#uci-dataloader" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id2">
+<h4>설명<a class="headerlink" href="#id2" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>UCI datda를 불러오기 위한 모듈입니다.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.UCI_dataloader.UCIDataset">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">utils.UCI_dataloader.</span></span><span class="sig-name descname"><span class="pre">UCIDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.UCI_dataloader.UCIDataset" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">torch.utils.data.dataset.T_co</span></code>]</p>
+<p>Dataset class for UCI</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_path</strong> (<em>string</em>) – file path of dataset</p></li>
+<li><p><strong>mode</strong> (<em>string</em>) – select mode to load train or test dataset</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.UCI_dataloader.UCI_dataloader">
+<span class="sig-prename descclassname"><span class="pre">utils.UCI_dataloader.</span></span><span class="sig-name descname"><span class="pre">UCI_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./data/UCI</span> <span class="pre">HAR</span> <span class="pre">Dataset/'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.UCI_dataloader.UCI_dataloader" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>get dataloader - dataloader the batch size of load data</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch_size</strong> – integer batch_size of dataset</p></li>
+<li><p><strong>dataset_folder</strong> – string file path to load dataset from</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>train_loader, test_loader</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.UCI_dataloader.load_X">
+<span class="sig-prename descclassname"><span class="pre">utils.UCI_dataloader.</span></span><span class="sig-name descname"><span class="pre">load_X</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_signals_paths</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.UCI_dataloader.load_X" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>load signal data from path</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>X_signals_path</strong> – string file path of X dataset</p>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>numpy array of X data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.UCI_dataloader.load_y">
+<span class="sig-prename descclassname"><span class="pre">utils.UCI_dataloader.</span></span><span class="sig-name descname"><span class="pre">load_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.UCI_dataloader.load_y" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>load label data from path</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>y_path</strong> – string file path of y dataset</p>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>numpy array of y data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-utils.compression_cal">
+<span id="utils-compression-cal-module"></span><h2>utils.compression_cal module<a class="headerlink" href="#module-utils.compression_cal" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="compression-cal">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">compression_cal</span></code><a class="headerlink" href="#compression-cal" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id3">
+<h4>설명<a class="headerlink" href="#id3" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>모델의 파라미터 수와 FLOPs 수를 계산하기 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.compression_cal.count_linear">
+<span class="sig-prename descclassname"><span class="pre">utils.compression_cal.</span></span><span class="sig-name descname"><span class="pre">count_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.compression_cal.count_linear" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>count FLOPs of linear layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – model object</p></li>
+<li><p><strong>output_size</strong> – integer output size of the model</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>FLOPs of linear layer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.compression_cal.count_lstm">
+<span class="sig-prename descclassname"><span class="pre">utils.compression_cal.</span></span><span class="sig-name descname"><span class="pre">count_lstm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modeltype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.compression_cal.count_lstm" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>count FLOPs of lstm/vmlmf layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – model object</p></li>
+<li><p><strong>seq_len</strong> – integer sequence length of the input data</p></li>
+<li><p><strong>batch_size</strong> – integer batch_size of the input data</p></li>
+<li><p><strong>modeltype</strong> – type of the model</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>FLOPs of LSTM model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.compression_cal.print_model_parm_flops">
+<span class="sig-prename descclassname"><span class="pre">utils.compression_cal.</span></span><span class="sig-name descname"><span class="pre">print_model_parm_flops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modeltype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vmmodel'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.compression_cal.print_model_parm_flops" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>print FLOPs of the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – model to count FLOPs</p></li>
+<li><p><strong>seq_len</strong> – integer sequence length of the input data</p></li>
+<li><p><strong>args</strong> – argument user decided</p></li>
+<li><p><strong>modeltype</strong> – string type of the model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.compression_cal.print_model_parm_names">
+<span class="sig-prename descclassname"><span class="pre">utils.compression_cal.</span></span><span class="sig-name descname"><span class="pre">print_model_parm_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.compression_cal.print_model_parm_names" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>print the name of parameters of the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>model</strong> – model to get parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.compression_cal.print_model_parm_nums">
+<span class="sig-prename descclassname"><span class="pre">utils.compression_cal.</span></span><span class="sig-name descname"><span class="pre">print_model_parm_nums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.compression_cal.print_model_parm_nums" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>print the number of parameters of the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>model</strong> – model to count parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-utils.save_load">
+<span id="utils-save-load-module"></span><h2>utils.save_load module<a class="headerlink" href="#module-utils.save_load" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="save-load">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">save_load</span></code><a class="headerlink" href="#save-load" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id4">
+<h4>설명<a class="headerlink" href="#id4" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>모델을 저장하고, 저장한 모델을 불러오기 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.save_load.load_model">
+<span class="sig-prename descclassname"><span class="pre">utils.save_load.</span></span><span class="sig-name descname"><span class="pre">load_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./train_test/trained_model/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.save_load.load_model" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>load the compressed model from input file path</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – model to load</p></li>
+<li><p><strong>args</strong> – argument user decided</p></li>
+<li><p><strong>path</strong> – string file path where the model exists</p></li>
+<li><p><strong>name</strong> – string filename to load</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.save_load.save_model">
+<span class="sig-prename descclassname"><span class="pre">utils.save_load.</span></span><span class="sig-name descname"><span class="pre">save_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./train_test/trained_model/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.save_load.save_model" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Save the compressed state dictionary of model to input file path</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – model to save</p></li>
+<li><p><strong>args</strong> – argument user decided</p></li>
+<li><p><strong>path</strong> – string path to save the model in</p></li>
+<li><p><strong>name</strong> – string filename to save</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-utils.sliding_window">
+<span id="utils-sliding-window-module"></span><h2>utils.sliding_window module<a class="headerlink" href="#module-utils.sliding_window" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="sliding-window">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">sliding_window</span></code><a class="headerlink" href="#sliding-window" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id5">
+<h4>설명<a class="headerlink" href="#id5" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>sliding window를 사용하여 데이터를 전처리하기 위한 모듈입니다.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.sliding_window.norm_shape">
+<span class="sig-prename descclassname"><span class="pre">utils.sliding_window.</span></span><span class="sig-name descname"><span class="pre">norm_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.sliding_window.norm_shape" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Normalize numpy array shapes so they’re always expressed as a tuple,
+even for one-dimensional shapes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>shape</strong> – an int, or a tuple of ints</p>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>a shape tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.sliding_window.sliding_window">
+<span class="sig-prename descclassname"><span class="pre">utils.sliding_window.</span></span><span class="sig-name descname"><span class="pre">sliding_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#utils.sliding_window.sliding_window" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Return a sliding window over a in any number of dimensions</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> – an n-dimensional numpy array</p></li>
+<li><p><strong>ws</strong> – an int (a is 1D) or tuple (a is 2D or greater) representing the size
+of each dimension of the window</p></li>
+<li><p><strong>ss</strong> – an int (a is 1D) or tuple (a is 2D or greater) representing the
+amount to slide the window in each dimension. If not specified, it
+defaults to ws.</p></li>
+<li><p><strong>flatten</strong> – if True, all slices are flattened, otherwise, there is an
+extra dimension for each dimension of the input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>an array containing each n-dimensional window from a</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-utils" title="이 표제에 대한 퍼머링크">¶</a></h2>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="train_test.html" class="btn btn-neutral float-left" title="train_test package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Hyojin Jeon
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

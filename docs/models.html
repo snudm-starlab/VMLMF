@@ -1,0 +1,816 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="ko" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="ko" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>models package &mdash; VMLMF  문서</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="index" title="색인" href="genindex.html" />
+    <link rel="search" title="검색" href="search.html" />
+    <link rel="next" title="preprocess_opp module" href="preprocess_opp.html" />
+    <link rel="prev" title="download_dataset module" href="download_dataset.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> VMLMF
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="download_dataset.html">download_dataset module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">models package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-models.vmlmf">models.vmlmf module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vmlmf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">vmlmf</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-models.vmlmf_group">models.vmlmf_group module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vmlmf-group"><code class="xref py py-mod docutils literal notranslate"><span class="pre">vmlmf_group</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-models.vmlmf_lm">models.vmlmf_lm module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vmlmf-lm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">vmlmf_lm</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess_opp.html">preprocess_opp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="train_test.html">train_test package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">VMLMF</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">src</a> &raquo;</li>
+        
+      <li>models package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/models.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="models-package">
+<h1>models package<a class="headerlink" href="#models-package" title="이 표제에 대한 퍼머링크">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="이 표제에 대한 퍼머링크">¶</a></h2>
+</section>
+<section id="module-models.vmlmf">
+<span id="models-vmlmf-module"></span><h2>models.vmlmf module<a class="headerlink" href="#module-models.vmlmf" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="vmlmf">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">vmlmf</span></code><a class="headerlink" href="#vmlmf" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id1">
+<h4>설명<a class="headerlink" href="#id1" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>VMLMF의 RNN 셀, 네트워크 구조 관련 모듈입니다.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf.MyLSTM">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf.</span></span><span class="sig-name descname"><span class="pre">MyLSTM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">input_size,</span> <span class="pre">hidden_layer_sizes=[32,</span> <span class="pre">32],</span> <span class="pre">batch_first=True,</span> <span class="pre">recurrent_inits=None,</span> <span class="pre">hidden_inits=None,</span> <span class="pre">w_rank=None,</span> <span class="pre">u_ranks=None,</span> <span class="pre">cell=&lt;class</span> <span class="pre">'models.vmlmf.MyLSTMCell'&gt;,</span> <span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf.MyLSTM" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>LSTM layer connecting LSTM Cells</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>hidden_layer_sizes</strong> (<em>int</em>) – size of hidden layers</p></li>
+<li><p><strong>batch_first</strong> (<em>boolean</em>) – If True, then the input and output tensors are provided as (batch, seq, feature) instead of (seq, batch, feature).</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all input to hidden matrices</p></li>
+<li><p><strong>u_ranks</strong> (<em>int</em>) – rank of all hidden to hidden matrices</p></li>
+<li><p><strong>recurrent_init</strong> (<em>list</em>) – list to initialize recurrent layers</p></li>
+<li><p><strong>hidden_init</strong> (<em>list</em>) – list to initialize hidden state</p></li>
+<li><p><strong>cell</strong> (<em>Class</em>) – class of rnn cell implementation</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf.MyLSTM.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf.MyLSTM.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf.MyLSTM.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf.MyLSTM.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf.MyLSTMCell">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf.</span></span><span class="sig-name descname"><span class="pre">MyLSTMCell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ranks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf.MyLSTMCell" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>LSTM Cell of Vanilla LSTM and LMF</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden state vector</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all W matrices</p></li>
+<li><p><strong>u_rank</strong> (<em>int</em>) – rank of all U matrices</p></li>
+<li><p><strong>recurrent_init</strong> (<em>list</em>) – list to initialize recurrent layers</p></li>
+<li><p><strong>hidden_init</strong> (<em>list</em>) – list to initialize hidden state</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf.MyLSTMCell.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hiddenStates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf.MyLSTMCell.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf.MyLSTMCell.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf.MyLSTMCell.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf.MyVMLMFCell">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf.</span></span><span class="sig-name descname"><span class="pre">MyVMLMFCell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ranks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf.MyVMLMFCell" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>LSTM Cell of VMLMF</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden state vector</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all input to hidden matrices</p></li>
+<li><p><strong>u_ranks</strong> (<em>int</em>) – rank of all hidden to hidden matrices</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf.MyVMLMFCell.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_states</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf.MyVMLMFCell.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf.MyVMLMFCell.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf.MyVMLMFCell.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf.Net">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf.</span></span><span class="sig-name descname"><span class="pre">Net</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">input_size,</span> <span class="pre">layer_sizes=[32,</span> <span class="pre">32],</span> <span class="pre">w_rank=None,</span> <span class="pre">u_rank=None,</span> <span class="pre">model=&lt;class</span> <span class="pre">'models.vmlmf.MyLSTM'&gt;,</span> <span class="pre">cell=&lt;class</span> <span class="pre">'models.vmlmf.MyLSTMCell'&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf.Net" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Uni-directional LSTM Network (LSTM layer + Linear layer)</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>layer_sizes</strong> (<em>int</em>) – size of hidden layer</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all input to hidden matrices</p></li>
+<li><p><strong>u_rank</strong> (<em>int</em>) – rank of all hidden to hidden matrices</p></li>
+<li><p><strong>model</strong> (<em>Class</em>) – class of rnn model implementation</p></li>
+<li><p><strong>cell</strong> (<em>Class</em>) – class of rnn cell implementation</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf.Net.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf.Net.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf.Net.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf.Net.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-models.vmlmf_group">
+<span id="models-vmlmf-group-module"></span><h2>models.vmlmf_group module<a class="headerlink" href="#module-models.vmlmf_group" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="vmlmf-group">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">vmlmf_group</span></code><a class="headerlink" href="#vmlmf-group" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id2">
+<h4>설명<a class="headerlink" href="#id2" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>VMLMF Group 구조의 RNN 셀, 네트워크 구조 관련 모듈입니다.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf_group.MyVMLMFCellg2">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf_group.</span></span><span class="sig-name descname"><span class="pre">MyVMLMFCellg2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ranks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_group.MyVMLMFCellg2" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>LSTM Cell of VMLMF_group</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> – size of input vector</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden state vector</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all input to hidden matrices</p></li>
+<li><p><strong>u_ranks</strong> (<em>int</em>) – rank of all hidden to hidden matrices</p></li>
+<li><p><strong>g</strong> (<em>int</em>) – number of groups</p></li>
+<li><p><strong>recurrent_init</strong> (<em>list</em>) – list for initialize recurrent layer</p></li>
+<li><p><strong>hidden_init</strong> (<em>list</em>) – list for initialize hidden state</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_group.MyVMLMFCellg2.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hiddenStates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_group.MyVMLMFCellg2.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf_group.MyVMLMFCellg2.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf_group.MyVMLMFCellg2.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf_group.MyVMLMFgCellg2">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf_group.</span></span><span class="sig-name descname"><span class="pre">MyVMLMFgCellg2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ranks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurrent_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_group.MyVMLMFgCellg2" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>LSTM Cell of VMLMF_group without vm</p>
+<ul class="simple">
+<li><p>vmlmf group cell without vm module for ablation study</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden state vector</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all input to hidden matrices</p></li>
+<li><p><strong>u_ranks</strong> (<em>int</em>) – rank of all hidden to hidden matrices</p></li>
+<li><p><strong>g</strong> (<em>int</em>) – number of groups</p></li>
+<li><p><strong>recurrent_init</strong> (<em>list</em>) – list for initialize recurrent layer</p></li>
+<li><p><strong>hidden_init</strong> (<em>list</em>) – list for initialize hidden state</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_group.MyVMLMFgCellg2.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hiddenStates</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_group.MyVMLMFgCellg2.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf_group.MyVMLMFgCellg2.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf_group.MyVMLMFgCellg2.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-models.vmlmf_lm">
+<span id="models-vmlmf-lm-module"></span><h2>models.vmlmf_lm module<a class="headerlink" href="#module-models.vmlmf_lm" title="이 표제에 대한 퍼머링크">¶</a></h2>
+<section id="vmlmf-lm">
+<h3><code class="xref py py-mod docutils literal notranslate"><span class="pre">vmlmf_lm</span></code><a class="headerlink" href="#vmlmf-lm" title="이 표제에 대한 퍼머링크">¶</a></h3>
+<section id="id3">
+<h4>설명<a class="headerlink" href="#id3" title="이 표제에 대한 퍼머링크">¶</a></h4>
+<p>VMLMF 기반 언어 모델 생성을 위한 모듈입니다.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Embed">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf_lm.</span></span><span class="sig-name descname"><span class="pre">Embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocab_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Embed" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Embedding layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vocab_size</strong> (<em>int</em>) – size of vocabulary</p></li>
+<li><p><strong>embed_size</strong> (<em>int</em>) – size of embedding layer</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Embed.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Embed.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Embed.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf_lm.Embed.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf_lm.LSTM">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf_lm.</span></span><span class="sig-name descname"><span class="pre">LSTM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">winit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.LSTM" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>LSTM layer for language model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden state vector</p></li>
+<li><p><strong>dropout</strong> (<em>float</em>) – drop out rate</p></li>
+<li><p><strong>winit</strong> (<em>float</em>) – the bound of the uniform distribution</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.LSTM.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.LSTM.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.LSTM.lstm_step">
+<span class="sig-name descname"><span class="pre">lstm_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.LSTM.lstm_step" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Forward computation of LSTM Cell</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>tensor</em>) – input sequence</p></li>
+<li><p><strong>h</strong> (<em>tensor</em>) – hidden state</p></li>
+<li><p><strong>c</strong> (<em>tensor</em>) – cell state vector</p></li>
+<li><p><strong>w_x</strong> (<em>tensor</em>) – input to hidden weights</p></li>
+<li><p><strong>w_h</strong> (<em>tensor</em>) – hidden to hidden weights</p></li>
+<li><p><strong>b_x</strong> (<em>tensor</em>) – input to hidden bias</p></li>
+<li><p><strong>b_h</strong> (<em>tensor</em>) – hidden to hidden bias</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>next hidden, cell states</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf_lm.LSTM.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf_lm.LSTM.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Linear">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf_lm.</span></span><span class="sig-name descname"><span class="pre">Linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Linear" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Linear layer for language model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden state vector</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Linear.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Linear.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Linear.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf_lm.Linear.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Model">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf_lm.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocab_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">winit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ranks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lstm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pytorch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Model" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Network class for language model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vocab_size</strong> (<em>int</em>) – size of vocabulary</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden layer</p></li>
+<li><p><strong>layer_num</strong> (<em>int</em>) – number of hidden layers</p></li>
+<li><p><strong>dropout</strong> (<em>float</em>) – drop out rate</p></li>
+<li><p><strong>winit</strong> (<em>float</em>) – the bound of the uniform distribution</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all input to hidden matrices</p></li>
+<li><p><strong>u_ranks</strong> (<em>int</em>) – rank of all hidden to hidden matrices</p></li>
+<li><p><strong>lstm_type</strong> (<em>string</em>) – type of lstm</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Model.detach">
+<span class="sig-name descname"><span class="pre">detach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Model.detach" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Returns a new Tensor, detached from the current graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">반환값</dt>
+<dd class="field-odd"><p>hidden, cell states tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Model.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Model.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Model.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Model.reset_parameters" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Initialize parameters of network</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Model.state_init">
+<span class="sig-name descname"><span class="pre">state_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.Model.state_init" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Initialize state vectors</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><p><strong>batch_size</strong> (<em>int</em>) – size of batch</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf_lm.Model.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf_lm.Model.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf_lm.myVMLSTM">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf_lm.</span></span><span class="sig-name descname"><span class="pre">myVMLSTM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">winit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ranks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.myVMLSTM" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>VMLSTM layer for language model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden state vector</p></li>
+<li><p><strong>dropout</strong> (<em>float</em>) – drop out rate</p></li>
+<li><p><strong>winit</strong> (<em>float</em>) – the bound of the uniform distribution</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all input to hidden matrices</p></li>
+<li><p><strong>u_ranks</strong> (<em>int</em>) – rank of all hidden to hidden matrices</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.myVMLSTM.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.myVMLSTM.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.myVMLSTM.lstm_step">
+<span class="sig-name descname"><span class="pre">lstm_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.myVMLSTM.lstm_step" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Forward computation of VMLSTM Cell</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>tensor</em>) – input sequence</p></li>
+<li><p><strong>h</strong> (<em>tensor</em>) – hidden state</p></li>
+<li><p><strong>c</strong> (<em>tensor</em>) – cell state vector</p></li>
+<li><p><strong>w_x</strong> (<em>tensor</em>) – input to hidden weights</p></li>
+<li><p><strong>w_h</strong> (<em>tensor</em>) – hidden to hidden weights</p></li>
+<li><p><strong>b_x</strong> (<em>tensor</em>) – input to hidden bias</p></li>
+<li><p><strong>b_h</strong> (<em>tensor</em>) – hidden to hidden bias</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>next hidden, cell states</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf_lm.myVMLSTM.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf_lm.myVMLSTM.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.vmlmf_lm.myVMLSTM_Group">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">models.vmlmf_lm.</span></span><span class="sig-name descname"><span class="pre">myVMLSTM_Group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">winit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_ranks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.myVMLSTM_Group" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>기반 클래스: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>VMLSTM Group layer for language model</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_size</strong> (<em>int</em>) – size of input vector</p></li>
+<li><p><strong>hidden_size</strong> (<em>int</em>) – size of hidden state vector</p></li>
+<li><p><strong>dropout</strong> (<em>float</em>) – drop out rate</p></li>
+<li><p><strong>winit</strong> (<em>float</em>) – the bound of the uniform distribution</p></li>
+<li><p><strong>w_rank</strong> (<em>int</em>) – rank of all input to hidden matrices</p></li>
+<li><p><strong>u_ranks</strong> (<em>int</em>) – rank of all hidden to hidden matrices</p></li>
+<li><p><strong>g</strong> (<em>int</em>) – number of groups</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.myVMLSTM_Group.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.myVMLSTM_Group.forward" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="models.vmlmf_lm.myVMLSTM_Group.lstm_step">
+<span class="sig-name descname"><span class="pre">lstm_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.vmlmf_lm.myVMLSTM_Group.lstm_step" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd><p>Forward computation of VMLSTM_Group Cell</p>
+<dl class="field-list simple">
+<dt class="field-odd">매개변수</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>tensor</em>) – input sequence</p></li>
+<li><p><strong>h</strong> (<em>tensor</em>) – hidden state</p></li>
+<li><p><strong>c</strong> (<em>tensor</em>) – cell state vector</p></li>
+<li><p><strong>w_x</strong> (<em>tensor</em>) – input to hidden weights</p></li>
+<li><p><strong>w_h</strong> (<em>tensor</em>) – hidden to hidden weights</p></li>
+<li><p><strong>b_x</strong> (<em>tensor</em>) – input to hidden bias</p></li>
+<li><p><strong>b_h</strong> (<em>tensor</em>) – hidden to hidden bias</p></li>
+</ul>
+</dd>
+<dt class="field-even">반환값</dt>
+<dd class="field-even"><p>next hidden, cell states</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="models.vmlmf_lm.myVMLSTM_Group.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#models.vmlmf_lm.myVMLSTM_Group.training" title="이 정의에 대한 퍼머링크">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="module-models">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-models" title="이 표제에 대한 퍼머링크">¶</a></h2>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="preprocess_opp.html" class="btn btn-neutral float-right" title="preprocess_opp module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="download_dataset.html" class="btn btn-neutral float-left" title="download_dataset module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Hyojin Jeon
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
