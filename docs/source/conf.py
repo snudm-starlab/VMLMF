@@ -15,6 +15,7 @@ import sys
 sys.path.insert(0,os.path.abspath('.'))
 sys.path.insert(0,os.path.abspath('../..'))
 sys.path.insert(0, os.path.abspath('../../rnn_compression_factorization_vmlmf/src'))
+sys.path.insert(0, os.path.abspath('../../VMLMF/rnn_compression_factorization_vmlmf/src'))
 
 
 
