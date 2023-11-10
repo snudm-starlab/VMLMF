@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401
+# pylint: disable=R0902, R0913, R0914, C0413
 """
 ====================================
  :mod:`main_total`
@@ -28,21 +28,21 @@
 
 """
 import sys
-sys.path.append('./')
 import os
-os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 
 import argparse
 import random
 import torch
 import numpy as np
-from models.vmlmf import MyLSTM,MyLSTMCell,MyVMLMFCell,Net
+sys.path.append('./')
+from models.vmlmf import MyLSTM, MyLSTMCell, MyVMLMFCell, Net
 from models.vmlmf_group import MyVMLMFCellg2
 from utils.compression_cal import print_model_parm_flops,print_model_parm_nums
-from utils.OPP_dataloader import HAR_dataloader
-from utils.UCI_dataloader import UCI_dataloader
+from utils.oppdataloader import har_dataloader
+from utils.ucidataloader import uci_dataloader
 from train_test.train import train
 from train_test.test import test
+os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 
 def get_args():
     """Parse the arguments
@@ -64,7 +64,7 @@ def get_args():
                         help='enable bidirectional processing')
     parser.add_argument('--batch-size', type=int, default=81,
                         help='input batch size for training (default: 81)')
-    parser.add_argument('--max_epochs', type=int, default=100,
+    parser.add_argument('--max_epochs', type=int, default=1,
                         help='max iterations of training (default: 100)')
     parser.add_argument('--model', type=str, default="myLSTM",
                         help='if either myLSTM cells should be used for optimization')
@@ -121,8 +121,8 @@ def main():
     device = f'cuda:{gpu_id}'
 
     set_seed(args.seed)
-    train_data, test_data = HAR_dataloader(args.batch_size) if args.data.lower() == "opp"\
-        else UCI_dataloader(args.batch_size)
+    train_data, test_data = har_dataloader(args.batch_size) if args.data.lower() == "opp"\
+        else uci_dataloader(args.batch_size)
     set_seed(args.seed)
     input_size=77 if args.data.lower()=="opp" else 9
 
@@ -136,7 +136,7 @@ def main():
         model = Net(input_size, layer_sizes=args.layer_sizes,\
             model=MyLSTM,cell=MyLSTMCell)
     else:
-        raise Exception("unsupported cell model")
+        raise RuntimeError("unsupported cell model")
 
     if cuda:
         model.to(device)

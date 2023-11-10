@@ -15,8 +15,8 @@
 # This software is free of charge under research purposes.
 # For commercial purposes, please contact the authors.
 #
-################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401
+###############################################################################
+# pylint: disable=R0902, R0913, R0914, C0413
 """
 ====================================
  :mod:`main`
@@ -36,8 +36,8 @@ from models.vmlmf import MyVMLMFCell,MyLSTMCell,MyLSTM,Net
 from models.vmlmf_group import MyVMLMFCellg2
 from utils.compression_cal import print_model_parm_nums,print_model_parm_flops
 from utils.save_load import save_model,load_model
-from utils.OPP_dataloader import HAR_dataloader
-from utils.UCI_dataloader import UCI_dataloader
+from utils.oppdataloader import har_dataloader
+from utils.ucidataloader import uci_dataloader
 from train_test.train import train
 from train_test.test import test
 def get_args():
@@ -121,14 +121,14 @@ def main():
         model = Net(input_size, layer_sizes=args.layer_sizes,\
             model=MyLSTM,cell=MyLSTMCell)
     else:
-        raise Exception("unsupported cell model")
+        raise RuntimeError("unsupported cell model")
 
     if cuda:
         model.to(device)
 
     # load data
-    train_data, test_data = HAR_dataloader(args.batch_size) \
-        if args.data.lower() == "opp" else UCI_dataloader(args.batch_size)
+    train_data, test_data = har_dataloader(args.batch_size) \
+        if args.data.lower() == "opp" else uci_dataloader(args.batch_size)
 
     if args.is_train:#Train mode
         trained_model=train(model,train_data,args,cuda,device) #obtain trained(compressed) model

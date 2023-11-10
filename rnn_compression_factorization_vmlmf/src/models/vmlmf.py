@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102
+# pylint: disable=R0902, R0913, R0914
 """
 ====================================
  :mod:`vmlmf`
@@ -44,13 +44,13 @@ class MyVMLMFCell(nn.Module):
     :param int u_ranks: rank of all hidden to hidden matrices
     """
 
-    def __init__(self, input_size, hidden_size, recurrent_init=None,w_rank=None, u_ranks=None):
+    def __init__(self, input_size, hidden_size, w_rank=None, u_ranks=None):
         """Initialize VMLMFCell"""
         super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.w_rank = w_rank
-        self.u_ranks = u_ranks[-1]
+        self.u_ranks = u_ranks[-1] if isinstance(u_ranks, list) and len(u_ranks) < 2 else u_ranks
 
         # U in LMF
         self.u_x = nn.Parameter(0.1 * torch.randn([input_size, w_rank]))
@@ -76,6 +76,7 @@ class MyVMLMFCell(nn.Module):
                f"w_rank: {self.w_rank}, u_ranks: {self.u_ranks})"
 
     def forward(self, x, hidden_states):
+        """Forward pass for the MyVMLMFCell module."""
         # step 01. diagonal elements vector & x vector element-wise multiplication
         # step 02. off diagonal elements low rank approximation * x vector
         # step 03. add 2 vectors from previous process
@@ -144,7 +145,7 @@ class MyLSTMCell(nn.Module):
         self.hidden_init = hidden_init
         self.w_rank = w_rank
         self.u_ranks = u_ranks
-        if type(self.u_ranks) is list:
+        if isinstance(self.u_ranks, list):
             self.u_ranks = u_ranks[0]
 
         if w_rank is None:  # for four gates in vanilla LSTM
@@ -184,51 +185,51 @@ class MyLSTMCell(nn.Module):
         self.bias_c = nn.Parameter(torch.ones([1, hidden_size]))
         self.bias_o = nn.Parameter(torch.ones([1, hidden_size]))
 
-    def forward(self, x, hiddenStates):
-
+    def forward(self, x, hidden_states):
+        """Forward pass for the MyLSTMCell module."""
         # hidden and cell states for previous time step (h_{t-1}, c_{t-1})
-        (h, c) = hiddenStates
+        (h, c) = hidden_states
 
         if self.w_rank is None:  # Vanilla LSTM
-            wVal1 = torch.matmul(x, self.w1)
-            wVal2 = torch.matmul(x, self.w2)
-            wVal3 = torch.matmul(x, self.w3)
-            wVal4 = torch.matmul(x, self.w4)
+            w_val1 = torch.matmul(x, self.w1)
+            w_val2 = torch.matmul(x, self.w2)
+            w_val3 = torch.matmul(x, self.w3)
+            w_val4 = torch.matmul(x, self.w4)
         else:  # Low-rank LSTM
-            wVal1 = torch.matmul(
+            w_val1 = torch.matmul(
                 torch.matmul(x, self.w), self.w1)
-            wVal2 = torch.matmul(
+            w_val2 = torch.matmul(
                 torch.matmul(x, self.w), self.w2)
-            wVal3 = torch.matmul(
+            w_val3 = torch.matmul(
                 torch.matmul(x, self.w), self.w3)
-            wVal4 = torch.matmul(
+            w_val4 = torch.matmul(
                 torch.matmul(x, self.w), self.w4)
 
         if self.u_ranks is None:  # Vanilla LSTM
-            uVal1 = torch.matmul(h, self.u1)
-            uVal2 = torch.matmul(h, self.u2)
-            uVal3 = torch.matmul(h, self.u3)
-            uVal4 = torch.matmul(h, self.u4)
+            u_val1 = torch.matmul(h, self.u1)
+            u_val2 = torch.matmul(h, self.u2)
+            u_val3 = torch.matmul(h, self.u3)
+            u_val4 = torch.matmul(h, self.u4)
         else:  # Low-rank LSTM
-            uVal1 = torch.matmul(
+            u_val1 = torch.matmul(
                 torch.matmul(h, self.u), self.u1)
-            uVal2 = torch.matmul(
+            u_val2 = torch.matmul(
                 torch.matmul(h, self.u), self.u2)
-            uVal3 = torch.matmul(
+            u_val3 = torch.matmul(
                 torch.matmul(h, self.u), self.u3)
-            uVal4 = torch.matmul(
+            u_val4 = torch.matmul(
                 torch.matmul(h, self.u), self.u4)
 
-        matVal_i = wVal1 + uVal1
-        matVal_f = wVal2 + uVal2
-        matVal_o = wVal3 + uVal3
-        matVal_c = wVal4 + uVal4
+        mat_val_i = w_val1 + u_val1
+        mat_val_f = w_val2 + u_val2
+        mat_val_o = w_val3 + u_val3
+        mat_val_c = w_val4 + u_val4
 
         # gate operations
-        i = torch.sigmoid(matVal_i + self.bias_i)
-        f = torch.sigmoid(matVal_f + self.bias_f)
-        o = torch.sigmoid(matVal_o + self.bias_o)
-        c_tilda = torch.tanh(matVal_c + self.bias_c)
+        i = torch.sigmoid(mat_val_i + self.bias_i)
+        f = torch.sigmoid(mat_val_f + self.bias_f)
+        o = torch.sigmoid(mat_val_o + self.bias_o)
+        c_tilda = torch.tanh(mat_val_c + self.bias_c)
 
         c_next = f * c + i * c_tilda
         h_next = o * torch.tanh(c_next)
@@ -251,20 +252,23 @@ class MyLSTM(nn.Module):
     :param Class cell: class of rnn cell implementation
     """
 
-    def __init__(self, input_size, hidden_layer_sizes=[32, 32], batch_first=True,
+    def __init__(self, input_size, hidden_layer_sizes=None, batch_first=True,
                  recurrent_inits=None, hidden_inits=None, w_rank=None, u_ranks=None,
                  cell=MyLSTMCell, **kwargs):
         """Initialize LSTM layer"""
         super().__init__()
+        if hidden_layer_sizes is None:
+            hidden_layer_sizes=[32, 32]
+
         self.input_size = input_size
         self.hidden_layer_sizes = hidden_layer_sizes
         self.batch_first = batch_first
         self.w_rank = w_rank
-        self.u_ranks = u_ranks[-1] if type(u_ranks) is list and len(u_ranks) < 2 else u_ranks
+        self.u_ranks = u_ranks[-1] if isinstance(u_ranks, list) and len(u_ranks) < 2 else u_ranks
         self.drop = nn.Dropout(p=0.5)
         self.cell = cell
 
-        self.u_ranks = u_ranks[0] if type(u_ranks) is list and len(u_ranks) < 2 else u_ranks
+        self.u_ranks = u_ranks[0] if isinstance(u_ranks, list) and len(u_ranks) < 2 else u_ranks
 
         if batch_first:
             self.time_index = 1
@@ -287,7 +291,8 @@ class MyLSTM(nn.Module):
 
         self.rnncells = nn.ModuleList(rnn_cells)
 
-    def forward(self, x, hidden=None):
+    def forward(self, x):
+        """Forward pass for the MyLSTM module."""
         time_index = self.time_index
         batch_index = self.batch_index
         hiddens = []
@@ -321,12 +326,13 @@ class Net(nn.Module):
     :param Class model: class of rnn model implementation
     :param Class cell: class of rnn cell implementation
     """
-    def __init__(self, input_size, layer_sizes=[32, 32],
+    def __init__(self, input_size, layer_sizes=None,
                  w_rank=None, u_rank=None, model=MyLSTM, cell=MyLSTMCell):
         """Initialize Network"""
         super().__init__()
+        if layer_sizes is None:
+            layer_sizes = [32, 32]
         recurrent_inits = []
-
         n_layer = len(layer_sizes) + 1
         # self.cell=cell
         for _ in range(n_layer - 1):
@@ -334,8 +340,7 @@ class Net(nn.Module):
         recurrent_inits.append(lambda w: nn.init.uniform_(w, RECURRENT_MIN, RECURRENT_MAX))
         self.rnn = model(
             input_size, hidden_layer_sizes=layer_sizes,
-            batch_first=True, recurrent_inits=recurrent_inits,
-            w_rank=w_rank, u_ranks=u_rank, cell=cell  ## self.cell
+            batch_first=True, w_rank=w_rank, u_ranks=u_rank, cell=cell  ## self.cell
         )
         self.lin = nn.Linear(layer_sizes[-1], 18)
         self.lin.bias.data.fill_(.1)
@@ -344,6 +349,7 @@ class Net(nn.Module):
         u=u_rank[-1] if cell == MyVMLMFCell else u_rank
         self.cell = cell(input_size, layer_sizes[-1], w_rank=w_rank, u_ranks=u)
 
-    def forward(self, x, hidden=None):
-        y, _ = self.rnn(x, hidden)
+    def forward(self, x):
+        """Forward pass for the Net module."""
+        y, _ = self.rnn(x)
         return self.lin(y[:, -1]).squeeze(1)

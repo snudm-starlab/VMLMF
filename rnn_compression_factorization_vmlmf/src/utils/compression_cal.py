@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401,R1719
+# pylint: disable=R0902, R0913, R0914, C0413
 """
 ====================================
  :mod:`compression_cal`
@@ -69,7 +69,7 @@ def print_model_parm_names(model):
     for param_tensor in model.state_dict():
         print(param_tensor, "\t", model.state_dict()[param_tensor].size())
 
-def _count_lstm_cell(modeltype,input_size,hidden_size,wRank=None,uRank=None,bias=True):
+def _count_lstm_cell(modeltype,input_size,hidden_size,w_rank=None,u_rank=None,bias=True):
     """count FLOPs of lstm/vmlmf cell
 
     :param modeltype: string modeltype
@@ -81,19 +81,21 @@ def _count_lstm_cell(modeltype,input_size,hidden_size,wRank=None,uRank=None,bias
     :returns: FLOPs of a cell
     """
     total_ops=0
-    isvmmodel = True if modeltype != "mylstm" else False
+    isvmmodel = modeltype != "mylstm"
     #vector-vector multiplication
     input_dia_ops  = input_size
     hidden_dia_ops = hidden_size
     #substract vec elem
-    if wRank is not None:
-        input_addition = (2*wRank-1)*input_size + hidden_size
-    if uRank is not None:
-        hidden_addition = (2*uRank-1)*hidden_size +hidden_size
+    if isinstance(u_rank, list):
+        u_rank = u_rank[0]
+    if w_rank is not None:
+        input_addition = (2*w_rank-1)*input_size + hidden_size
+    if u_rank is not None:
+        hidden_addition = (2*u_rank-1)*hidden_size +hidden_size
 
-    input_ops=(2*input_size-1)*wRank+(2*wRank-1)*hidden_size \
+    input_ops=(2*input_size-1)*w_rank+(2*w_rank-1)*hidden_size \
         if isvmmodel else (2*input_size-1)*hidden_size
-    hidden_ops=(2*hidden_size-1)*uRank+(2*uRank-1)*hidden_size\
+    hidden_ops=(2*hidden_size-1)*u_rank+(2*u_rank-1)*hidden_size\
          if isvmmodel else (2*hidden_size-1)*hidden_size
     state_ops=input_ops+hidden_ops + input_dia_ops + hidden_dia_ops +hidden_size*3 \
         +input_addition + hidden_addition if isvmmodel else input_ops + hidden_ops + hidden_size
