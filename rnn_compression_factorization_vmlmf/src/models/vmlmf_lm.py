@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 # reference: https://github.com/ahmetumutdurmus/zaremba
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102, R0201
+# pylint: disable=R0902, R0913, R0914
 """
 ====================================
  :mod:`vmlmf_lm`
@@ -41,27 +41,27 @@ class Embed(nn.Module):
         super().__init__()
         self.vocab_size = vocab_size
         self.embed_size = embed_size
-        self.W = nn.Parameter(torch.Tensor(vocab_size, embed_size))
+        self.w = nn.Parameter(torch.Tensor(vocab_size, embed_size))
 
     def forward(self, x):
-        return self.W[x]
+        """Forward pass for the Embed module."""
+        return self.w[x]
 
     def __repr__(self):
         return f"Embedding(vocab: {self.vocab_size}, embedding: {self.embed_size})"
 
-class myVMLSTM_Group(nn.Module):
+class MyVMLSTMGroup(nn.Module):
     """VMLSTM Group layer for language model
 
         :param int input_size: size of input vector
         :param int hidden_size: size of hidden state vector
         :param float dropout: drop out rate
-        :param float winit: the bound of the uniform distribution
         :param int w_rank: rank of all input to hidden matrices
         :param int u_ranks: rank of all hidden to hidden matrices
         :param int g: number of groups
     """
 
-    def __init__(self, input_size, hidden_size, dropout = 0, winit = 0.1,\
+    def __init__(self, input_size, hidden_size, dropout = 0,\
         w_rank=None,u_ranks=None,g=2):
         """Initialize VMLSTM Group layer"""
         super().__init__()
@@ -79,7 +79,7 @@ class myVMLSTM_Group(nn.Module):
         #Hid-Hid in group_LMF
         self.u_h = nn.ParameterList([nn.Parameter(torch.Tensor(
             g,int(hidden_size/g),u_ranks[g_idx])) for g_idx in range(self.g)])
-        self.V_h = nn.ParameterList([ nn.Parameter(torch.Tensor(
+        self.v_h = nn.ParameterList([ nn.Parameter(torch.Tensor(
             g,u_ranks[g_idx],4 * int(hidden_size/g))) for g_idx in range(self.g)])
 
         #bias
@@ -94,7 +94,7 @@ class myVMLSTM_Group(nn.Module):
     def __repr__(self):
         return f"LSTM(input: {self.input_size}, hidden: {self.hidden_size})"
 
-    def lstm_step(self, x, h, c, w_x, V_h, b_x, b_h):
+    def lstm_step(self, x, h, c):
         """Forward computation of VMLSTM_Group Cell
 
         :param tensor x: input sequence
@@ -127,10 +127,10 @@ class myVMLSTM_Group(nn.Module):
             h_top=h_top[:,index,:] if partial_h > 0 else h_top
             h_top=torch.transpose(h_top,0,1)
 
-            U_dia=self.u_h[partial_h]
-            V_dia=self.V_h[partial_h]
-            h_top=torch.bmm(h_top,U_dia)
-            h_top=torch.bmm(h_top,V_dia)
+            u_dia=self.u_h[partial_h]
+            v_dia=self.v_h[partial_h]
+            h_top=torch.bmm(h_top,u_dia)
+            h_top=torch.bmm(h_top,v_dia)
             h_top=torch.transpose(h_top,0,1)
             h_top=h_top.contiguous().view(-1,self.hidden_size*4)
             lowered_h=h_top if partial_h==0 else h_top + lowered_h
@@ -138,14 +138,14 @@ class myVMLSTM_Group(nn.Module):
         #cal redundant values
         hidden_size=self.hidden_size
         input_size=self.input_size
-        re_Uh=self.u_h[0].view(self.hidden_size,self.u_ranks[0])
-        re_Vh=torch.transpose(self.V_h[0],1,2).contiguous().view(4*self.hidden_size,self.u_ranks[0])
+        re_uh=self.u_h[0].view(self.hidden_size,self.u_ranks[0])
+        re_vh=torch.transpose(self.v_h[0],1,2).contiguous().view(4*self.hidden_size,self.u_ranks[0])
 
         for gate_idx in range(0,4*hidden_size,hidden_size):
             vm_refined_x[:,gate_idx:gate_idx+input_size]=x*torch.sum(\
                 (self.u_x*self.w_x[gate_idx:gate_idx+input_size,:]),dim=1)
             vm_refined_h[:,gate_idx:gate_idx+hidden_size]=h*torch.sum(\
-                (re_Uh*re_Vh[gate_idx:gate_idx+hidden_size,:]),dim=1)
+                (re_uh*re_vh[gate_idx:gate_idx+hidden_size,:]),dim=1)
         gx=vm_x+lowered_x-vm_refined_x+self.b_x
         gh=vm_h+lowered_h-vm_refined_h+self.b_h
 
@@ -164,17 +164,18 @@ class myVMLSTM_Group(nn.Module):
 
     #Takes input tensor x with dimensions: [T, B, X]
     def forward(self, x, states):
+        """Forward pass for the MyVMLSTMGroup module."""
         h, c = states
         outputs = []
         inputs = x.unbind(0)
         for x_t in inputs:
-            h, c = self.lstm_step(x_t, h, c, self.w_x, self.V_h, self.b_x, self.b_h)
+            h, c = self.lstm_step(x_t, h, c)
             outputs.append(h)
         return torch.stack(outputs), (h, c)
 
 ######## <End of custom vmlmf lstm model code > ############
 
-class myVMLSTM(nn.Module):
+class MyVMLSTM(nn.Module):
     """VMLSTM layer for language model
 
         :param int input_size: size of input vector
@@ -184,8 +185,8 @@ class myVMLSTM(nn.Module):
         :param int w_rank: rank of all input to hidden matrices
         :param int u_ranks: rank of all hidden to hidden matrices
     """
-    def __init__(self, input_size, hidden_size, dropout = 0, winit = 0.1,\
-        w_rank=None,u_ranks=None,device=None):
+    def __init__(self, input_size, hidden_size, dropout = 0,\
+        w_rank=None,u_ranks=None):
         """Initialize VMLSTM layer"""
         super().__init__()
         self.input_size = input_size
@@ -218,7 +219,7 @@ class myVMLSTM(nn.Module):
     def __repr__(self):
         return f"LSTM(input: {self.input_size}, hidden: {self.hidden_size})"
 
-    def lstm_step(self, x, h, c, w_x, w_h, b_x, b_h):
+    def lstm_step(self, x, h, c):
         """Forward computation of VMLSTM Cell
 
         :param tensor x: input sequence
@@ -269,11 +270,12 @@ class myVMLSTM(nn.Module):
 
     #Takes input tensor x with dimensions: [T, B, X]
     def forward(self, x, states):
+        """Forward pass for the MyVMLSTM module."""
         h, c = states
         outputs = []
         inputs = x.unbind(0)
         for x_t in inputs:
-            h, c = self.lstm_step(x_t, h, c, self.w_x, self.w_h, self.b_x, self.b_h)
+            h, c = self.lstm_step(x_t, h, c)
             outputs.append(h)
         return torch.stack(outputs), (h, c)
 
@@ -287,7 +289,7 @@ class LSTM(nn.Module):
     :param float winit: the bound of the uniform distribution
     """
 
-    def __init__(self, input_size, hidden_size, dropout = 0, winit = 0.1):
+    def __init__(self, input_size, hidden_size, dropout = 0):
         """Initialize LSTM layer"""
         super().__init__()
         self.input_size = input_size
@@ -327,6 +329,7 @@ class LSTM(nn.Module):
 
     #Takes input tensor x with dimensions: [T, B, X]
     def forward(self, x, states):
+        """Forward pass for the LSTM module."""
         h, c = states
         outputs = []
         inputs = x.unbind(0)
@@ -346,11 +349,12 @@ class Linear(nn.Module):
         super().__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
-        self.W = nn.Parameter(torch.Tensor(hidden_size, input_size))
+        self.w = nn.Parameter(torch.Tensor(hidden_size, input_size))
         self.b = nn.Parameter(torch.Tensor(hidden_size))
 
     def forward(self, x):
-        z = torch.addmm(self.b, x.view(-1, x.size(2)), self.W.t())
+        """Forward pass for the Linear module."""
+        z = torch.addmm(self.b, x.view(-1, x.size(2)), self.w.t())
         return z
 
     def __repr__(self):
@@ -370,7 +374,7 @@ class Model(nn.Module):
     """
 
     def __init__(self, vocab_size, hidden_size, layer_num, dropout, winit, \
-        w_rank=None,u_ranks=None,lstm_type = "pytorch",device=None):
+        w_rank=None,u_ranks=None,lstm_type = "pytorch"):
         """Initialize Network"""
         super().__init__()
         self.vocab_size = vocab_size
@@ -384,7 +388,7 @@ class Model(nn.Module):
             u_ranks=u_ranks[-1]
 
         if lstm_type == "vmgroup":
-            self.rnns = [myVMLSTM_Group(hidden_size, hidden_size,\
+            self.rnns = [MyVMLSTMGroup(hidden_size, hidden_size,\
                 w_rank=w_rank,u_ranks=u_ranks) for i in range(layer_num)]
             self.rnns = nn.ModuleList(self.rnns)
         elif lstm_type!="vmlmf":
@@ -392,8 +396,8 @@ class Model(nn.Module):
                  else nn.LSTM(hidden_size, hidden_size) for i in range(layer_num)]
             self.rnns = nn.ModuleList(self.rnns)
         else:
-            self.rnns = [myVMLSTM(hidden_size, hidden_size,\
-                w_rank=w_rank,u_ranks=u_ranks,device=device) for i in range(layer_num)]
+            self.rnns = [MyVMLSTM(hidden_size, hidden_size,\
+                w_rank=w_rank,u_ranks=u_ranks) for i in range(layer_num)]
             self.rnns = nn.ModuleList(self.rnns)
 
         self.fc = Linear(hidden_size, vocab_size)
@@ -427,6 +431,7 @@ class Model(nn.Module):
         return [(h.detach(), c.detach()) for (h,c) in states]
 
     def forward(self, x, states):
+        """Forward pass for the Model module."""
         x = self.embed(x)
         x = self.dropout(x)
         for i, rnn in enumerate(self.rnns):

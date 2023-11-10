@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401, W0621,C0301
+# pylint: disable=R0902, R0913, R0914, C0413
 """
 ====================================
  :mod:`preprocess_opp`
@@ -215,8 +215,10 @@ def check_data(data_set):
     if (not os.path.isfile(data_set)) and data_file == 'OpportunityUCIDataset.zip':
         print(f'... dataset path {data_set} not found')
         origin = (
-            'https://archive.ics.uci.edu/ml/machine-learning-databases/00226/OpportunityUCIDataset.zip'
-        )
+        'https://archive.ics.uci.edu/ml/machine-learning-databases/'
+        '00226/OpportunityUCIDataset.zip'
+    )
+
         if not os.path.exists(data_dir):
             print(f'... creating directory {data_dir}')
             os.makedirs(data_dir)
@@ -291,11 +293,12 @@ def generate_data(dataset, target_filename, label):
                 except KeyError:
                     print(f'ERROR: Did not find {filename} in zip file')
             if datatype == 'training':
-                X_train, y_train = data_x, data_y
+                x_train_inner, y_train_inner = data_x, data_y
             else:
-                X_test, y_test = data_x, data_y
-        print(f"Final datasets with size: | train {X_train.shape} | test {X_test.shape}")
-    obj = [(X_train, y_train), (X_test, y_test)]
+                x_test_inner, y_test_inner = data_x, data_y
+
+        print(f"Final datasets with size: train {x_train_inner.shape} | test {x_test_inner.shape}")
+    obj = [(x_train_inner, y_train_inner), (x_test_inner, y_test_inner)]
     with open(os.path.join(data_dir, target_filename), 'wb') as f:
         cp.dump(obj, f, protocol=cp.HIGHEST_PROTOCOL)
 
@@ -334,21 +337,21 @@ def load_dataset(filename):
     with open(filename,'rb') as f:
         data=cp.load(f)
 
-    X_train, y_train = data[0]
-    X_test, y_test = data[1]
+    x_train_load, y_train_load = data[0]
+    x_test_load, y_test_load = data[1]
 
     print(f" ..from file {filename}")
-    print(f" ..reading instances: train {X_train.shape}, test {X_test.shape}")
+    print(f" ..reading instances: train {x_train_load.shape}, test {x_test_load.shape}")
 
-    X_train = X_train.astype(np.float32)
-    X_test = X_test.astype(np.float32)
+    x_train_load = x_train_load.astype(np.float32)
+    x_test_load = x_test_load.astype(np.float32)
 
     # The targets are casted to int8 for GPU compatibility.
-    y_train = y_train.astype(np.float64)
-    y_test = y_test.astype(np.float64)
+    y_train_load = y_train_load.astype(np.float64)
+    y_test_load = y_test_load.astype(np.float64)
 
 
-    return X_train, y_train, X_test, y_test
+    return x_train_load, y_train_load, x_test_load, y_test_load
 
 
 def opp_sliding_window(data_x, data_y, ws, ss):

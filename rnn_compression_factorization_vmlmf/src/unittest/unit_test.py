@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401
+# pylint: disable=R0902, R0913, R0914, C0413
 """
 ====================================
  :mod:`unit_test`
@@ -28,7 +28,7 @@
 
 """
 import sys
-sys.path.append('./')
+sys.path.append('../')
 import unittest
 import random
 import torch
@@ -46,30 +46,30 @@ def set_seed(seed = 3):
     torch.backends.cudnn.benchmark = False
 
 # problem setting
-in_sz=77
-hid_sz=180
-i2i_rank=8
-h2h_rank=6
-h2h_g_ranks=[2,4]
+IN_SZ=77
+HID_SZ=180
+I2I_RANK=8
+H2H_RANK=6
+H2H_G_RANKS=[2,4]
 
 x=torch.randn([81,24,77])
 
 #model
-vmmodelc=Net(77, layer_sizes=[180], wRank=8, uRanks=6, model=MyLSTM,cell=MyVMLMFCell)
-vmmodelg=Net(77, layer_sizes=[180], wRank=8, uRanks=[2, 4], model=MyLSTM,cell=MyVMLMFCellg2)
+vmmodelc=Net(77, layer_sizes=[180], w_rank=8, u_rank=[6], model=MyLSTM,cell=MyVMLMFCell)
+vmmodelg=Net(77, layer_sizes=[180], w_rank=8, u_rank=[2, 4], model=MyLSTM,cell=MyVMLMFCellg2)
 
 class TestVMLMF(unittest.TestCase):
     """Unit test class"""
     def test01_mmfc_dia_vec_size(self):
         """Unit test for test diagonal vector size"""
         self.assertEqual(vmmodelc.cell.dia_x.shape,(1,77))  # add assertion here
-        self.assertEqual(vmmodelc.cell.dia_x.shape, (1, 180))
+        self.assertEqual(vmmodelc.cell.dia_h.shape, (1,180))
     def test02_mmfc_weight_shape(self):
         """Unit test for test weight shape"""
-        self.assertEqual(vmmodelc.cell.U_x.shape,(in_sz,i2i_rank))  # add assertion here
-        self.assertEqual(vmmodelc.cell.U_h.shape,(hid_sz,h2h_rank))
-        self.assertEqual(vmmodelc.cell.V_x.shape,(4*hid_sz,i2i_rank))  # add assertion here
-        self.assertEqual(vmmodelc.cell.V_h.shape,(4*hid_sz,h2h_rank))
+        self.assertEqual(vmmodelc.cell.u_x.shape,(IN_SZ,I2I_RANK))  # add assertion here
+        self.assertEqual(vmmodelc.cell.u_h.shape,(HID_SZ,H2H_RANK))
+        self.assertEqual(vmmodelc.cell.v_x.shape,(4*HID_SZ,I2I_RANK))  # add assertion here
+        self.assertEqual(vmmodelc.cell.v_h.shape,(4*HID_SZ,H2H_RANK))
     def test03_mmfc_forward(self):
         """Unit test for test mmf without group structure"""
         computed=vmmodelc.forward(x)
@@ -81,12 +81,12 @@ class TestVMLMF(unittest.TestCase):
         self.assertEqual(vmmodelg.cell.layers['dia_h'].shape, (1, 180))
     def test05_mmfg_weight_shape(self):
         """Unit test for test weight shape"""
-        self.assertEqual(vmmodelg.cell.layers['Ux'].shape,(in_sz,i2i_rank))  # add assertion here
-        self.assertEqual(vmmodelg.cell.layers['Uh_0'].shape,(2,int(hid_sz/2),h2h_g_ranks[0]))
-        self.assertEqual(vmmodelg.cell.layers['Uh_1'].shape, (2, int(hid_sz / 2), h2h_g_ranks[1]))
-        self.assertEqual(vmmodelg.cell.layers['Vx'].shape,(4*hid_sz,i2i_rank))  # add assertion here
-        self.assertEqual(vmmodelg.cell.layers['Vh_0'].shape, (2, h2h_g_ranks[0],4*int(hid_sz/2)))
-        self.assertEqual(vmmodelg.cell.layers['Vh_1'].shape, (2, h2h_g_ranks[1],4*int(hid_sz/2)))
+        self.assertEqual(vmmodelg.cell.layers['u_x'].shape,(IN_SZ,I2I_RANK))  # add assertion here
+        self.assertEqual(vmmodelg.cell.layers['u_h_0'].shape,(2,int(HID_SZ/2),H2H_G_RANKS[0]))
+        self.assertEqual(vmmodelg.cell.layers['u_h_1'].shape,(2, int(HID_SZ / 2), H2H_G_RANKS[1]))
+        self.assertEqual(vmmodelg.cell.layers['v_x'].shape,(4*HID_SZ,I2I_RANK))
+        self.assertEqual(vmmodelg.cell.layers['v_h_0'].shape, (2, H2H_G_RANKS[0],4*int(HID_SZ/2)))
+        self.assertEqual(vmmodelg.cell.layers['v_h_1'].shape, (2, H2H_G_RANKS[1],4*int(HID_SZ/2)))
     def test06_mmfg_forward(self):
         """Unit test for test mmf with group structure"""
         computed = vmmodelc.forward(x)

@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 # reference: https://github.com/ahmetumutdurmus/zaremba
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401
+# pylint: disable=R0902, R0913, R0914
 """
 ====================================
  :mod:`lm_test`
@@ -29,13 +29,13 @@ VMLMF 기반 언어 모델을 시험하기 위한 모듈입니다.
 """
 import argparse
 import sys
-sys.path.append('./')
 import timeit
 import numpy as np
 import torch
 
 from torch import nn
 from models.vmlmf_lm import Model
+sys.path.append('./')
 
 def get_args():
     """parse arguments
@@ -237,7 +237,7 @@ def main():
     vld = minibatch(vld, args.batch_size, args.seq_length)
     tst = minibatch(tst, args.batch_size, args.seq_length)
     model = Model(vocab_size, args.hidden_size, args.layer_num, args.dropout,\
-         args.winit,args.wRank,args.uRanks, args.lstm_type,device=args.device)
+         args.winit,args.wRank,args.uRanks, args.lstm_type)
 
     print("*"*32)
     params=sum(p.numel() for p in model.parameters())

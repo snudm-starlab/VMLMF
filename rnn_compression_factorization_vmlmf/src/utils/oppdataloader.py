@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0413, E0401
+# pylint: disable=R0902, R0913, R0914, C0413
 """
 ====================================
  :mod:`OPP_dataloader`
@@ -37,17 +37,17 @@ class CustomDataset(Dataset):
         :param string data_path:filepath of dataset
         :param string mode:whether train or test data
         """
-        self.X = np.load((data_path + '/' + 'X_' + mode + '.npy'))
+        self.x = np.load((data_path + '/' + 'X_' + mode + '.npy'))
         self.y = np.load((data_path + '/' + 'y_' + mode + '.npy'))
 
     def __getitem__(self, index):
-        return self.X[index], self.y[index]
+        return self.x[index], self.y[index]
 
     def __len__(self):
-        return len(self.X)
+        return len(self.x)
 
 
-def HAR_dataloader(batch_size, dataset_folder='./data/opp'):
+def har_dataloader(batch_size, dataset_folder='./data/opp'):
     """get dataloader - dataloader the batch size of load data
 
     :param batch_size: integer batch_size of dataset

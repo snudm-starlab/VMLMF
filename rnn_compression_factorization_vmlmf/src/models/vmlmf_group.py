@@ -16,7 +16,7 @@
 # For commercial purposes, please contact the authors.
 #
 ################################################################################
-# pylint: disable=C0103, E1101, C0114, R0902,C0116, R0914, R0913, C0123, W0613, W0102,C0321
+# pylint: disable=R0902, R0913, R0914
 """
 ====================================
  :mod:`vmlmf_group`
@@ -82,9 +82,10 @@ class MyVMLMFCellg2(nn.Module):
         return f"LSTM VM Group (input:{self.input_size}, hidden:{self.hidden_size},\
              w_rank:{self.w_rank}, u_ranks:{self.u_ranks}"
 
-    def forward(self, x, hiddenStates):
+    def forward(self, x, hidden_states):
+        """Forward pass for the MyVMLMFCellg2 module."""
         dev=next(self.parameters()).device
-        (h, c) = hiddenStates
+        (h, c) = hidden_states
         batch_size=h.shape[0]
 
         #VM operation
@@ -98,15 +99,15 @@ class MyVMLMFCellg2(nn.Module):
         vm_refined_x=torch.zeros(x.shape[0],4*self.hidden_size,device=dev)
         vm_refined_h=torch.zeros(h.shape[0],4*self.hidden_size,device=dev)
         vm_refined_u_h=self.layers['u_h_0'].view(self.hidden_size,self.u_ranks[0])
-        vm_refined_Vh=torch.transpose(self.layers['v_h_0'],1,2).contiguous()
+        vm_refined_vh=torch.transpose(self.layers['v_h_0'],1,2).contiguous()
 
         for gate_idx in range(0,4*self.hidden_size,self.hidden_size):
             vm_refined_x[:,gate_idx:gate_idx+self.input_size]=x*torch.sum(
                 (self.layers['u_x']*self.layers['v_x'][gate_idx:gate_idx+self.input_size,:]),dim=1)
             gate_g_idx,gate_g_size=int(gate_idx/self.g),int(self.hidden_size/self.g)
-            gate_Vh=vm_refined_Vh[:,gate_g_idx:gate_g_idx+gate_g_size,:].reshape(-1,self.u_ranks[0])
+            gate_vh=vm_refined_vh[:,gate_g_idx:gate_g_idx+gate_g_size,:].reshape(-1,self.u_ranks[0])
             vm_refined_h[:,gate_idx:gate_idx+self.hidden_size]=\
-                h*torch.sum((vm_refined_u_h*gate_Vh),dim=1)
+                h*torch.sum((vm_refined_u_h*gate_vh),dim=1)
 
         gx=lowered_x-vm_refined_x+self.layers['bias_x']
         xi, xf, xo, xn = gx.chunk(4, 1)
@@ -125,8 +126,8 @@ class MyVMLMFCellg2(nn.Module):
 
             u_h=self.layers[f'u_h_{i}']   #[g,h/g,u_ranks]
             h_op=torch.bmm(h_op,u_h)             #[g,batch_size,u_ranks]
-            Vh=self.layers[f'v_h_{i}']   #[g,u_ranks,h/g*4]
-            h_op=torch.bmm(h_op,Vh)             #[g,batch_size,h/g*4]
+            vh=self.layers[f'v_h_{i}']   #[g,u_ranks,h/g*4]
+            h_op=torch.bmm(h_op,vh)             #[g,batch_size,h/g*4]
             h_op=torch.transpose(h_op,0,1)      #[batch_size,g,h/g*4]
             h_op_chunked=h_op if i==0 else h_op_chunked+h_op
 
@@ -140,7 +141,10 @@ class MyVMLMFCellg2(nn.Module):
         gh=self.layers['bias_h']-vm_refined_h
         hf,hi,hn,ho=gh.chunk(4,1)
 
-        hf=hf+f_h; hi=hi+i_h; hn=hn+n_h; ho=ho+o_h
+        hf=hf+f_h
+        hi=hi+i_h
+        hn=hn+n_h
+        ho=ho+o_h
 
         inputgate = torch.sigmoid(xi + hi+vm_x+vm_h)
         forgetgate = torch.sigmoid(xf + hf+vm_x+vm_h)
@@ -196,8 +200,9 @@ class MyVMLMFgCellg2(nn.Module):
         return f"LSTM VM Group (input:{self.input_size}, hidden:{self.hidden_size},\
             w_rank:{self.w_rank}, u_ranks:{self.u_ranks})"
 
-    def forward(self, x, hiddenStates):
-        (h, c) = hiddenStates
+    def forward(self, x, hidden_states):
+        """Forward pass for the MyVMLMFgCellg2 module."""
+        (h, c) = hidden_states
         batch_size=h.shape[0]
 
         #LMF_x operation
@@ -219,8 +224,8 @@ class MyVMLMFgCellg2(nn.Module):
 
             u_h=self.layers[f'u_h_{i}'] #[g,h/g,u_ranks]
             h_op=torch.bmm(h_op,u_h)           #[g,batch_size,u_ranks]
-            Vh=self.layers[f'v_h_{i}'] #[g,u_ranks,h/g*4]
-            h_op=torch.bmm(h_op,Vh)           #[g,batch_size,h/g*4]
+            vh=self.layers[f'v_h_{i}'] #[g,u_ranks,h/g*4]
+            h_op=torch.bmm(h_op,vh)           #[g,batch_size,h/g*4]
             h_op=torch.transpose(h_op,0,1)    #[batch_size,g,h/g*4]
             h_op_chunked=h_op if i==0 else h_op_chunked+h_op
 
@@ -232,7 +237,10 @@ class MyVMLMFgCellg2(nn.Module):
 
         gh=self.layers['bias_h']
         hf,hi,hn,ho=gh.chunk(4,1)
-        hf=hf+f_h; hi=hi+i_h; hn=hn+n_h; ho=ho+o_h
+        hf=hf+f_h
+        hi=hi+i_h
+        hn=hn+n_h
+        ho=ho+o_h
 
         inputgate = torch.sigmoid(xi + hi)
         forgetgate = torch.sigmoid(xf + hf)
